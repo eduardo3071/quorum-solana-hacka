@@ -14,14 +14,17 @@ import { supabase } from '@/lib/supabase';
  */
 export function FormularioEntrada({
   aviso,
+  rotulo = 'Seu e-mail',
   rotuloOculto = false,
   proxima,
 }: {
   aviso?: string;
+  /** O texto do rótulo. A prancha de entrar diz "E-mail institucional". */
+  rotulo?: string;
   /**
-   * Na capa o campo mora dentro de um cartão que já diz "acesso da diretoria",
-   * e um segundo rótulo acima dele seria repetição. O `<label>` continua no
-   * HTML — só sai da vista. Campo sem nome é campo mudo para leitor de tela.
+   * Quando o campo mora dentro de um cartão que já se explica, um segundo
+   * rótulo acima dele seria repetição. O `<label>` continua no HTML — só sai
+   * da vista. Campo sem nome é campo mudo para leitor de tela.
    */
   rotuloOculto?: boolean;
   proxima?: string;
@@ -84,9 +87,9 @@ export function FormularioEntrada({
       <div>
         <label
           htmlFor="email"
-          className={rotuloOculto ? 'sr-only' : 't-rotulo mb-2 block text-ink-2'}
+          className={rotuloOculto ? 'sr-only' : 't-item-sm mb-2 block text-ink'}
         >
-          Seu e-mail
+          {rotulo}
         </label>
         {/*
           Sem `outline-none`: a borda azul sozinha é 1px de diferença, e quem
@@ -109,7 +112,7 @@ export function FormularioEntrada({
       {(erro || aviso) && <p className="t-desc text-red">{erro ?? aviso}</p>}
 
       <Botao type="submit" variante={pendente ? 'desabilitado' : 'primario'}>
-        {pendente ? 'Enviando…' : 'Receber link de acesso'}
+        {pendente ? 'Enviando…' : 'Receber link de acesso →'}
       </Botao>
 
       <p className="t-meta text-pretty text-ink-3">

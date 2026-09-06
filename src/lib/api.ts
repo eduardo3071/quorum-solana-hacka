@@ -80,6 +80,25 @@ async function chamar<T>(rota: string, corpo?: unknown): Promise<T> {
   return dados as T;
 }
 
+/* ── Nascer uma entidade ────────────────────────────────────────────────── */
+
+export type TipoEntidade = 'atletica' | 'ca' | 'ej' | 'formatura';
+
+/**
+ * Cria a entidade e o primeiro signatário.
+ *
+ * Passa pela API, e não direto pelo banco, porque a política de acesso proíbe
+ * o navegador de inserir em `entidades` — e deve proibir mesmo: quem está
+ * criando ainda não é membro de nada, então nenhuma política razoável o
+ * autorizaria. É o servidor que escreve, com regra própria.
+ */
+export const criarEntidade = (dados: {
+  nome: string;
+  tipo: TipoEntidade;
+  universidade: string;
+  email: string;
+}) => chamar<{ criada: true; slug: string; nome: string }>('/api/entidade', dados);
+
 /* ── O cofre ────────────────────────────────────────────────────────────── */
 
 export type Assento = 'tesoureira' | 'presidente' | 'conselho';
