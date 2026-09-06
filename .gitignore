@@ -4,10 +4,27 @@ dist
 .env.local
 *.local
 .DS_Store
+tsconfig.tsbuildinfo
 
 # O app Next tem o próprio ciclo de build, em backend/.
 backend/node_modules
 backend/.next
 backend/.env.local
 backend/.cofre-devnet.json
-tsconfig.tsbuildinfo
+
+# Os mesmos artefatos, mas na raiz. Quem roda o Next daqui — ou traz uma pasta
+# de quando ele morava na raiz — gera estes, e sem estas linhas eles entram num
+# `git add .` sem ninguém notar. Já aconteceu: `.cofre-devnet.json` guarda a
+# createKey do multisig, e createKey é chave privada.
+/.next
+/.cofre-devnet.json
+
+# Chave privada da Solana costuma ser um .json com o array de bytes do segredo.
+# Não parece segredo à primeira vista.
+*.keypair.json
+id.json
+keypair*.json
+wallet*.json
+**/keys/
+**/keypairs/
+*.pem
