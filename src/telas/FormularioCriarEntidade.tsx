@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Mail } from 'lucide-react';
 
-import { Botao } from '@/componentes/Botao';
+import { CampoEmail } from '@/componentes/CampoEmail';
 import { TileIcone } from '@/componentes/TileIcone';
 import { criarEntidade, ErroDaApi, type TipoEntidade } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
@@ -129,10 +129,10 @@ export function FormularioCriarEntidade() {
                 role="radio"
                 aria-checked={ativo}
                 onClick={() => setTipo(t.valor)}
-                className={`min-h-[42px] rounded-btn border px-3 py-2.5 text-[12.5px] font-semibold whitespace-nowrap ${
+                className={`min-h-[44px] rounded-[13px] border px-2.5 py-2.5 text-[11.5px] font-semibold whitespace-nowrap ${
                   ativo
-                    ? 'border-blue bg-blue-tint text-ink'
-                    : 'border-line bg-surface text-ink-2'
+                    ? 'border-blue bg-[#0E2A48] text-ink'
+                    : 'border-white/12 bg-[#0A1526] text-ink-2'
                 }`}
               >
                 {t.rotulo}
@@ -154,27 +154,24 @@ export function FormularioCriarEntidade() {
         />
       </Campo>
 
-      <Campo rotulo="Seu e-mail" id="email-criar">
-        <input
-          id="email-criar"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="voce@grad.ufsc.br"
-          className={ESTILO_CAMPO}
-        />
-      </Campo>
+      <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
 
       {erro && <p className="t-desc text-pretty text-red">{erro}</p>}
 
-      <Botao type="submit" variante={pendente ? 'desabilitado' : 'primario'}>
+      {/*
+        Degradê só aqui. É a única ação da tela que cria alguma coisa, e a
+        prancha a distingue assim do "receber link", que é azul liso.
+      */}
+      <button
+        type="submit"
+        disabled={pendente}
+        style={pendente ? undefined : { backgroundImage: 'linear-gradient(94deg,#22C7F5,#2E86F0)' }}
+        className="min-h-[54px] rounded-[14px] px-4 text-[14.5px] font-bold text-ground disabled:bg-line disabled:text-ink-3"
+      >
         {pendente ? 'Criando…' : 'Criar entidade →'}
-      </Botao>
+      </button>
 
-      <p className="t-meta text-pretty text-ink-3">
+      <p className="t-meta text-center text-pretty text-ink-3">
         Você será o primeiro dos três signatários. Os outros dois entram por
         convite.
       </p>
@@ -183,7 +180,7 @@ export function FormularioCriarEntidade() {
 }
 
 const ESTILO_CAMPO =
-  'w-full rounded-btn border border-line bg-surface px-3.5 py-[13px] text-[13px] font-medium text-ink placeholder:text-ink-3 focus:border-blue';
+  'min-h-[52px] w-full rounded-[14px] border border-white/12 bg-[#0A1526] px-3.5 py-3 text-[13.5px] font-medium text-ink placeholder:text-ink-3 focus:border-blue';
 
 function Campo({
   rotulo,

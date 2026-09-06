@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 
+import criarTopo from '@/assets/criar-topo.webp';
+import entrarRodape from '@/assets/entrar-rodape.webp';
+import entrarTopo from '@/assets/entrar-topo.webp';
 import { BotaoGoogle } from '@/componentes/BotaoGoogle';
-import { FUNDO_CAPA } from '@/componentes/fundo';
-import { MarcaQuorum } from '@/componentes/MarcaQuorum';
 import { useSessao } from '@/lib/sessao';
 
 import { FormularioCriarEntidade } from './FormularioCriarEntidade';
@@ -20,11 +21,36 @@ const AVISOS: Record<string, string> = {
 type Aba = 'entrar' | 'criar';
 
 /**
- * A porta: entrar, ou fazer nascer uma entidade.
+ * O que é arte e o que é interface, nesta tela.
  *
- * O livro-caixa e a página da festa não passam por aqui — são públicos, e essa
- * é a tese do produto.
+ * A prancha vem inteira como imagem, e a imagem é ótima — mas ela desenha um
+ * formulário, e formulário desenhado não digita. Então a arte entra recortada
+ * em duas faixas — o topo, com a marca e os títulos, e o pé, com o rastro azul
+ * — e o cartão do meio é DOM de verdade: campo com teclado de e-mail, aba que
+ * troca, botão com foco visível, mensagem de erro que aparece.
+ *
+ * Cada aba tem o seu topo porque as duas pranchas têm: na de criar, a marca é
+ * menor para o cartão mais alto caber. Usar um topo só deixaria uma das duas
+ * fora de proporção.
+ *
+ * A barra de status da maquete (09:41 · 78%) foi cortada das duas. É o chrome
+ * do aparelho, não do app: mantida, o celular desenha a dele por cima e ficam
+ * duas.
+ *
+ * O degradê do miolo sai das cores medidas na última linha do recorte de cima
+ * e na primeira do de baixo, então a costura não tem degrau.
  */
+const MEIO = [
+  // O rastro azul da esquerda não termina onde o recorte termina: ele continua
+  // por baixo do cartão na prancha. Este radial é a continuação dele, saindo
+  // da cor medida na última linha da imagem.
+  'radial-gradient(78% 26% at 10% 0%, rgba(23,64,180,.5) 0%, rgba(2,26,70,0) 72%)',
+  'linear-gradient(#021A46,#061B3B 32%,#001439)',
+].join(',');
+
+/** A margem lateral do cartão na prancha: 56px de 853 ≈ 25px de 390. */
+const LATERAL = 'px-[25px]';
+
 export function Entrar() {
   const [busca] = useSearchParams();
   const sessao = useSessao();
@@ -38,77 +64,96 @@ export function Entrar() {
 
   if (sessao.user) return <Navigate to={proxima ?? '/'} replace />;
 
+  const entrando = aba === 'entrar';
+
   return (
     <main
-      style={FUNDO_CAPA}
-      className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col justify-center gap-6 px-4 py-10"
+      style={{ background: MEIO }}
+      className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col"
     >
-      <header className="flex flex-col items-center text-center">
-        <MarcaQuorum tamanho={92} />
-        <h1 className="mt-3 text-[34px] leading-none font-extrabold tracking-[-0.03em] text-ink">
-          Quórum
-        </h1>
-        <p className="t-rotulo mt-2 text-blue-ink">Tesouraria estudantil</p>
-        <p className="t-corpo mt-3 text-pretty text-ink">
-          Mais transparência para
-          <br />
-          uma atlética mais forte.
-        </p>
-      </header>
-
-      <section className="rounded-card border border-line bg-surface/85 p-4 backdrop-blur-sm">
-        <div
-          role="tablist"
-          aria-label="Entrar ou criar entidade"
-          className="mb-4 grid grid-cols-2 gap-2"
-        >
-          <BotaoAba atual={aba} valor="entrar" ao={setAba}>
-            Entrar
-          </BotaoAba>
-          <BotaoAba atual={aba} valor="criar" ao={setAba}>
-            Criar entidade
-          </BotaoAba>
-        </div>
-
-        {aba === 'entrar' ? (
-          <div id="painel-entrar" role="tabpanel" aria-labelledby="aba-entrar">
-            <FormularioEntrada
-              aviso={erro ? AVISOS[erro] : undefined}
-              rotulo="E-mail institucional"
-              proxima={proxima}
-            />
-          </div>
-        ) : (
-          <div id="painel-criar" role="tabpanel" aria-labelledby="aba-criar">
-            <FormularioCriarEntidade />
-          </div>
-        )}
-
-        <div className="my-4 flex items-center gap-3">
-          <span className="h-px flex-1 bg-line" />
-          <span className="t-rotulo text-ink-3">ou</span>
-          <span className="h-px flex-1 bg-line" />
-        </div>
-
-        <BotaoGoogle proxima={proxima} />
-
-        <Link
-          to="/"
-          className="mt-4 flex min-h-[36px] items-center justify-center gap-1 text-[13px] font-semibold text-ink-2"
-        >
-          <ChevronLeft size={15} strokeWidth={2} aria-hidden />
-          Voltar
-        </Link>
-      </section>
-
       {/*
-        Texto, não link: as duas páginas ainda não existem, e link que leva a
-        lugar nenhum é pior que a frase sozinha — a pessoa toca, nada acontece,
-        e passa a desconfiar do resto da tela.
+        `alt` vazio e o mesmo conteúdo em texto logo abaixo, invisível à vista.
+        Leitor de tela não lê pixel: sem isto, o nome do produto e a promessa
+        não existiriam para quem usa.
       */}
-      <p className="t-meta text-center text-pretty text-ink-3">
-        Ao entrar você aceita os Termos e a Política de Privacidade.
-      </p>
+      <img
+        src={entrando ? entrarTopo : criarTopo}
+        alt=""
+        width={780}
+        height={entrando ? 642 : 478}
+        className="block w-full select-none"
+        draggable={false}
+      />
+
+      <div className="sr-only">
+        <h1>Quórum — tesouraria estudantil</h1>
+        <p>Mais transparência para uma atlética mais forte.</p>
+      </div>
+
+      <div className={`flex flex-1 flex-col ${LATERAL} pb-5`}>
+        <section className="rounded-[20px] border border-white/10 bg-[#0C1B33]/85 p-4 backdrop-blur-md">
+          <div
+            role="tablist"
+            aria-label="Entrar ou criar entidade"
+            className="mb-4 grid grid-cols-2 gap-2"
+          >
+            <BotaoAba atual={aba} valor="entrar" ao={setAba}>
+              Entrar
+            </BotaoAba>
+            <BotaoAba atual={aba} valor="criar" ao={setAba}>
+              Criar entidade
+            </BotaoAba>
+          </div>
+
+          {entrando ? (
+            <div id="painel-entrar" role="tabpanel" aria-labelledby="aba-entrar">
+              <FormularioEntrada
+                aviso={erro ? AVISOS[erro] : undefined}
+                rotulo="E-mail institucional"
+                proxima={proxima}
+              />
+            </div>
+          ) : (
+            <div id="painel-criar" role="tabpanel" aria-labelledby="aba-criar">
+              <FormularioCriarEntidade />
+            </div>
+          )}
+
+          <div className="my-4 flex items-center gap-3">
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="t-rotulo text-ink-3">ou</span>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+
+          <BotaoGoogle proxima={proxima} />
+
+          <Link
+            to="/"
+            className="mt-4 flex min-h-[38px] items-center justify-center gap-1 text-[13.5px] font-semibold text-ink-2"
+          >
+            <ChevronLeft size={15} strokeWidth={2} aria-hidden />
+            Voltar
+          </Link>
+        </section>
+
+        {/*
+          Texto, não link: as duas páginas ainda não existem, e link que leva a
+          lugar nenhum é pior que a frase sozinha — a pessoa toca, nada
+          acontece, e passa a desconfiar do resto da tela.
+        */}
+        <p className="t-meta mt-auto pt-5 text-center text-pretty text-ink-3">
+          Ao entrar você aceita os Termos e a Política de Privacidade.
+        </p>
+      </div>
+
+      <img
+        src={entrarRodape}
+        alt=""
+        width={780}
+        height={130}
+        className="block w-full select-none"
+        draggable={false}
+      />
     </main>
   );
 }
@@ -134,9 +179,9 @@ function BotaoAba({
       aria-selected={ativo}
       aria-controls={`painel-${valor}`}
       onClick={() => ao(valor)}
-      className={`min-h-[46px] rounded-btn border px-3 py-3 text-[13.5px] font-bold whitespace-nowrap ${
+      className={`min-h-[48px] rounded-[14px] border px-3 py-3 text-[14px] font-bold whitespace-nowrap ${
         ativo
-          ? 'border-blue bg-blue-tint text-ink'
+          ? 'border-blue bg-[#0E2A48] text-ink'
           : 'border-transparent bg-transparent text-ink-2'
       }`}
     >
@@ -144,4 +189,3 @@ function BotaoAba({
     </button>
   );
 }
-

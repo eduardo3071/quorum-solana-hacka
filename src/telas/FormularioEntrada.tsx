@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Mail } from 'lucide-react';
 
-import { Botao } from '@/componentes/Botao';
+import { CampoEmail } from '@/componentes/CampoEmail';
+
 import { TileIcone } from '@/componentes/TileIcone';
 import { supabase } from '@/lib/supabase';
 
@@ -83,39 +84,26 @@ export function FormularioEntrada({
   }
 
   return (
-    <form onSubmit={enviar} className="flex flex-col gap-3">
-      <div>
-        <label
-          htmlFor="email"
-          className={rotuloOculto ? 'sr-only' : 't-item-sm mb-2 block text-ink'}
-        >
-          {rotulo}
-        </label>
-        {/*
-          Sem `outline-none`: a borda azul sozinha é 1px de diferença, e quem
-          navega por teclado precisa enxergar onde está. O anel de foco global
-          fica.
-        */}
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="voce@grad.ufsc.br"
-          className="w-full rounded-btn border border-line bg-surface px-3.5 py-[13px] text-[13px] font-medium text-ink placeholder:text-ink-3 focus:border-blue"
-        />
-      </div>
+    <form onSubmit={enviar} className="flex flex-col gap-3.5">
+      <CampoEmail
+        id="email"
+        rotulo={rotulo}
+        rotuloOculto={rotuloOculto}
+        valor={email}
+        aoMudar={setEmail}
+      />
 
       {(erro || aviso) && <p className="t-desc text-red">{erro ?? aviso}</p>}
 
-      <Botao type="submit" variante={pendente ? 'desabilitado' : 'primario'}>
+      <button
+        type="submit"
+        disabled={pendente}
+        className="min-h-[54px] rounded-[14px] bg-blue px-4 text-[14.5px] font-bold text-ground disabled:bg-line disabled:text-ink-3"
+      >
         {pendente ? 'Enviando…' : 'Receber link de acesso →'}
-      </Botao>
+      </button>
 
-      <p className="t-meta text-pretty text-ink-3">
+      <p className="t-meta text-center text-pretty text-ink-3">
         Sem senha. Você recebe um link no e-mail e entra com um toque.
       </p>
     </form>
