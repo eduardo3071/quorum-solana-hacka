@@ -22,15 +22,17 @@ const chave =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
   import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!url || !chave) {
-  // Falha no boot com o nome da variável, em vez de virar um 401 obscuro três
-  // telas adiante.
-  throw new Error(
-    'Faltam VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY no ambiente.',
-  );
-}
+/**
+ * Falta configurar?
+ *
+ * Não estoura aqui. Um `throw` no escopo do módulo derruba a avaliação antes
+ * de o React montar, e o resultado é uma tela vazia sem explicação nenhuma —
+ * o pior sintoma possível, porque não diz o que fazer. Quem trata é o
+ * `main.tsx`, com uma tela que nomeia as variáveis que faltam.
+ */
+export const faltaConfigurar = !url || !chave;
 
-export const supabase = createClient(url, chave, {
+export const supabase = createClient(url ?? 'https://configuracao.invalida', chave ?? 'sem-chave', {
   auth: {
     persistSession: true,
     autoRefreshToken: true,

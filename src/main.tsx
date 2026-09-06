@@ -2,7 +2,9 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
+import { faltaConfigurar } from '@/lib/supabase';
 import { ProvedorDeSessao } from '@/lib/sessao';
+import { FaltaConfigurar } from '@/telas/FaltaConfigurar';
 import { Privada } from '@/telas/Privada';
 import { Aprovacoes } from '@/telas/Aprovacoes';
 import { Capa } from '@/telas/Capa';
@@ -24,7 +26,25 @@ import './globals.css';
  * O livro-caixa e a página da festa ficam FORA de `Privada`: são a tese do
  * produto e abrem sem conta nenhuma. Trocar isso quebra o que o Quórum promete.
  */
-createRoot(document.getElementById('raiz')!).render(
+const raiz = createRoot(document.getElementById('raiz')!);
+
+// Sem credenciais, nenhuma tela tem o que mostrar — e uma página vazia não
+// diz o que fazer. Esta diz.
+if (faltaConfigurar) {
+  raiz.render(
+    <StrictMode>
+      <FaltaConfigurar
+        faltando={[
+          import.meta.env.VITE_SUPABASE_URL ? '' : 'VITE_SUPABASE_URL',
+          import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+            ? ''
+            : 'VITE_SUPABASE_PUBLISHABLE_KEY',
+        ].filter(Boolean)}
+      />
+    </StrictMode>,
+  );
+} else {
+  raiz.render(
   <StrictMode>
     <BrowserRouter>
       <ProvedorDeSessao>
@@ -53,4 +73,5 @@ createRoot(document.getElementById('raiz')!).render(
       </ProvedorDeSessao>
     </BrowserRouter>
   </StrictMode>,
-);
+  );
+}
