@@ -1,0 +1,257 @@
+# Plano para terminar o Quórum
+
+Sem mock no frontend, com o backend no centro.
+
+Escrito a partir de uma auditoria do código em `2e8985a`, não de suposição.
+Cada fase diz o que muda, por que, e como se confere que ficou pronto.
+
+---
+
+## O estado hoje, medido
+
+O que funciona de verdade:
+
+| parte | situação |
+| --- | --- |
+| Leitura das telas | real, do Supabase, com RLS ligada |
+| Livro-caixa e página da festa | públicos, sem login, com dado real |
+| Compra de ingresso | ponta a ponta: reserva → pagamento devnet → conciliação → lançamento |
+| Criar entidade | real, via `POST /api/entidade` |
+| Magic link | real |
+| Bloqueio por falta de quórum | real, on-chain, código 6008 |
+
+**E aqui está o buraco.** Três achados da auditoria, em ordem de gravidade:
+
+**1. Assinar e executar não tocam o banco.**
+`/api/assinar` e `/api/executar` agem só na rede. Nenhuma linha entra em
+`assinaturas`, `propostas.status` nunca vira `executada`, e **nenhum lançamento
+é criado quando uma saída executa**. Ou seja: a saída acontece na devnet e o
+livro-caixa não fica sabendo. A tabela `assinaturas` só tem o que a semente
+plantou.
+
+**2. O cofre não é da entidade — é de um arquivo.**
+`entidades.multisig_pda` é lida em cinco lugares e **nunca escrita**. O
+multisig real vive em `backend/.cofre-devnet.json`, um por servidor. Os
+endpoints `/api/estado`, `/api/assinar`, `/api/executar` e `/api/proposta` não
+recebem identificador nenhum: operam sempre sobre esse cofre único. Com duas
+entidades no banco, as duas apontam para o mesmo dinheiro.
+
+**3. A API é aberta.**
+Nenhum endpoint verifica quem está chamando. O CORS limita a origem do
+**navegador**, e está escrito no próprio `lib/cors.ts` que um `curl` ignora
+tudo. Hoje qualquer pessoa com a URL executa uma saída.
+
+Mais dois, menores:
+
+**4. `Propor.tsx` escreve direto no banco** pelo navegador — a única escrita do
+front. A proposta nasce sem `tx_index`, ou seja, sem existir na rede.
+
+**5. Festas e Sócios são listas sem ação.** Não há criar festa, criar lote,
+convidar signatário nem trocar diretoria.
+
+---
+
+## A conta do tempo
+
+A entrega é **7 set 2026, 23h59**. As fases 1 a 3 são a espinha e não cabem
+todas até lá com folga. Então o plano é lido em duas alturas:
+
+- **Faixa A — até a entrega.** Fases 0, 1 e 2. É o mínimo para a demonstração
+  ser verdadeira do começo ao fim e o app não ser derrubado por um `curl`.
+- **Faixa B — depois.** Fases 3 a 7. É o que transforma a demonstração em
+  produto.
+
+Se o tempo apertar, corte da Faixa B, nunca da Faixa A. E dentro da Faixa A,
+a ordem importa: a Fase 1 destrava a 2.
+
+---
+
+# Faixa A — até a entrega
+
+## Fase 0 · Configuração de ambiente
+
+**Bloqueia todas as outras.** É só painel, não tem código.
+
+1. **Vercel → `ORIGENS_PERMITIDAS`** = `https://solana-hacka-university.lovable.app`
+   (Production e Preview). Sem ela a lista de origens fica vazia em produção e
+   o navegador recusa toda chamada do Lovable para a API. Redeploy depois — a
+   variável só entra num build novo.
+2. **Vercel → renomear `SITE_URL` para `NEXT_PUBLIC_SITE_URL`**, ou apagar.
+   Do jeito que está, nenhum código a lê.
+3. **Supabase → Redirect URLs** com `https://solana-hacka-university.lovable.app/auth/confirmar`.
+4. **Supabase → resetar a `service_role`**, e atualizar na Vercel. Nessa ordem,
+   ou a API cai entre uma coisa e outra. A chave atual foi colada em chat e foi
+   num zip.
+5. **Google**: ligar o provedor em Authentication → Providers, **ou** remover o
+   botão. Hoje ele faz chamada real e responde uma mensagem honesta de que o
+   provedor está desligado — o que é aceitável, mas não é bonito na
+   apresentação.
+
+**Como conferir:** abrir o Lovable, F12 → Console, entrar na tela de
+aprovações. Nenhum erro com as palavras *CORS policy*.
+
+---
+
+## Fase 1 · O backend vira dono do cofre
+
+O coração do plano. Resolve os achados 1, 2 e 3 juntos, porque eles são o mesmo
+problema visto de três ângulos.
+
+### 1.1 · Autenticação na API
+
+O SPA já tem o `access_token` da sessão. Passa a mandá-lo.
+
+- `src/lib/api.ts`: incluir `Authorization: Bearer <access_token>` em toda
+  chamada, lido de `supabase.auth.getSession()`.
+- `backend/lib/autorizacao.ts` (novo): `exigirMembro(request, entidadeId, papeis?)`
+  — valida o token com `supabase.auth.getUser(token)`, acha a linha de `membros`
+  daquele usuário naquela entidade, e recusa com **401** (sem sessão) ou **403**
+  (sem papel) usando o vocabulário do produto, nunca a mensagem crua.
+- Aplicar em `/api/proposta`, `/api/assinar`, `/api/executar`, `/api/cofre`.
+- **Não** aplicar em `/api/entidade` (quem cria ainda não é membro de nada) nem
+  nos endpoints de ingresso (a compra é pública, é a tese do produto).
+
+> O CORS continua, mas deixa de ser a única defesa. Ele protege o navegador de
+> terceiros; a autorização protege o endpoint.
+
+### 1.2 · Um cofre por entidade
+
+- Migração `0009`: `propostas.tx_index` já existe; adicionar
+  `entidades.vault_pda text unique` para não recalcular a derivação a cada
+  chamada.
+- `POST /api/cofre` passa a receber `{ entidadeSlug }`, cria o multisig 2-de-3
+  com os três signatários daquela entidade e **grava `multisig_pda` e
+  `vault_pda` na linha da entidade**.
+- A `createKey` é usada uma vez e **descartada**: ela não é signatária, não
+  move dinheiro, e guardá-la só cria mais um segredo para vazar. (Já vazou uma
+  vez, no commit `ba90b8b`.)
+- `backend/.cofre-devnet.json` deixa de ser fonte de verdade. Vira só a saída
+  dos scripts de linha de comando.
+
+### 1.3 · A proposta existe na rede e no banco
+
+Os quatro endpoints passam a receber `propostaId` e a derivar a entidade dele.
+
+| endpoint | o que passa a fazer, além do que já faz |
+| --- | --- |
+| `POST /api/proposta` | cria a `vault_transaction` + `proposal` na rede e grava `tx_index` na linha |
+| `POST /api/assinar` | grava linha em `assinaturas` (`proposta_id`, `membro_id`, `tx_signature`) |
+| `POST /api/executar` | grava o **lançamento de saída** e vira `propostas.status` para `executada` |
+| `GET /api/estado` | conta assinaturas do banco e confere com a rede; divergência é log, não erro de tela |
+
+**A ordem de escrita importa**, e é a mesma lição da conciliação de ingresso
+(`lib/ingresso.ts`): primeiro vira o status condicionado ao valor anterior,
+depois grava o lançamento. Quem perder a corrida não duplica o lançamento.
+
+**Falta de quórum continua 200 com `bloqueado: true`.** Não é erro, é a regra
+funcionando, e é a coisa que o produto inteiro existe para mostrar. Um `catch`
+genérico ali destrói a demonstração.
+
+**Como conferir:**
+- `curl` sem token em `/api/executar` → **401**, não 200.
+- Executar uma saída pela tela e o valor aparecer no **livro-caixa público**
+  em segundos, sem recarregar nada à mão.
+- `select count(*) from assinaturas` cresce a cada assinatura na tela.
+
+---
+
+## Fase 2 · A última escrita sai do navegador
+
+Resolve o achado 4.
+
+- `src/telas/Propor.tsx` deixa de fazer `supabase.from('propostas').insert(...)`
+  e passa a chamar `POST /api/proposta`.
+- RLS: revogar `insert` em `propostas` para `authenticated`. Enquanto o
+  navegador puder inserir, o caminho do servidor é opcional — e caminho
+  opcional é caminho que alguém pula.
+- Conferir que o valor continua em **centavos inteiros** na conversão. O
+  `paraCentavos` do backend é baseado em string de propósito: `19.99 * 100` dá
+  `1998.9999999999998`.
+
+**Como conferir:** `scripts/nada-mockado.mjs` continua passando, e uma proposta
+criada pela tela nasce **com `tx_index` preenchido** — hoje nasce sem.
+
+---
+
+# Faixa B — depois da entrega
+
+## Fase 3 · Gestão da entidade
+
+O que hoje é lista sem ação.
+
+- **Convidar signatário e sócio**: `POST /api/membro`, com papel. Um signatário
+  novo muda o multisig na rede; um sócio, não. São dois caminhos diferentes e o
+  segundo é o fácil — comece por ele.
+- **Criar festa e lote**: `POST /api/evento`, `POST /api/lote`. A página pública
+  da festa já sabe ler; falta quem escreva.
+- **Trocar diretoria** (prancha `6f`): a operação mais delicada do produto,
+  porque mexe nos signatários do cofre com dinheiro dentro. Exige as duas
+  assinaturas antigas para valer.
+
+## Fase 4 · Os estados desenhados que faltam
+
+As pranchas `6a`–`6f` são estados, não rotas. Conferir uma a uma contra dado
+real: cofre vazio, proposta recusada, saída executada, executando, erro de
+rede, troca de diretoria. Cada uma precisa de um caminho que a produza de
+verdade — estado que só aparece com `?estado=` é estado que ninguém vê.
+
+## Fase 5 · Endurecimento
+
+- **Limite de chamadas** em `/api/entidade` e nos endpoints de ingresso. Hoje o
+  `/api/entidade` tem só uma espera de cinco minutos por e-mail, o suficiente
+  para o toque duplo e nada além disso.
+- **Confirmação de e-mail antes de criar a entidade.** Hoje ela nasce na hora,
+  e está comentado no código que isso é escolha da demonstração.
+- **Advisors do Supabase** no verde (hoje só sobra o aviso de senha vazada, que
+  não se aplica — o produto não tem senha).
+- **Revisão de RLS tabela por tabela**, agora que a API é a dona das escritas.
+
+## Fase 6 · Testes que não dependem de mim rodando à mão
+
+- `conferir.mjs` e `nada-mockado.mjs` já existem e reprovam com código 1.
+  Falta rodá-los no CI, em cada push.
+- Um teste de ponta a ponta do caminho do dinheiro: propor → assinar → assinar
+  → executar → conferir o lançamento no livro público.
+
+## Fase 7 · Fora do código, mas parte de terminar
+
+- Páginas de **Termos** e **Política de Privacidade**. Hoje a frase na tela de
+  entrada é texto e não link, de propósito, porque link para o vazio é pior que
+  frase solta. Com as páginas, viram links.
+- **Um repositório, um deploy.** A Vercel já aponta para o monorepo com
+  *Root Directory* = `backend`. O repositório antigo
+  (`Solana-Hacka-University`) pode ser arquivado.
+
+---
+
+## O que fica de fora, e por quê
+
+**Mainnet.** `conexao()` recusa qualquer `SOLANA_RPC_URL` com "mainnet" no
+nome, e isso não é para ser afrouxado. Dinheiro real exige custódia, contrato
+auditado e responsabilidade jurídica que um hackathon não tem.
+
+**Pix de verdade.** Em produção a compra do ingresso seria Pix por parceiro
+autorizado. Está escrito em caixa alta no cabeçalho de `lib/pagamento.ts`, e a
+interface nunca diz "Pix" nos componentes de execução — dizer que já é seria
+mentir para quem avalia.
+
+**A capa deixar de ser imagem.** O `2 de 3` e o `R$ 8.400,00` da capa vêm da
+arte, não do banco. É custo aceito e documentado: se o quórum mudar, a capa
+mente até alguém reexportar. Só vale desfazer se o quórum virar configurável.
+
+---
+
+## Regras que nenhuma fase quebra
+
+Estão em [`CLAUDE.md`](../CLAUDE.md). As que mais custam quando se esquece:
+
+- Dinheiro é **integer em centavos**. Nunca float, nem em variável intermediária.
+- **Falta de quórum não é erro.** 200 com `bloqueado: true`.
+- Bibliotecas de Solana e chaves privadas **só no servidor**, com
+  `export const runtime = 'nodejs'`.
+- **Nada sensível em `NEXT_PUBLIC_*` nem em `VITE_*`.** A `service_role` nunca
+  sai do ambiente da API.
+- **RLS ligada em toda tabela**, sem exceção.
+- Nenhuma palavra de blockchain na interface. O vocabulário é: cofre,
+  assinatura, saída, entrada, livro-caixa, rubrica, proposta, quórum,
+  comprovante, retido.
