@@ -1,4 +1,10 @@
-# Quórum
+# Quórum · API
+
+**Esta é a subpasta da API.** A interface está na raiz do repositório; leia o
+[README de lá](../README.md) primeiro.
+
+Na Vercel, este projeto precisa de **Root Directory = `backend`**. Sem isso o
+build tenta construir o SPA da raiz e não acha o Next.
 
 Tesouraria com quórum para entidades estudantis brasileiras.
 
@@ -6,9 +12,9 @@ O dinheiro da atlética fica num cofre que exige **duas assinaturas de três**
 para qualquer saída, e o livro-caixa é **aberto aos associados, sem login**.
 Cofre 2-de-3 na Solana devnet (Squads v4) e livro-caixa público.
 
-As regras que o código não quebra estão em [`CLAUDE.md`](CLAUDE.md). O design
-está fechado: as pranchas em `design/` são a especificação, e `design/TOKENS.md`
-traz os tokens aplicados em `app/globals.css`.
+As regras que o código não quebra estão em [`CLAUDE.md`](../CLAUDE.md). O design
+está fechado: as pranchas em `../design/` são a especificação, e
+`../design/TOKENS.md` traz os tokens aplicados em `app/globals.css`.
 
 ---
 
@@ -126,8 +132,8 @@ As telas deste repositório são completas e funcionam sozinhas. Se a interface
 for construída fora — no Lovable, por exemplo —, este app vira a **API** e o
 outro domínio vira a **interface**:
 
-- `docs/API.md` — o contrato dos endpoints e o que o RLS deixa cada um ler.
-- `docs/BRIEF-lovable.md` — briefing pronto para colar, com tokens, regras e
+- `../docs/API.md` — o contrato dos endpoints e o que o RLS deixa cada um ler.
+- `../docs/BRIEF-lovable.md` — briefing pronto para colar, com tokens, regras e
   vocabulário.
 
 Cadastre a origem em `ORIGENS_PERMITIDAS` e o domínio nos *Redirect URLs* do

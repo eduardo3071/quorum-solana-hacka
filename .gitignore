@@ -4,3 +4,9 @@ dist
 .env.local
 *.local
 .DS_Store
+
+# O app Next tem o próprio ciclo de build, em backend/.
+backend/node_modules
+backend/.next
+backend/.env.local
+backend/.cofre-devnet.json

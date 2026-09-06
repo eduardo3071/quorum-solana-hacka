@@ -3,9 +3,17 @@
 Tesouraria com quórum para entidades estudantis brasileiras.
 Cofre 2-de-3 na Solana (Squads v4) + livro-caixa público.
 
+## Onde fica o quê
+
+    /            interface · React + Vite · roda no navegador
+    /backend     API · Next · assina no cofre, guarda as chaves
+
+A separação não é organização, é segurança: bibliotecas da rede e chaves
+privadas só no servidor. Estas regras valem para as duas partes.
+
 ## Stack
 
-Next.js App Router · TypeScript · Tailwind · shadcn/ui
+Vite + React na raiz · Next App Router em `backend/` · TypeScript · Tailwind
 Supabase (Postgres, Auth, RLS) · Solana devnet · deploy na Vercel
 
 > Estado: shadcn/ui ainda **não** foi instalado — é tarefa do B1.

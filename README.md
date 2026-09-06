@@ -1,66 +1,87 @@
-# Quórum · interface
+# Quórum
 
-Tesouraria com quórum para entidades estudantis brasileiras.
+Tesouraria com quórum para entidades estudantis brasileiras — atléticas,
+comissões de formatura, empresas juniores.
 
 O dinheiro da entidade fica num cofre que exige **duas assinaturas de três**
 para qualquer saída, e o **livro-caixa é aberto aos associados, sem login**.
 
-Este repositório é a **interface**: React + Vite, sem servidor. Ele roda inteiro
-no navegador e fala com dois lugares.
+O problema que resolve: hoje o dinheiro da atlética passa pela conta pessoal do
+tesoureiro, e ninguém consegue conferir nada.
 
-## A arquitetura, em três linhas
+## Duas partes, um repositório
 
-| onde | o quê |
-| --- | --- |
-| **este repositório** | as telas |
-| **Supabase** | leitura do banco, direto do navegador, sob RLS |
-| **a API** | assinar no cofre, executar saída, vender ingresso |
+```
+/            interface · React + Vite · roda no navegador
+/backend     API · Next · assina no cofre, guarda as chaves
+```
 
-A API é o repositório
-[`Solana-Hacka-University`](https://github.com/eduardo3071/Solana-Hacka-University),
-publicado na Vercel. Ela existe porque as bibliotecas da rede e as três chaves
-privadas dos signatários **não podem ir para o navegador** — chave privada no
+Estavam em repositórios separados porque cada ferramenta quer a raiz para si.
+Agora é um `main` só, com as duas histórias preservadas.
+
+| parte | quem constrói | onde publica |
+| --- | --- | --- |
+| raiz | Lovable | `*.lovable.app` |
+| `backend/` | Vercel, com **Root Directory = `backend`** | `*.vercel.app` |
+
+A separação **não é organização, é segurança**: as bibliotecas da rede e as três
+chaves privadas dos signatários não podem ir para o navegador. Chave privada no
 pacote do front é chave publicada. O front pede, o servidor assina.
 
-Contrato dos endpoints: `docs/API.md` naquele repositório.
+O contrato entre os dois está em [`docs/API.md`](docs/API.md).
 
 ## Rodar
 
 ```bash
+# interface
 npm install
-cp .env.example .env      # preencha
-npm run dev               # http://localhost:8080
+cp .env.example .env
+npm run dev                 # http://localhost:8080
+
+# API, noutro terminal
+cd backend
+npm install
+cp .env.example .env.local
+npm run chaves              # gera os três signatários da devnet
+npm run seed                # popula o banco com o cenário do vídeo
+npm run dev                 # http://localhost:3000
 ```
+
+Com os dois de pé, ponha `VITE_API_URL=http://localhost:3000` no `.env` da raiz.
+
+### Variáveis
+
+Na raiz, tudo público — protegido pela política de acesso do banco, não pelo
+segredo da chave:
 
 | variável | o que é |
 | --- | --- |
 | `VITE_SUPABASE_URL` | URL do projeto Supabase |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | chave anônima — pública por natureza, protegida por RLS |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | chave anônima |
 | `VITE_API_URL` | **deixe em branco** — o padrão já é o endereço da API |
 
-**A chave `service_role` nunca entra aqui.** Ela ignora toda política de acesso;
-no navegador seria o banco inteiro aberto.
+Em `backend/`, o que não pode sair do servidor: `SUPABASE_SERVICE_ROLE_KEY`,
+`SOLANA_RPC_URL` e as três `SIGNER_*`. Detalhes em
+[`backend/README.md`](backend/README.md).
+
+**A `service_role` nunca entra na raiz.** Ela ignora toda política de acesso; no
+navegador seria o banco inteiro aberto.
 
 ### Os dois endereços não são o mesmo
 
 ```
-https://solana-hacka-university.lovable.app   ← a interface (este projeto)
-https://solana-hacka-university.vercel.app    ← a API (o app Next)
+https://…lovable.app    ← a interface
+https://…vercel.app     ← a API
 ```
 
-O nome é parecido e a confusão é fácil. O domínio da interface **não tem**
+O nome é parecido e a confusão é fácil. O domínio da interface não tem
 `/api/estado` nem `/api/executar`: apontar `VITE_API_URL` para ele faz toda
-chamada do cofre receber o `index.html` de volta. Por isso o código avisa no
-console quando as duas coincidem, e a resposta sem JSON vira uma mensagem que
-diz exatamente qual variável está errada.
+chamada do cofre receber o `index.html` de volta. O código avisa no console
+quando os dois coincidem, e resposta sem JSON vira uma mensagem que nomeia a
+variável errada.
 
-O endereço da interface vai em dois outros lugares, esses sim obrigatórios:
+O endereço da interface vai em dois lugares, esses sim obrigatórios:
 `ORIGENS_PERMITIDAS` no ambiente da API, e os *Redirect URLs* do Supabase.
-
-Para o link do e-mail voltar certo, o domínio precisa estar em **Authentication
-→ URL Configuration → Redirect URLs** no painel do Supabase. E para o front
-poder chamar a API de outro domínio, a origem precisa estar em
-`ORIGENS_PERMITIDAS` no ambiente da API.
 
 ## Telas
 
@@ -72,8 +93,7 @@ poder chamar a API de outro domínio, a origem precisa estar em
 | `/e/:slug/aprovacoes` | privada · a tela do vídeo |
 | `/e/:slug/aprovacoes?estado=vivo` | privada · o cofre na rede, de verdade |
 | `/e/:slug/propor` | privada · só diretoria |
-| `/e/:slug/festas` | privada |
-| `/e/:slug/socios` | privada |
+| `/e/:slug/festas` · `/socios` | privada |
 | `/e/:slug/livro` | **pública, sem login** |
 | `/f/:slug` | **pública, sem login** |
 | `/perfil` | privada |
@@ -83,30 +103,33 @@ não coloque login na frente delas.
 
 ## As regras que o código não quebra
 
+Estão em [`CLAUDE.md`](CLAUDE.md), e valem para as duas partes. As que mais
+custam quando se esquece:
+
 - **Dinheiro é integer em centavos.** Nunca float, nem em variável
   intermediária: `19.99 * 100` dá `1998.9999999999998`.
-- **Saída usa `−` (U+2212)**, o menos matemático. Entrada usa `+`.
-- **Nenhuma palavra de blockchain na interface.** O vocabulário é: cofre,
-  assinatura, saída, entrada, livro-caixa, rubrica, proposta, quórum,
-  comprovante, retido.
-- **Nenhuma menção a "Pix" nos componentes de execução.** O pagamento da
-  demonstração roda em devnet; em produção seria Pix por parceiro autorizado.
-  Diga "a saída é executada", nunca "o Pix é executado".
 - **Falta de quórum não é erro.** `/api/executar` responde 200 com
   `bloqueado: true`, e a tela mostra o bloco vermelho desenhado. Um `catch`
   genérico ali destrói a demonstração.
-- **DARK-ONLY.** Não existe tema claro, não existe alternador.
-- `red` só em bloqueio, recusa e erro — nunca em avatar de pessoa. `green` só em
-  entrada e confirmação. `amber` só em espera. `blue` só em ação e link.
+- **Nenhuma palavra de blockchain na interface**, e **nenhum "Pix" nos
+  componentes de execução**. O pagamento roda em devnet; em produção seria Pix
+  por parceiro autorizado, e dizer que já é seria mentir para quem avalia.
+- **DARK-ONLY.** O design está fechado: as pranchas em `design/` são a
+  especificação.
 
 ## Conferir
 
-Os dois verificadores rodam com o app de pé e saem com código 1 se algo falhar:
+Cada parte tem os seus, e os dois saem com código 1 se algo falhar:
 
 ```bash
+# interface
 npm run build && npx vite preview --port 8080 &
-npm run conferir /e/aaaeng/livro   # layout e acessibilidade
-npm run nada-mockado               # link morto, controle decorativo, dado falso
+npm run conferir /e/aaaeng/livro    # layout e acessibilidade
+npm run nada-mockado                # link morto, controle decorativo, dado falso
+
+# API
+cd backend && npm run dev &
+npm run conferir /estilo
 ```
 
 `conferir` mede sobreposição de texto, chip quebrado em duas linhas, valor
