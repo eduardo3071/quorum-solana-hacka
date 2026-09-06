@@ -1,0 +1,197 @@
+@import 'tailwindcss';
+
+/*
+ * Quórum — tokens do sistema.
+ *
+ * Amostrados das pranchas finais; são os valores reais do desenho, não
+ * aproximações. O fundo é azul-marinho, nunca preto.
+ *
+ * O produto é DARK-ONLY. Não existe tema claro, não existe alternador.
+ */
+
+@theme {
+  /* ── Superfícies ─────────────────────────────────────────────────── */
+  --color-ground: #101823; /* fundo da tela */
+  --color-surface: #192434; /* cartões */
+  --color-surface-2: #1f2d41; /* elevação, botão desabilitado */
+  --color-line: #243448; /* bordas */
+  --color-tabbar: #141e2c; /* barra de abas */
+
+  /* ── Texto ───────────────────────────────────────────────────────── */
+  --color-ink: #ffffff; /* títulos, valores */
+  --color-ink-2: #9aa9bd; /* apoio */
+  --color-ink-3: #6b7c93; /* rótulos, datas */
+
+  /* ── Acentos, cada um com seu fundo tingido ──────────────────────── */
+  /* blue — ação, navegação, links. Nunca em saldo. */
+  --color-blue: #1fa5ff;
+  --color-blue-tint: #1a3852;
+  /* green — entrada de dinheiro, confirmado. */
+  --color-green: #32c869;
+  --color-green-tint: #173b2e;
+  /* amber — espera, progresso. */
+  --color-amber: #f5c73d;
+  --color-amber-tint: #3a3018;
+  /* purple — pessoas, associados. */
+  --color-purple: #af57db;
+  --color-purple-tint: #2f2c4d;
+  /* red — retido, recusado, erro. NUNCA em avatar de pessoa. */
+  --color-red: #ff5f6d;
+  --color-red-tint: #3a1c24;
+
+  /* Texto sobre fundo tingido, quando o acento puro fica agressivo. */
+  --color-green-ink: #a9dec0;
+  --color-red-ink: #e8a7ae;
+  --color-blue-ink: #bfddfa;
+
+  /* Contorno tracejado do avatar que falta assinar. */
+  --color-dash: #3a4a60;
+
+  /* ── Forma ───────────────────────────────────────────────────────── */
+  --radius-card: 16px;
+  --radius-btn: 13px;
+  --radius-tile: 12px;
+  --radius-tile-sm: 10px;
+  --radius-avatar: 11px;
+  --radius-chip: 7px;
+
+  /* ── Tipografia ──────────────────────────────────────────────────── */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/*
+ * Escala tipográfica da folha de estilo (prancha 4a).
+ *
+ * Utilitários nomeados em vez de valores arbitrários espalhados: a escala é
+ * fechada, e é ela que mantém as listas alinhadas entre telas.
+ */
+@utility t-ancora {
+  /* 800 · 25–28 · valor-âncora */
+  font-weight: 800;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility t-ancora-sm {
+  /* 800 · 25 · valor-âncora em cartão de estatística */
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility t-hero {
+  /* 800 · 23 · título no hero */
+  font-weight: 800;
+  font-size: 23px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+@utility t-valor {
+  /* 800 · 16.5 · valor em lista */
+  font-weight: 800;
+  font-size: 16.5px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; /* valor monetário nunca quebra */
+}
+
+@utility t-secao {
+  /* 700 · 16.5 · título de seção */
+  font-weight: 700;
+  font-size: 16.5px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+@utility t-item {
+  /* 700 · 15.5 · nome de item */
+  font-weight: 700;
+  font-size: 15.5px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+@utility t-item-sm {
+  /* 700 · 13.5 · nome de item em linha compacta */
+  font-weight: 700;
+  font-size: 13.5px;
+  line-height: 1.2;
+}
+
+@utility t-rotulo {
+  /* 600 · 10.5 · rótulo caixa alta */
+  font-weight: 600;
+  font-size: 10.5px;
+  line-height: 1;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+@utility t-chip {
+  /* 600 · 10.5 · chip e pílula — nunca quebram em duas linhas */
+  font-weight: 600;
+  font-size: 10.5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@utility t-corpo {
+  /* 500 · 13 · corpo e apoio */
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@utility t-desc {
+  /* 400 · 12.5 · descrição */
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+@utility t-meta {
+  /* 400 · 11 · data, metadado */
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* Números longos — CNPJ, chave, hash — nunca quebram no meio. */
+@utility num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/*
+ * Respiro para a barra de abas. Toda tela com abas reserva 96px livres no fim
+ * da rolagem, senão a ação principal fica embaixo do botão flutuante.
+ */
+@utility respiro-abas {
+  padding-bottom: 96px;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Foco visível — critério de acessibilidade do B8. */
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+  }
+}

@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0F13;font-family:'Instrument Sans',system-ui,sans-serif}
+a{color:#86ADF2;text-decoration:none}a:hover{color:#A8C4F6}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(255,255,255,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,'IBM Plex Mono',monospace;padding:3px 7px;background:#E4E9E3;color:#0D1318;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 'Instrument Sans',system-ui,sans-serif;color:#E4E9E3}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,'IBM Plex Mono',monospace;padding:3px 7px;background:rgba(255,255,255,.1);color:#E4E9E3;border-radius:4px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'Instrument Sans',system-ui,sans-serif;color:#A3B0A9}
+.dv-card{max-width:100%;background:#0D1318;border:1px solid rgba(228,233,227,.12);border-radius:4px;overflow:hidden}
+.dv-opt:target .dv-oid{background:#86ADF2;color:#0D1318}
+.dv-next{margin:22px 0 0;font:12px/1.5 'Instrument Sans',system-ui,sans-serif;color:#A3B0A9}
+.q-btn{border:1px solid transparent;border-radius:4px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:15px;line-height:1;padding:14px 18px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .12s,border-color .12s,color .12s}
+.q-btn:focus{outline:none}
+.q-pri{background:#86ADF2;color:#0D1318}
+.q-pri:hover{background:#A8C4F6}
+.q-sec{background:transparent;color:#E4E9E3;border-color:rgba(228,233,227,.28)}
+.q-sec:hover{background:rgba(228,233,227,.07);border-color:rgba(228,233,227,.5)}
+.q-des{background:transparent;color:#E38080;border-color:rgba(227,128,128,.45)}
+.q-des:hover{background:rgba(227,128,128,.12);border-color:#E38080}
+.q-in{width:100%;box-sizing:border-box;background:#151D24;border:1px solid rgba(228,233,227,.18);border-radius:4px;color:#E4E9E3;font-family:'Instrument Sans',sans-serif;font-size:16px;font-weight:500;padding:13px 14px}
+.q-in::placeholder{color:#5F6E68}
+.q-in:focus{outline:none;border-color:#86ADF2;box-shadow:0 0 0 3px rgba(134,173,242,.22)}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t6">
+<div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">Estados de borda no sistema de <a class="dv-oid" href="#4a">4a</a></span></div>
+<div class="dv-opts">
+
+<!-- 6a · COFRE VAZIO -->
+<div class="dv-opt" id="6a">
+<div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a>Cofre vazio · o vazio ensina o próximo passo</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#1E88E5,#29A3F5 52%,#1B7FD4);padding:12px 16px 16px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 22%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>09:12</span><span>4G · 64%</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:14px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.75)">Atlética · UFSC</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:8px">A.A.A. Engenharia</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.85);margin-top:5px">Criada hoje · 1 de 3 signatários</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">Em setup</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:16px">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Saldo em cofre</div>
+<div style="font:800 27px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#6B7C93;margin-top:11px">R$ 0,00</div>
+<div style="font:400 12.5px/1.45 Inter,sans-serif;color:#9AA9BD;margin-top:9px;text-wrap:pretty">Três passos e a atlética deixa de usar o Pix pessoal do tesoureiro.</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:33%;height:100%;background:#1FA5FF"></div></div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-top:9px">1 de 3 concluído</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:12px;align-items:flex-start;background:#173B2E;border:1px solid rgba(50,200,105,.3);border-radius:16px;padding:14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#0F2A20;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Entidade criada</div><div style="font:400 12.5px/1.4 Inter,sans-serif;color:#A9DEC0;margin-top:5px">A.A.A. Engenharia · Atlética · UFSC</div></div>
+</div>
+
+<div style="background:#1A3852;border:1.5px solid #1FA5FF;border-radius:16px;padding:15px">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#0E2A42;display:flex;align-items:center;justify-content:center;font:800 14px/1 Inter,sans-serif;color:#1FA5FF">2</div>
+<div style="flex:1"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Convide os dois outros signatários</div><div style="font:400 12.5px/1.45 Inter,sans-serif;color:#BFDDFA;margin-top:6px;text-wrap:pretty">Presidente e conselho fiscal. Sem eles o cofre não consegue formar quórum e nenhuma saída pode ser executada.</div></div>
+</div>
+<div style="background:#1FA5FF;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823;margin-top:13px">Convidar diretoria</div>
+</div>
+
+<div style="display:flex;gap:12px;align-items:flex-start;background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#243448;display:flex;align-items:center;justify-content:center;font:800 14px/1 Inter,sans-serif;color:#6B7C93">3</div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#9AA9BD">Registre a chave Pix do cofre</div><div style="font:400 12.5px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:5px">O dinheiro passa a cair no cofre da entidade, não na conta de ninguém</div></div>
+</div>
+</div>
+
+<div style="display:flex;gap:11px;align-items:center;background:#192434;border:1px dashed #3A4A60;border-radius:16px;padding:14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#2F2C4D;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#9AA9BD">Livro-caixa ainda sem lançamentos</div><div style="font:400 11.5px/1.35 Inter,sans-serif;color:#6B7C93;margin-top:5px">A primeira entrada aparece aqui automaticamente</div></div>
+</div>
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- 6b · RECUSADA -->
+<div class="dv-opt" id="6b">
+<div class="dv-olabel"><a class="dv-oid" href="#6b">6b</a>Proposta recusada · com o motivo escrito</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#E03B4B,#FF5F6D 52%,#C92F42);padding:12px 16px 16px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 24%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>09:41</span><span>4G · 61%</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:14px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.78)">A.A.A. Engenharia</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:8px">Proposta recusada</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.88);margin-top:5px">Nenhum valor saiu do cofre</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">Arquivável</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+<div style="background:#1F2D41;border:1px solid #243448;border-radius:16px;padding:15px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><div style="font-family:Inter,sans-serif;font-weight:700;font-size:15.5px;line-height:20px;letter-spacing:-.015em;color:#9AA9BD">Brindes Ilha Sul</div><div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:17px;color:#6B7C93;white-space:nowrap">pix contato@ilhasul.com.br</div></div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#6B7C93;text-decoration:line-through;white-space:nowrap">R$ 2.480</div>
+</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:11px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:5px 7px;white-space:nowrap">Marketing</span>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#FF5F6D;background:#3A1C24;border-radius:7px;padding:5px 7px;white-space:nowrap">Recusada</span>
+<span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">Rafael · ontem 20:05</span>
+</div>
+
+<div style="height:1px;background:#243448;margin:14px 0"></div>
+
+<div style="display:flex;gap:12px;align-items:center">
+<div style="width:36px;height:36px;flex:none;border-radius:11px;background:#1F2D41;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#9AA9BD">LM</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px"><div style="font-family:Inter,sans-serif;font-weight:700;font-size:13.5px;line-height:18px;color:#fff">Letícia Marchetti recusou</div><div style="font-family:Inter,sans-serif;font-weight:400;font-size:12px;line-height:17px;color:#6B7C93">Presidente · hoje, 09:41</div></div>
+</div>
+
+<div style="background:#3A1C24;border-radius:12px;padding:14px;margin-top:13px">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#FF5F6D">Motivo da recusa</div>
+<div style="font:500 13px/1.5 Inter,sans-serif;color:#F6D6DA;margin-top:8px;text-wrap:pretty">O orçamento de brindes é de R$ 1.500,00 e já usamos R$ 900,00 com as canecas. Refaça com o valor certo ou traga o aditivo aprovado em assembleia.</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+<div style="background:#1FA5FF;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823">Refazer proposta</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#fff">Arquivar</div>
+</div>
+</div>
+
+<div style="display:flex;gap:11px;align-items:flex-start;background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">A recusa fica no livro-caixa</div><div style="font:400 12px/1.4 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Registrada como evento, sem valor. ref 5b90-1f47</div></div>
+</div>
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="position:relative"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">2</div></div><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- 6c · EXECUTADA -->
+<div class="dv-opt" id="6c">
+<div class="dv-olabel"><a class="dv-oid" href="#6c">6c</a>Saída executada · comprovante</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#1E9E57,#32C869 52%,#1B8C4B);padding:12px 16px 18px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 22%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>21:36</span><span>Wi-Fi · 82%</span></div>
+<div style="position:relative;z-index:1;display:flex;align-items:center;gap:11px;margin-top:16px">
+<div style="width:38px;height:38px;flex:none;border-radius:12px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+<div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff">Saída executada</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.9);margin-top:4px">Quórum de 2 de 3 cumprido</div>
+</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;overflow:hidden">
+<div style="padding:16px;border-bottom:1px solid #243448">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Comprovante de saída</div>
+<div style="font:800 27px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#fff;margin-top:11px">− R$ 8.400,00</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:11px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:5px 7px;white-space:nowrap">Eventos</span>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#32C869;background:#173B2E;border-radius:7px;padding:5px 7px;white-space:nowrap">Executada</span>
+<span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">03 set · 21:36</span>
+</div>
+</div>
+<div style="padding:14px 16px;border-bottom:1px solid #243448;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:12px;align-items:baseline">
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#9AA9BD">Destinatário</div>
+<div style="font-family:Inter,sans-serif;font-weight:600;font-size:12.5px;line-height:18px;color:#fff;text-align:right;white-space:nowrap">Som Beira-Mar ME</div>
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#9AA9BD">Chave Pix</div>
+<div style="font-family:ui-monospace,'IBM Plex Mono',monospace;font-weight:400;font-size:12px;line-height:18px;color:#fff;text-align:right;white-space:nowrap">24.881.402/0001-77</div>
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#9AA9BD;white-space:nowrap">Saldo após</div>
+<div style="font-family:Inter,sans-serif;font-weight:800;font-size:13px;line-height:18px;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;text-align:right;white-space:nowrap">R$ 34.780,25</div>
+</div>
+<div style="padding:14px 16px;border-bottom:1px solid #243448">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;margin-bottom:12px">Assinaturas</div>
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">MS</div>
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">LM</div>
+</div>
+<div style="flex:1"><div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#32C869">Quórum completo · 2 de 2</div><div style="font:400 12px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Marina 18:12 · Letícia 21:36</div></div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:100%;height:100%;background:#32C869"></div></div>
+</div>
+<div style="padding:14px 16px">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Referência da transação</div>
+<div style="font:400 12px/1.55 ui-monospace,'IBM Plex Mono',monospace;color:#fff;margin-top:8px;word-break:break-all">E60746948202609032136s8f3c2ad94471b0e6</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="background:#1FA5FF;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823">Baixar comprovante</div>
+<a href="#5c" style="background:#192434;border:1px solid #243448;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#fff;text-decoration:none">Ver no livro-caixa</a>
+</div>
+
+<div style="display:flex;gap:11px;align-items:center;background:#173B2E;border:1px solid rgba(50,200,105,.3);border-radius:16px;padding:13px 14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#0F2A20;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Publicado no livro-caixa</div><div style="font:400 12px/1.35 Inter,sans-serif;color:#A9DEC0;margin-top:5px">Visível aos 62 associados agora</div></div>
+</div>
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="position:relative"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">2</div></div><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- 6d · EXECUTANDO -->
+<div class="dv-opt" id="6d">
+<div class="dv-olabel"><a class="dv-oid" href="#6d">6d</a>Executando · linha do tempo de quatro passos</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#C99A17,#F5C73D 52%,#B98E12);padding:12px 16px 26px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 22%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(16,24,35,.72);font-variant-numeric:tabular-nums"><span>21:36</span><span>Wi-Fi · 82%</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:16px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(16,24,35,.7)">Som Beira-Mar ME · Eventos</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#101823;margin-top:8px">Executando a saída</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(16,24,35,.78);margin-top:5px">Pode fechar o app · avisamos ao terminar</div>
+</div>
+<div style="flex:none;background:rgba(16,24,35,.18);border:1px solid rgba(16,24,35,.28);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#101823;white-space:nowrap">Em curso</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:16px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Valor da saída</div>
+<div style="font:800 27px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#fff;margin-top:11px">− R$ 8.400,00</div>
+</div>
+<div style="text-align:right"><div style="font:800 20px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#F5C73D">7s</div><div style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;margin-top:6px">decorridos</div></div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:14px;overflow:hidden"><div style="width:72%;height:100%;background:#F5C73D"></div></div>
+<div style="font:400 11.5px/1 Inter,sans-serif;color:#6B7C93;margin-top:9px">Passo 3 de 4 · normalmente 3 a 12 segundos</div>
+</div>
+
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:16px">
+<div style="display:flex;gap:13px">
+<div style="display:flex;flex-direction:column;align-items:center;width:32px;flex:none">
+<div style="width:32px;height:32px;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+<div style="width:2px;flex:1;background:#32C869;margin:4px 0"></div>
+</div>
+<div style="flex:1;padding-bottom:20px;display:flex;flex-direction:column;gap:4px;min-width:0">
+<div style="font-family:Inter,sans-serif;font-weight:700;font-size:15.5px;line-height:20px;letter-spacing:-.015em;color:#fff">1ª assinatura registrada</div>
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#9AA9BD">Marina Salgado · 18:12</div>
+</div>
+</div>
+<div style="display:flex;gap:13px">
+<div style="display:flex;flex-direction:column;align-items:center;width:32px;flex:none">
+<div style="width:32px;height:32px;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+<div style="width:2px;flex:1;background:linear-gradient(#32C869,#F5C73D);margin:4px 0"></div>
+</div>
+<div style="flex:1;padding-bottom:20px;display:flex;flex-direction:column;gap:4px;min-width:0">
+<div style="font-family:Inter,sans-serif;font-weight:700;font-size:15.5px;line-height:20px;letter-spacing:-.015em;color:#fff">2ª assinatura registrada</div>
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#9AA9BD">Letícia Marchetti · 21:36 · quórum atingido</div>
+</div>
+</div>
+<div style="display:flex;gap:13px">
+<div style="display:flex;flex-direction:column;align-items:center;width:32px;flex:none">
+<div style="width:32px;height:32px;border-radius:10px;background:#3A3018;border:1.5px solid #F5C73D;display:flex;align-items:center;justify-content:center"><div style="width:9px;height:9px;border-radius:5px;background:#F5C73D"></div></div>
+<div style="width:2px;flex:1;background:#243448;margin:4px 0"></div>
+</div>
+<div style="padding-bottom:20px;flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<div style="font-family:Inter,sans-serif;font-weight:700;font-size:15.5px;line-height:20px;letter-spacing:-.015em;color:#F5C73D">Enviando ao banco</div>
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#9AA9BD">Aguardando a confirmação da transação</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:11px;overflow:hidden"><div style="width:64%;height:100%;background:#F5C73D"></div></div>
+</div>
+</div>
+<div style="display:flex;gap:13px">
+<div style="width:32px;height:32px;flex:none;border-radius:10px;border:1.5px dashed #3A4A60"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<div style="font-family:Inter,sans-serif;font-weight:700;font-size:15.5px;line-height:20px;letter-spacing:-.015em;color:#6B7C93">Comprovante no livro-caixa</div>
+<div style="font-family:Inter,sans-serif;font-weight:400;font-size:12.5px;line-height:18px;color:#6B7C93">Publicado automaticamente aos associados</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:11px;align-items:flex-start;background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Não é mais possível cancelar</div><div style="font:400 12px/1.4 Inter,sans-serif;color:#9AA9BD;margin-top:5px">As duas assinaturas já foram registradas no cofre</div></div>
+</div>
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- 6e · ERRO DE REDE -->
+<div class="dv-opt" id="6e">
+<div class="dv-olabel"><a class="dv-oid" href="#6e">6e</a>Erro de rede · em português de gente</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#E03B4B,#FF5F6D 52%,#C92F42);padding:12px 16px 16px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 24%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>21:38</span><span>Sem rede</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:14px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.78)">A.A.A. Engenharia</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:8px">Aprovações</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.88);margin-top:5px">Offline desde 21:38</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">Offline</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+<div style="background:#3A1C24;border-radius:16px;padding:16px">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:rgba(16,24,35,.3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M8.5 16.4a5 5 0 0 1 7 0"></path><path d="M5 12.9a10 10 0 0 1 14 0"></path><path d="m2 9.4 2-1.7"></path><path d="M22 9.4 20 7.7"></path></svg></div>
+<div>
+<div style="font:700 15.5px/1.25 Inter,sans-serif;letter-spacing:-.015em;color:#fff">O celular está sem internet</div>
+<div style="font:400 12.5px/1.5 Inter,sans-serif;color:#F6D6DA;margin-top:7px;text-wrap:pretty">Não conseguimos falar com o cofre agora. Nada foi perdido: sua assinatura fica guardada aqui e é enviada sozinha quando a conexão voltar.</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+<div style="background:#1FA5FF;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823">Tentar de novo</div>
+<div style="background:rgba(16,24,35,.32);border:1px solid rgba(255,255,255,.16);border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#fff">Ver offline</div>
+</div>
+</div>
+
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-top:4px">Guardado no celular</div>
+
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div style="min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Som Beira-Mar ME</div><div style="font:400 12px/1.3 Inter,sans-serif;color:#6B7C93;margin:6px 0 3px;white-space:nowrap">pix 24.881.402/0001-77</div></div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− R$ 8.400</div>
+</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:11px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:5px 7px;white-space:nowrap">Eventos</span>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:5px 7px;white-space:nowrap">Na fila</span>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:50%;height:100%;background:#F5C73D"></div></div>
+<div style="font:400 11.5px/1.4 Inter,sans-serif;color:#9AA9BD;margin-top:9px">Sua assinatura será enviada assim que a internet voltar</div>
+</div>
+
+<div style="display:flex;gap:11px;align-items:center;background:#192434;border:1px solid #243448;border-radius:16px;padding:13px 14px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Nenhum valor sai do cofre offline</div><div style="font:400 12px/1.35 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Última sincronização hoje, 21:34 · 3 propostas em cache</div></div>
+</div>
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="position:relative"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">3</div></div><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- 6f · TROCA DE DIRETORIA -->
+<div class="dv-opt" id="6f">
+<div class="dv-olabel"><a class="dv-oid" href="#6f">6f</a>Troca de diretoria · signatários saindo e entrando</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#7B3FB0,#AF57DB 52%,#6E36A0);padding:12px 16px 18px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 22%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>10:04</span><span>Wi-Fi · 78%</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:16px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.78)">A.A.A. Engenharia</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:8px">Troca de diretoria</div>
+<div style="font-family:Inter,sans-serif;font-weight:500;font-size:12.5px;line-height:18px;color:rgba(255,255,255,.9);margin-top:5px">Gestão 2026 → Gestão 2027<br />Vigência 01 jan 2027</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">1 de 2</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:12px 16px 0;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;overflow:hidden">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93">Saem do cofre · 31 dez 2026</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:11px 13px;opacity:.55">
+<div style="display:flex;gap:6px;flex:none">
+<div style="width:34px;height:34px;border-radius:10px;background:#243448;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#9AA9BD">LM</div>
+<div style="width:34px;height:34px;border-radius:10px;background:#243448;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#9AA9BD">MS</div>
+</div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff;text-decoration:line-through">Letícia e Marina</div><div style="font:400 11.5px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px;white-space:nowrap">Presidente e tesoureira</div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA9BD" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>
+</div>
+
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-top:6px">Entram no cofre · 01 jan 2027</div>
+<div style="display:flex;align-items:center;gap:11px;background:#1A3852;border:1.5px solid #1FA5FF;border-radius:14px;padding:11px 13px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#0E2A42;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#1FA5FF">CB</div>
+<div style="flex:1"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Caio Bertoldi</div><div style="font:400 11.5px/1.3 Inter,sans-serif;color:#BFDDFA;margin-top:5px">Presidente · aceitou em 28 nov</div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:11px 13px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center;font:700 12px/1 Inter,sans-serif;color:#6B7C93">JP</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px"><div style="font-family:Inter,sans-serif;font-weight:700;font-size:13.5px;line-height:18px;color:#fff">Júlia Prazeres</div><div style="font-family:Inter,sans-serif;font-weight:400;font-size:11.5px;line-height:16px;color:#F5C73D">Tesoureira · convite há 2 dias</div></div>
+<span style="flex:none;font:600 10.5px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:5px 7px;white-space:nowrap">Aguardando</span>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:11px 13px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">RT</div>
+<div style="flex:1"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Rafael Tonetto</div><div style="font:400 11.5px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Conselho fiscal · permanece</div></div>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#32C869;background:#173B2E;border-radius:7px;padding:5px 7px;white-space:nowrap">Mantido</span>
+</div>
+
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px;margin-top:6px">
+<div style="display:flex;gap:11px;align-items:flex-start">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.25 Inter,sans-serif;color:#fff">A troca exige 2 de 3 da gestão atual</div><div style="font:400 12px/1.4 Inter,sans-serif;color:#9AA9BD;margin-top:5px">O histórico não muda</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid #243448">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">RT</div>
+<div style="width:36px;height:36px;border-radius:11px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div>
+</div>
+<div style="flex:1"><div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#F5C73D">1 de 2 assinaturas</div><div style="font:400 12px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Rafael assinou · falta você</div></div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:12px;overflow:hidden"><div style="width:50%;height:100%;background:#F5C73D"></div></div>
+<div style="background:#1FA5FF;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823;margin-top:13px">Assinar a troca</div>
+</div>
+<div style="flex:none;height:96px"></div>
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Perfil</span></div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Peça em seguida: “fluxo de propor saída em 3 passos” · “tela de convite recebido por <a class="dv-oid" href="#6f">6f</a>” · “protótipo clicável <a class="dv-oid" href="#5b">5b</a> → <a class="dv-oid" href="#6d">6d</a> → <a class="dv-oid" href="#6c">6c</a>”</p>
+</section>
+
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">As cinco telas · A.A.A. Engenharia UFSC · sobre <a class="dv-oid" href="#4a">4a</a></span></div>
+<div class="dv-opts">
+
+<!-- ========== 5a · COFRE ========== -->
+<div class="dv-opt" id="5a">
+<div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a>Cofre · aba ativa</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#1E88E5,#29A3F5 52%,#1B7FD4);padding:12px 16px 18px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 22%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>21:34</span><span>Wi-Fi · 82%</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:16px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.75)">Atlética · UFSC</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:8px">A.A.A. Engenharia</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.85);margin-top:5px">62 associados · diretoria 2026</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">2 de 3</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:12px 16px 20px;display:flex;flex-direction:column;gap:9px;box-sizing:border-box">
+
+<div style="display:flex;gap:11px;align-items:center;background:#192434;border:1px solid #243448;border-radius:16px;padding:12px 13px">
+<div style="width:40px;height:40px;flex:none;border-radius:12px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 15.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Cofre com quórum</div><div style="font:400 12.5px/1.35 Inter,sans-serif;color:#9AA9BD;margin-top:4px">Nenhuma saída sem 2 assinaturas</div></div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:11px 13px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px;white-space:nowrap">Saldo</div><div style="width:26px;height:26px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg></div></div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#1FA5FF;margin-top:11px">R$ 43.180</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">disponível</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:11px 13px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Retido</div><div style="width:26px;height:26px;flex:none;border-radius:10px;background:#3A1C24;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div></div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#FF5F6D;margin-top:11px">R$ 12.400</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">3 propostas</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:11px 13px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Entrou</div><div style="width:26px;height:26px;flex:none;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></div></div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#32C869;margin-top:11px">R$ 13.500</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">+8% este mês</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:11px 13px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px"><div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Saiu</div><div style="width:26px;height:26px;flex:none;border-radius:10px;background:#3A3018;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5C73D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div></div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#fff;margin-top:11px">R$ 5.312</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">este mês</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+<div style="background:#1FA5FF;border-radius:13px;padding:11px 6px;min-height:78px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg><div style="font:600 10.5px/1.25 Inter,sans-serif;color:#101823;text-align:center">Propor<br />saída</div></div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:11px 6px;min-height:78px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg><div style="font:600 10.5px/1.25 Inter,sans-serif;color:#9AA9BD;text-align:center">Cobrar<br />sócios</div></div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:11px 6px;min-height:78px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F5C73D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg><div style="font:600 10.5px/1.25 Inter,sans-serif;color:#9AA9BD;text-align:center">Livro-<br />caixa</div></div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:11px 6px;min-height:78px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><div style="font:600 10.5px/1.25 Inter,sans-serif;color:#9AA9BD;text-align:center">Sócios<br />ativos</div></div>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px">
+<div style="font:700 16.5px/1 Inter,sans-serif;letter-spacing:-.02em;color:#fff">Movimentações</div>
+<a href="#5c" style="font:600 12.5px/1 Inter,sans-serif;color:#1FA5FF;white-space:nowrap">Ver todas ›</a>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:16px;padding:9px 13px">
+<div style="width:36px;height:36px;flex:none;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Lote 1 · aniversário</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:4px 6px;white-space:nowrap">Eventos</span><span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">02 set</span></div></div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#32C869;white-space:nowrap">+ 4.560</div>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:16px;padding:9px 13px">
+<div style="width:36px;height:36px;flex:none;border-radius:11px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Som Beira-Mar</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:4px 6px;white-space:nowrap">Eventos</span><span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">01 set</span></div></div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− 3.200</div>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:16px;padding:9px 13px">
+<div style="width:36px;height:36px;flex:none;border-radius:11px;background:#2F2C4D;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Mensalidades · agosto</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10.5px/1 Inter,sans-serif;color:#AF57DB;background:#2F2C4D;border-radius:7px;padding:4px 6px;white-space:nowrap">Associados</span><span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">30 ago</span></div></div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#32C869;white-space:nowrap">+ 8.940</div>
+</div>
+</div>
+
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="position:relative"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">3</div></div><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- ========== 5b · APROVAÇÕES ========== -->
+<div class="dv-opt" id="5b">
+<div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a>Aprovações · o bloqueio como regra do sistema</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#E03B4B,#FF5F6D 52%,#C92F42);padding:12px 16px 18px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 86% 22%,#fff 0 60%,transparent 61%),radial-gradient(96px 62px at 14% 104%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>21:34</span><span>Wi-Fi · 82%</span></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:16px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.78)">A.A.A. Engenharia</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:8px">Aprovações</div>
+<div style="font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.9);margin-top:5px;font-variant-numeric:tabular-nums;white-space:nowrap">R$ 12.400,00 retidos</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.32);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">3 pendentes</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93">Aguardando a segunda assinatura</div>
+
+<div style="background:#1F2D41;border:1px solid #243448;border-radius:16px;padding:15px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div style="min-width:0">
+<div style="font:700 15.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Som Beira-Mar ME</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#6B7C93;margin:6px 0 3px;white-space:nowrap">pix 24.881.402/0001-77</div>
+</div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− R$ 8.400</div>
+</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:11px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:5px 7px;white-space:nowrap">Eventos</span>
+<span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">Marina Salgado · hoje 18:12</span>
+</div>
+
+<div style="height:1px;background:#243448;margin:14px 0"></div>
+
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">MS</div>
+<div style="width:36px;height:36px;border-radius:11px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div>
+</div>
+<div style="flex:1">
+<div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#F5C73D">1 de 2 assinaturas</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Marina Salgado assinou às 18:12</div>
+</div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:50%;height:100%;background:#F5C73D"></div></div>
+
+<div style="background:#3A1C24;border-radius:12px;padding:13px 14px;display:flex;gap:11px;align-items:flex-start;margin-top:14px">
+<svg style="flex:none;margin-top:1px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+<div>
+<div style="font:700 13px/1.25 Inter,sans-serif;color:#FF5F6D">Saída retida pelo cofre</div>
+<div style="font:400 12.5px/1.45 Inter,sans-serif;color:#E8A7AE;margin-top:5px;text-wrap:pretty">Falta a assinatura da presidente ou do conselho fiscal. Ao assinar, a saída é executada na hora.</div>
+</div>
+</div>
+
+<div style="background:#1FA5FF;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823;margin-top:12px">Cobrar a segunda assinatura</div>
+</div>
+
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-top:4px">Sem sua assinatura ainda</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:16px;padding:12px 13px">
+<div style="width:36px;height:36px;flex:none;border-radius:11px;background:#3A1C24;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Brindes Ilha Sul</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10.5px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:4px 6px;white-space:nowrap">Marketing</span><span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">0 de 2</span></div></div>
+<div style="display:flex;align-items:center;gap:8px"><div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#FF5F6D">2.480</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></div>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:16px;padding:12px 13px">
+<div style="width:36px;height:36px;flex:none;border-radius:11px;background:#3A1C24;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 14.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Gráfica Trindade</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10.5px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:4px 6px;white-space:nowrap">Marketing</span><span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">0 de 2</span></div></div>
+<div style="display:flex;align-items:center;gap:8px"><div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#FF5F6D">1.520</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></div>
+</div>
+</div>
+
+<div style="font:400 11.5px/1.5 Inter,sans-serif;color:#6B7C93;margin-top:2px">Enquanto o quórum não fecha, o valor permanece no cofre. Nenhuma cobrança é feita e nada é enviado ao banco.</div>
+
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="position:relative"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">3</div></div><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span></div>
+</div>
+</div>
+</div>
+
+<!-- ========== 5c · LIVRO-CAIXA ========== -->
+<div class="dv-opt" id="5c">
+<div class="dv-olabel"><a class="dv-oid" href="#5c">5c</a>Livro-caixa público · sem login, sem abas</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#1E88E5,#29A3F5 52%,#1B7FD4);padding:12px 16px 16px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 88% 30%,#fff 0 60%,transparent 61%),radial-gradient(90px 56px at 10% 108%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap">Livro-caixa público</div>
+<div style="flex:none;background:rgba(50,200,105,.28);border:1px solid rgba(50,200,105,.55);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#D6F7E3;white-space:nowrap">aberto</div>
+</div>
+<div style="position:relative;z-index:1;font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:10px">A.A.A. Engenharia</div>
+<div style="position:relative;z-index:1;font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.85);margin-top:5px">01 ago — 03 set 2026 · 62 associados</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 16px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:#192434;border:1px solid #243448;border-radius:16px;overflow:hidden">
+<div style="padding:13px 12px;border-right:1px solid #243448"><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Entrou</div><div style="font:800 13.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap;color:#32C869;margin-top:10px">R$ 13.500,00</div></div>
+<div style="padding:13px 12px;border-right:1px solid #243448"><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Saiu</div><div style="font:800 13.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap;color:#fff;margin-top:10px">R$ 5.312,40</div></div>
+<div style="padding:13px 12px"><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Saldo</div><div style="font:800 13.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap;color:#1FA5FF;margin-top:10px">R$ 43.180,25</div></div>
+</div>
+
+<div style="display:flex;gap:8px">
+<div style="flex:1;display:flex;align-items:center;gap:9px;background:#192434;border:1px solid #243448;border-radius:13px;padding:11px 13px">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+<span style="font:500 13px/1 Inter,sans-serif;color:#6B7C93">Buscar lançamento</span>
+</div>
+<div style="width:43px;flex:none;background:#192434;border:1px solid #243448;border-radius:13px;display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M7 12h10"></path><path d="M10 18h4"></path></svg></div>
+</div>
+
+<div style="display:flex;gap:7px;overflow:hidden">
+<span style="flex:none;font:600 11.5px/1 Inter,sans-serif;color:#101823;background:#1FA5FF;border-radius:9px;padding:8px 10px;white-space:nowrap">Todas</span>
+<span style="flex:none;font:600 11.5px/1 Inter,sans-serif;color:#9AA9BD;background:#192434;border:1px solid #243448;border-radius:9px;padding:8px 10px;white-space:nowrap">Eventos</span>
+<span style="flex:none;font:600 11.5px/1 Inter,sans-serif;color:#9AA9BD;background:#192434;border:1px solid #243448;border-radius:9px;padding:8px 10px;white-space:nowrap">Marketing</span>
+<span style="flex:none;font:600 11.5px/1 Inter,sans-serif;color:#9AA9BD;background:#192434;border:1px solid #243448;border-radius:9px;padding:8px 10px;white-space:nowrap">Esporte</span>
+<span style="flex:none;font:600 11.5px/1 Inter,sans-serif;color:#9AA9BD;background:#192434;border:1px solid #243448;border-radius:9px;padding:8px 10px;white-space:nowrap">Sócios</span>
+</div>
+
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:10px 12px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Lote 1 · festa de aniversário</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:4px 6px;white-space:nowrap">Eventos</span><span style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">02/09</span><a href="#5c" style="font:500 10.5px/1 Inter,sans-serif;color:#1FA5FF">comprovante</a></div></div>
+<div style="font:800 14px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#32C869;white-space:nowrap">+ 4.560,00</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:10px 12px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Som Beira-Mar · sinal</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:4px 6px;white-space:nowrap">Eventos</span><span style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">01/09</span><a href="#5c" style="font:500 10.5px/1 Inter,sans-serif;color:#1FA5FF">comprovante</a></div></div>
+<div style="font:800 14px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− 3.200,00</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:10px 12px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#2F2C4D;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Mensalidades de agosto</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10px/1 Inter,sans-serif;color:#AF57DB;background:#2F2C4D;border-radius:7px;padding:4px 6px;white-space:nowrap">Associados</span><span style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">30/08</span><a href="#5c" style="font:500 10.5px/1 Inter,sans-serif;color:#1FA5FF">comprovante</a></div></div>
+<div style="font:800 14px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#32C869;white-space:nowrap">+ 8.940,00</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:10px 12px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#3A3018;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5C73D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Gráfica Trindade · cartazes</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:4px 6px;white-space:nowrap">Marketing</span><span style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">28/08</span><a href="#5c" style="font:500 10.5px/1 Inter,sans-serif;color:#1FA5FF">comprovante</a></div></div>
+<div style="font:800 14px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− 890,00</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:10px 12px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Arbitragem Intermed</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10px/1 Inter,sans-serif;color:#32C869;background:#173B2E;border-radius:7px;padding:4px 6px;white-space:nowrap">Esporte</span><span style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">26/08</span><a href="#5c" style="font:500 10.5px/1 Inter,sans-serif;color:#1FA5FF">comprovante</a></div></div>
+<div style="font:800 14px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− 620,00</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:10px 12px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:700 13.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Ônibus Intermed · Joinville</div><div style="display:flex;gap:7px;align-items:center;margin-top:5px"><span style="font:600 10px/1 Inter,sans-serif;color:#32C869;background:#173B2E;border-radius:7px;padding:4px 6px;white-space:nowrap">Esporte</span><span style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;font-variant-numeric:tabular-nums">19/08</span><a href="#5c" style="font:500 10.5px/1 Inter,sans-serif;color:#1FA5FF">comprovante</a></div></div>
+<div style="font:800 14px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− 602,40</div>
+</div>
+
+</div>
+
+<div style="font:400 11px/1.5 Inter,sans-serif;color:#6B7C93;border-top:1px solid #243448;padding-top:11px">Publicado pela diretoria 2026 · toda saída exige 2 de 3 assinaturas · atualizado 03/09 às 21:34</div>
+</div>
+</div>
+</div>
+
+<!-- ========== 5d · PÁGINA DA FESTA ========== -->
+<div class="dv-opt" id="5d">
+<div class="dv-olabel"><a class="dv-oid" href="#5d">5d</a>Página da festa · pública</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+
+<div style="flex:none;height:240px;position:relative;overflow:hidden;background:repeating-linear-gradient(135deg,#1F2D41 0 8px,#192434 8px 16px)">
+<div style="position:absolute;top:14px;left:16px;font:500 10.5px/1 Inter,sans-serif;color:#3A4A60;white-space:nowrap">[ foto do evento · 390 × 240 ]</div>
+<div style="position:absolute;inset:0;background:linear-gradient(to top,#101823 4%,rgba(16,24,35,.75) 34%,transparent 72%)"></div>
+<div style="position:absolute;left:16px;right:16px;bottom:16px">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#1FA5FF">A.A.A. Engenharia apresenta</div>
+<div style="font:800 26px/1.1 Inter,sans-serif;letter-spacing:-.035em;color:#fff;margin-top:9px">Baile de Aniversário<br />32 anos</div>
+</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:14px 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:13px;display:flex;gap:10px;align-items:center">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg></div>
+<div style="flex:1;min-width:0"><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Quando</div><div style="font:700 12.5px/1.2 Inter,sans-serif;color:#fff;margin-top:6px;white-space:nowrap">Sáb, 26 set · 23h</div></div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:13px;display:flex;gap:10px;align-items:center">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#2F2C4D;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+<div style="flex:1;min-width:0"><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Onde</div><div style="font:700 12.5px/1.2 Inter,sans-serif;color:#fff;margin-top:6px;white-space:nowrap">Galpão Beira-Mar</div></div>
+</div>
+</div>
+
+<div style="font:700 16.5px/1 Inter,sans-serif;letter-spacing:-.02em;color:#fff;margin-top:2px">Lotes</div>
+
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:#192434;border:1px solid #243448;border-radius:14px;padding:12px 13px;opacity:.45">
+<div style="flex:1;min-width:0"><div style="font:700 14px/1.2 Inter,sans-serif;color:#fff">1º lote · sócio</div><div style="font:400 11.5px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px">esgotado</div></div>
+<div style="font:800 15px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#9AA9BD;text-decoration:line-through">R$ 60,00</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:#1A3852;border:1.5px solid #1FA5FF;border-radius:14px;padding:12px 13px">
+<div style="flex:1;min-width:0"><div style="font:700 14px/1.2 Inter,sans-serif;color:#fff">2º lote · sócio</div><div style="font:600 11.5px/1 Inter,sans-serif;color:#F5C73D;margin-top:5px;font-variant-numeric:tabular-nums;white-space:nowrap">restam 48 de 300</div></div>
+<div style="font:800 18px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff">R$ 80,00</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:#192434;border:1px solid #243448;border-radius:14px;padding:12px 13px">
+<div style="flex:1;min-width:0"><div style="font:700 14px/1.2 Inter,sans-serif;color:#fff">2º lote · não sócio</div><div style="font:400 11.5px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px;font-variant-numeric:tabular-nums;white-space:nowrap">restam 212 de 400</div></div>
+<div style="font:800 15px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff">R$ 120,00</div>
+</div>
+</div>
+
+<div style="display:flex;gap:13px;align-items:center;background:#173B2E;border:1px solid rgba(50,200,105,.32);border-radius:16px;padding:14px;margin-top:2px">
+<div style="width:76px;height:76px;flex:none;border-radius:12px;background:#0F2A20;border:1px solid rgba(50,200,105,.35);display:flex;align-items:center;justify-content:center"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="6" height="6" x="3" y="3" rx="1"></rect><rect width="6" height="6" x="15" y="3" rx="1"></rect><rect width="6" height="6" x="3" y="15" rx="1"></rect><path d="M15 15h2v2h-2z"></path><path d="M19 15h2v2"></path><path d="M15 19h2v2"></path><path d="M19 19h2v2"></path></svg></div>
+<div>
+<div style="font:700 14.5px/1.25 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Pague com Pix e receba na hora</div>
+<div style="font:400 12.5px/1.45 Inter,sans-serif;color:#A9DEC0;margin-top:6px;text-wrap:pretty">O valor cai direto no cofre da atlética. Nada passa por conta pessoal.</div>
+</div>
+</div>
+
+</div>
+
+<div style="flex:none;padding:12px 16px 18px;border-top:1px solid #243448;background:#141E2C">
+<div style="background:#1FA5FF;border-radius:13px;padding:15px;text-align:center;font:700 14px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">Comprar · R$ 80,00</div>
+<div style="font:400 12.5px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:10px;text-align:center">Livro-caixa da entidade aberto em <a href="#5c" style="color:#1FA5FF">quorum.app/aaaeng</a></div>
+</div>
+</div>
+</div>
+
+<!-- ========== 5e · PERFIL ========== -->
+<div class="dv-opt" id="5e">
+<div class="dv-olabel"><a class="dv-oid" href="#5e">5e</a>Perfil e carteirinha · aba ativa</div>
+<div class="dv-card" style="width:390px;height:844px;border-color:#243448;background:#101823;font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;box-sizing:border-box">
+
+<div style="flex:none;position:relative;overflow:hidden;background:linear-gradient(160deg,#1E88E5,#29A3F5 52%,#1B7FD4);padding:12px 16px 18px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(70px 48px at 88% 26%,#fff 0 60%,transparent 61%),radial-gradient(90px 56px at 12% 110%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;font:600 12px/1 Inter,sans-serif;color:rgba(255,255,255,.9);font-variant-numeric:tabular-nums"><span>21:34</span><span>Wi-Fi · 82%</span></div>
+<div style="position:relative;z-index:1;font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:14px">Perfil</div>
+</div>
+
+<div style="flex:1;overflow:hidden;padding:0 16px 14px;display:flex;flex-direction:column;gap:11px;box-sizing:border-box">
+
+<div style="position:relative;z-index:2;background:#192434;border:1px solid #243448;border-radius:16px;margin-top:12px;flex:none">
+<div style="padding:14px;display:flex;gap:13px;align-items:center">
+<div style="width:52px;height:52px;flex:none;border-radius:26px;background:#1FA5FF;display:flex;align-items:center;justify-content:center;font:800 20px/1 Inter,sans-serif;color:#101823">M</div>
+<div style="flex:1;min-width:0">
+<div style="font:700 16.5px/1.2 Inter,sans-serif;letter-spacing:-.02em;color:#fff">Marina Salgado</div>
+<div style="font:400 12px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:5px">marina.salgado@grad.ufsc.br</div>
+<div style="display:flex;gap:7px;margin-top:8px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:5px 7px;white-space:nowrap">Tesoureira</span>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#32C869;background:#173B2E;border-radius:7px;padding:5px 7px;white-space:nowrap">Assinante</span>
+</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid #243448">
+<div style="padding:12px;border-right:1px solid #243448"><div style="font:800 15px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#1FA5FF">R$ 43.180</div><div style="font:400 10.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">Sob sua guarda</div></div>
+<div style="padding:12px;border-right:1px solid #243448"><div style="font:800 15px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff">128</div><div style="font:400 10.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">Assinaturas</div></div>
+<div style="padding:12px"><div style="font:800 15px/1 Inter,sans-serif;letter-spacing:-.03em;color:#fff">Mar 2026</div><div style="font:400 10.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:6px">Na diretoria desde</div></div>
+</div>
+</div>
+
+<div style="position:relative;z-index:1;overflow:hidden;border-radius:16px;background:linear-gradient(160deg,#1E88E5,#29A3F5 52%,#1B7FD4);padding:16px;flex:none">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(64px 44px at 88% 16%,#fff 0 60%,transparent 61%),radial-gradient(84px 54px at 8% 96%,#fff 0 60%,transparent 61%),radial-gradient(38px 26px at 62% 84%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.8);white-space:nowrap">A.A.A. Engenharia · UFSC</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap;background:rgba(16,24,35,.32)">Sócia</div>
+</div>
+<div style="position:relative;z-index:1;font:800 22px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:14px">Marina Salgado</div>
+<div style="position:relative;z-index:1;font:500 12.5px/1.4 Inter,sans-serif;color:rgba(255,255,255,.88);margin-top:5px">Tesoureira · diretoria 2026</div>
+<div style="position:relative;z-index:1;display:flex;gap:22px;margin-top:16px">
+<div><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.72);white-space:nowrap;margin-bottom:2px">Sócio nº</div><div style="font:700 13px/1 Inter,sans-serif;color:#fff;margin-top:6px;font-variant-numeric:tabular-nums">0142</div></div>
+<div><div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.72);white-space:nowrap;margin-bottom:2px">Validade</div><div style="font:700 13px/1 Inter,sans-serif;color:#fff;margin-top:6px;font-variant-numeric:tabular-nums">31/12/2026</div></div>
+</div>
+<div style="position:relative;z-index:1;margin-top:14px;background:rgba(16,24,35,.34);border-radius:10px;padding:9px 11px;font:400 11px/1 ui-monospace,'IBM Plex Mono',monospace;color:rgba(255,255,255,.92);letter-spacing:.02em">ref 4c71-90ab-22e5-0142</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:9px;flex:none">
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:11px 13px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+<div style="flex:1"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Dados pessoais</div><div style="font:400 11.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:5px">Nome, curso, matrícula</div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:11px 13px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#2F2C4D;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V7l7-4 7 4v14"></path><path d="M10 21v-6h4v6"></path></svg></div>
+<div style="flex:1"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Entidade</div><div style="font:400 11.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:5px">A.A.A. Engenharia · UFSC</div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</div>
+<div style="display:flex;align-items:center;gap:11px;background:#192434;border:1px solid #243448;border-radius:14px;padding:11px 13px">
+<div style="width:34px;height:34px;flex:none;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+<div style="flex:1"><div style="font:700 13.5px/1.2 Inter,sans-serif;color:#fff">Assinatura digital</div><div style="font:400 11.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:5px">Chave e dispositivo</div></div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</div>
+</div>
+
+<div style="font:400 11.5px/1 Inter,sans-serif;color:#6B7C93;text-align:center;margin:2px 0 4px">Quórum v0.1</div>
+
+</div>
+
+<div style="flex:none;position:relative;background:#141E2C;border-top:1px solid #243448;padding:10px 8px 16px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;margin-top:12px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Cofre</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="position:relative"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg><div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">3</div></div><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Aprovar</span></div>
+<div style="display:flex;justify-content:center"><div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Perfil</span></div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Peça em seguida: “fluxo de propor saída em 3 passos a partir de <a class="dv-oid" href="#5a">5a</a>” · “estados de borda nesta linguagem” · “exportar <a class="dv-oid" href="#5a">5a</a>–<a class="dv-oid" href="#5e">5e</a> em PNG”</p>
+</section>
+
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Nova linguagem visual — azul-marinho, tiles tingidos, Inter</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a">
+<div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Folha de estilo viva · 390 de largura</div>
+<div class="dv-card" style="width:390px;background:#101823;border-color:#243448;font-family:Inter,system-ui,sans-serif">
+
+<!-- 1 · HERO -->
+<div style="position:relative;z-index:1;overflow:hidden;background:linear-gradient(160deg,#1E88E5,#29A3F5 52%,#1B7FD4);padding:20px">
+<div style="position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.16;background:radial-gradient(60px 44px at 82% 18%,#fff 0 60%,transparent 61%),radial-gradient(90px 60px at 18% 96%,#fff 0 60%,transparent 61%),radial-gradient(40px 30px at 58% 78%,#fff 0 60%,transparent 61%)"></div>
+<div style="position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.72)">Sistema de design</div>
+<div style="font:800 23px/1.15 Inter,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:9px">Quórum</div>
+<div style="font:500 12.5px/1.45 Inter,sans-serif;color:rgba(255,255,255,.85);margin-top:6px;max-width:250px">Cofre com duas assinaturas de três e livro-caixa aberto aos associados</div>
+</div>
+<div style="flex:none;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.28);border-radius:7px;padding:5px 8px;font:600 10.5px/1 Inter,sans-serif;color:#fff;white-space:nowrap">v0.2</div>
+</div>
+</div>
+
+<div style="padding:14px 16px 24px;display:flex;flex-direction:column;gap:22px">
+
+<!-- TIPOGRAFIA -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">01 · Tipografia · Inter</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:16px">
+<div>
+<div style="font:800 27px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#1FA5FF">R$ 43.180</div>
+<div style="font:400 11px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:5px">800 · 27 · -0.035em · valor-âncora</div>
+</div>
+<div style="height:1px;background:#243448"></div>
+<div>
+<div style="font:800 16.5px/1.2 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff">− R$ 8.400,00</div>
+<div style="font:400 11px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:5px">800 · 16.5 · valor em lista · sinal menos matemático</div>
+</div>
+<div style="height:1px;background:#243448"></div>
+<div>
+<div style="font:700 16.5px/1.25 Inter,sans-serif;letter-spacing:-.02em;color:#fff">Propostas aguardando</div>
+<div style="font:400 11px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:5px">700 · 16.5 · -0.02em · título de seção</div>
+</div>
+<div style="height:1px;background:#243448"></div>
+<div>
+<div style="font:700 15.5px/1.25 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Som Beira-Mar ME</div>
+<div style="font:400 11px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:5px">700 · 15.5 · nome de item</div>
+</div>
+<div style="height:1px;background:#243448"></div>
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD">Saldo em cofre</div>
+<div style="font:400 11px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:7px">600 · 10.5 · 0.09em · rótulo caixa alta</div>
+</div>
+<div style="height:1px;background:#243448"></div>
+<div>
+<div style="font:500 13px/1.5 Inter,sans-serif;color:#9AA9BD">Toda saída precisa de duas assinaturas entre os três signatários. Enquanto faltar uma, o dinheiro fica retido no cofre.</div>
+<div style="font:400 11px/1.4 Inter,sans-serif;color:#6B7C93;margin-top:6px">500 · 13 · corpo e apoio · 400 · 12.5 para descrição</div>
+</div>
+</div>
+</div>
+
+<!-- PALETA -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">02 · Paleta</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:#101823;border:1px solid #243448;border-radius:12px;padding:12px"><div style="font:700 12.5px/1 Inter,sans-serif;color:#fff">página</div><div style="font:400 11px/1 Inter,sans-serif;color:#6B7C93;margin-top:5px">#101823</div></div>
+<div style="flex:1;background:#192434;border:1px solid #243448;border-radius:12px;padding:12px"><div style="font:700 12.5px/1 Inter,sans-serif;color:#fff">cartão</div><div style="font:400 11px/1 Inter,sans-serif;color:#6B7C93;margin-top:5px">#192434</div></div>
+</div>
+<div style="display:flex;gap:8px">
+<div style="flex:1;background:#1F2D41;border:1px solid #243448;border-radius:12px;padding:12px"><div style="font:700 12.5px/1 Inter,sans-serif;color:#fff">elevado</div><div style="font:400 11px/1 Inter,sans-serif;color:#6B7C93;margin-top:5px">#1F2D41</div></div>
+<div style="flex:1;background:#141E2C;border:1px solid #243448;border-radius:12px;padding:12px"><div style="font:700 12.5px/1 Inter,sans-serif;color:#fff">abas</div><div style="font:400 11px/1 Inter,sans-serif;color:#6B7C93;margin-top:5px">#141E2C</div></div>
+</div>
+</div>
+
+<div style="display:flex;gap:12px;margin-top:12px;padding:12px 14px;background:#192434;border:1px solid #243448;border-radius:12px">
+<div><div style="font:700 12.5px/1 Inter,sans-serif;color:#FFFFFF">tinta</div><div style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;margin-top:4px">#FFFFFF</div></div>
+<div style="width:1px;background:#243448"></div>
+<div><div style="font:700 12.5px/1 Inter,sans-serif;color:#9AA9BD">tinta 2</div><div style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;margin-top:4px">#9AA9BD</div></div>
+<div style="width:1px;background:#243448"></div>
+<div><div style="font:700 12.5px/1 Inter,sans-serif;color:#6B7C93">tinta 3</div><div style="font:400 10.5px/1 Inter,sans-serif;color:#6B7C93;margin-top:4px">#6B7C93</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+<div style="display:flex;align-items:center;gap:12px;background:#1A3852;border:1px solid #243448;border-radius:12px;padding:11px 12px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#1A3852;border:1px solid rgba(31,165,255,.35);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 12h6"></path></svg></div>
+<div style="flex:1"><div style="font:700 13px/1 Inter,sans-serif;color:#1FA5FF">azul · ação, valor, ativo</div><div style="font:400 11px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px">#1FA5FF sobre #1A3852 · rubrica Eventos</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:#173B2E;border:1px solid #243448;border-radius:12px;padding:11px 12px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#173B2E;border:1px solid rgba(50,200,105,.35);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></div>
+<div style="flex:1"><div style="font:700 13px/1 Inter,sans-serif;color:#32C869">verde · entrada, executada</div><div style="font:400 11px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px">#32C869 sobre #173B2E · rubrica Esporte</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:#3A3018;border:1px solid #243448;border-radius:12px;padding:11px 12px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#3A3018;border:1px solid rgba(245,199,61,.35);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5C73D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>
+<div style="flex:1"><div style="font:700 13px/1 Inter,sans-serif;color:#F5C73D">âmbar · saída, aguardando</div><div style="font:400 11px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px">#F5C73D sobre #3A3018 · rubrica Marketing</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:#2F2C4D;border:1px solid #243448;border-radius:12px;padding:11px 12px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#2F2C4D;border:1px solid rgba(175,87,219,.35);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg></div>
+<div style="flex:1"><div style="font:700 13px/1 Inter,sans-serif;color:#AF57DB">roxo · associados, pessoas</div><div style="font:400 11px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px">#AF57DB sobre #2F2C4D · rubrica Associados</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:#3A1C24;border:1px solid #243448;border-radius:12px;padding:11px 12px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#3A1C24;border:1px solid rgba(255,95,109,.35);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+<div style="flex:1"><div style="font:700 13px/1 Inter,sans-serif;color:#FF5F6D">vermelho · retido, erro</div><div style="font:400 11px/1 Inter,sans-serif;color:#9AA9BD;margin-top:5px">#FF5F6D sobre #3A1C24 · só para bloqueio</div></div>
+</div>
+</div>
+</div>
+
+<!-- 2 · CARTÃO BANNER -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">03 · Cartão banner</div>
+<div style="display:flex;gap:12px;align-items:center;background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="width:42px;height:42px;flex:none;border-radius:12px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></div>
+<div style="flex:1">
+<div style="font:700 15.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">2 de 3 para qualquer saída</div>
+<div style="font:400 12.5px/1.45 Inter,sans-serif;color:#9AA9BD;margin-top:4px">Nenhum membro move o dinheiro sozinho</div>
+</div>
+</div>
+</div>
+
+<!-- 3 · GRADE 2×2 -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">04 · Grade de estatísticas</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+<div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Em cofre</div>
+<div style="width:28px;height:28px;flex:none;border-radius:10px;background:#1A3852;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg></div>
+</div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#1FA5FF;margin-top:12px">R$ 43.180</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:7px">saldo disponível</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+<div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Retido</div>
+<div style="width:28px;height:28px;flex:none;border-radius:10px;background:#3A1C24;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+</div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#FF5F6D;margin-top:12px">R$ 12.400</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:7px">3 propostas paradas</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+<div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Entradas</div>
+<div style="width:28px;height:28px;flex:none;border-radius:10px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></div>
+</div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#32C869;margin-top:12px">R$ 13.500</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:7px">agosto e setembro</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+<div style="font:600 10.5px/1.2 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;min-height:25px">Associados</div>
+<div style="width:28px;height:28px;flex:none;border-radius:10px;background:#2F2C4D;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+</div>
+<div style="font:800 25px/1 Inter,sans-serif;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:#AF57DB;margin-top:12px">62</div>
+<div style="font:400 11px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:7px">mensalidade em dia</div>
+</div>
+</div>
+</div>
+
+<!-- 4 · AÇÕES RÁPIDAS -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">05 · Ações rápidas</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+<div style="background:#1FA5FF;border-radius:13px;padding:12px 8px;min-height:80px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+<div style="font:600 10.5px/1.25 Inter,sans-serif;color:#101823;text-align:center">Propor<br />saída</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:12px 8px;min-height:80px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg>
+<div style="font:600 10.5px/1.25 Inter,sans-serif;color:#9AA9BD;text-align:center">Cobrar<br />sócios</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:12px 8px;min-height:80px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5C73D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+<div style="font:600 10.5px/1.25 Inter,sans-serif;color:#9AA9BD;text-align:center">Livro-<br />caixa</div>
+</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:12px 8px;min-height:80px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#AF57DB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+<div style="font:600 10.5px/1.25 Inter,sans-serif;color:#9AA9BD;text-align:center">Sócios<br />ativos</div>
+</div>
+</div>
+</div>
+
+<!-- 5 · LINHA DE LISTA -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">06 · Linha de lista</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:12px;background:#192434;border:1px solid #243448;border-radius:16px;padding:13px 14px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#32C869" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></div>
+<div style="flex:1;min-width:0">
+<div style="font:700 15.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Lote 1 · aniversário</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:6px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:4px 6px;white-space:nowrap">Eventos</span>
+<span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">02 set</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px">
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#32C869;white-space:nowrap">+ R$ 4.560</div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px;background:#192434;border:1px solid #243448;border-radius:16px;padding:13px 14px">
+<div style="width:38px;height:38px;flex:none;border-radius:11px;background:#3A3018;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5C73D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg></div>
+<div style="flex:1;min-width:0">
+<div style="font:700 15.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Gráfica Trindade</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:6px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#F5C73D;background:#3A3018;border-radius:7px;padding:4px 6px;white-space:nowrap">Marketing</span>
+<span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">28 ago</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px">
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− R$ 890</div>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 7 · INDICADOR DE ASSINATURAS -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">07 · Indicador de assinaturas</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div>
+<div style="width:36px;height:36px;border-radius:11px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div>
+</div>
+<div style="flex:1">
+<div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#9AA9BD">0 de 2 assinaturas</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#6B7C93;margin-top:5px">Ninguém assinou ainda</div>
+</div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:2%;height:100%;background:#6B7C93"></div></div>
+</div>
+
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">MS</div>
+<div style="width:36px;height:36px;border-radius:11px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div>
+</div>
+<div style="flex:1">
+<div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#F5C73D">1 de 2 assinaturas</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Marina Salgado assinou às 18:12</div>
+</div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:50%;height:100%;background:#F5C73D"></div></div>
+</div>
+
+<div style="background:#192434;border:1px solid #243448;border-radius:16px;padding:14px">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">MS</div>
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">LM</div>
+</div>
+<div style="flex:1">
+<div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#32C869">Quórum completo · 2 de 2</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Marina Salgado e Letícia Marchetti</div>
+</div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:100%;height:100%;background:#32C869"></div></div>
+</div>
+</div>
+</div>
+
+<!-- 8 · CAIXA DE BLOQUEIO -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">08 · Caixa de bloqueio</div>
+<div style="background:#3A1C24;border-radius:12px;padding:13px 14px;display:flex;gap:11px;align-items:flex-start">
+<svg style="flex:none;margin-top:1px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+<div>
+<div style="font:700 13px/1.25 Inter,sans-serif;color:#FF5F6D">Saída retida pelo cofre</div>
+<div style="font:400 12.5px/1.45 Inter,sans-serif;color:#E8A7AE;margin-top:5px;text-wrap:pretty">A saída só é executada quando a segunda assinatura for registrada.</div>
+</div>
+</div>
+</div>
+
+<!-- 6 · CARTÃO DE PROPOSTA -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">09 · Cartão de proposta · retida</div>
+<div style="background:#1F2D41;border:1px solid #243448;border-radius:16px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div style="min-width:0">
+<div style="font:700 15.5px/1.2 Inter,sans-serif;letter-spacing:-.015em;color:#fff">Som Beira-Mar ME</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#6B7C93;margin:6px 0 3px;white-space:nowrap">pix 24.881.402/0001-77</div>
+</div>
+<div style="font:800 16.5px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap">− R$ 8.400</div>
+</div>
+<div style="display:flex;align-items:center;gap:7px;margin-top:12px">
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF;background:#1A3852;border-radius:7px;padding:5px 7px;white-space:nowrap">Eventos</span>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#FF5F6D;background:#3A1C24;border-radius:7px;padding:5px 7px;white-space:nowrap">Retida</span>
+<span style="font:400 11px/1 Inter,sans-serif;color:#6B7C93">Marina · hoje 18:12</span>
+</div>
+
+<div style="height:1px;background:#243448;margin:14px 0"></div>
+
+<div style="display:flex;align-items:center;gap:12px">
+<div style="display:flex;gap:7px">
+<div style="width:36px;height:36px;border-radius:11px;background:#173B2E;display:flex;align-items:center;justify-content:center;font:700 12.5px/1 Inter,sans-serif;color:#32C869">MS</div>
+<div style="width:36px;height:36px;border-radius:11px;border:1.5px dashed #3A4A60;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></div>
+</div>
+<div style="flex:1">
+<div style="font:700 13px/1.2 Inter,sans-serif;font-variant-numeric:tabular-nums;color:#F5C73D">1 de 2 assinaturas</div>
+<div style="font:400 12.5px/1.3 Inter,sans-serif;color:#9AA9BD;margin-top:5px">Falta Letícia ou Rafael</div>
+</div>
+</div>
+<div style="height:5px;border-radius:7px;background:#243448;margin-top:13px;overflow:hidden"><div style="width:50%;height:100%;background:#F5C73D"></div></div>
+
+<div style="background:#3A1C24;border-radius:12px;padding:13px 14px;display:flex;gap:11px;align-items:flex-start;margin-top:14px">
+<svg style="flex:none;margin-top:1px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF5F6D" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+<div>
+<div style="font:700 13px/1.25 Inter,sans-serif;color:#FF5F6D">Saída retida pelo cofre</div>
+<div style="font:400 12.5px/1.45 Inter,sans-serif;color:#E8A7AE;margin-top:5px">Você já assinou. Falta a segunda assinatura para a saída sair.</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+<div style="background:#243448;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#6B7C93">Executar saída</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:13px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#fff">Comprovantes</div>
+</div>
+</div>
+</div>
+
+<!-- BOTÕES -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">10 · Botões</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="background:#1FA5FF;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#101823">Assinar saída</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#fff">Ver detalhes</div>
+<div style="background:#3A1C24;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#FF5F6D">Recusar</div>
+<div style="background:#243448;border-radius:13px;padding:14px;text-align:center;font:700 13px/1 Inter,sans-serif;color:#6B7C93">Desabilitado</div>
+</div>
+</div>
+
+<!-- CAMPOS -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">11 · Campos</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;margin-bottom:8px">Valor da saída</div>
+<div style="background:#192434;border:1px solid #1FA5FF;border-radius:13px;padding:13px 14px;font:800 18px/1 Inter,sans-serif;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#fff">R$ 8.400,00</div>
+</div>
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#9AA9BD;margin-bottom:8px">Chave do fornecedor</div>
+<div style="background:#192434;border:1px solid #243448;border-radius:13px;padding:14px;font:500 13px/1 Inter,sans-serif;color:#6B7C93">CNPJ, e-mail ou chave aleatória</div>
+</div>
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#FF5F6D;margin-bottom:8px">Comprovante</div>
+<div style="background:#192434;border:1px solid #FF5F6D;border-radius:13px;padding:14px;font:500 13px/1 Inter,sans-serif;color:#fff">nota-fiscal</div>
+<div style="font:400 12.5px/1.4 Inter,sans-serif;color:#FF5F6D;margin-top:7px">Anexe o comprovante. Sem ele a proposta não entra na fila.</div>
+</div>
+</div>
+</div>
+
+<!-- 9 · BARRA DE ABAS -->
+<div>
+<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7C93;margin-bottom:11px">12 · Barra de abas</div>
+<div style="position:relative;z-index:1;background:#141E2C;border-top:1px solid #243448;border-radius:0 0 4px 4px;padding:11px 8px 20px;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;margin:0 -16px -24px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1FA5FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"></rect><circle cx="12" cy="12" r="3"></circle></svg>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#1FA5FF">Cofre</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<div style="position:relative">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+<div style="position:absolute;top:-6px;right:-9px;min-width:17px;height:17px;border-radius:9px;background:#FF5F6D;border:2px solid #141E2C;display:flex;align-items:center;justify-content:center;font:700 10px/1 Inter,sans-serif;color:#101823;font-variant-numeric:tabular-nums">3</div>
+</div>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Aprovar</span>
+</div>
+<div style="display:flex;justify-content:center">
+<div style="width:58px;height:58px;border-radius:29px;background:#1FA5FF;box-shadow:0 8px 22px rgba(31,165,255,.4);display:flex;align-items:center;justify-content:center;margin-top:-30px;border:4px solid #141E2C">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101823" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 2v4"></path><path d="M16 2v4"></path></svg>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Festas</span>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6B7C93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+<span style="font:600 10.5px/1 Inter,sans-serif;color:#6B7C93">Perfil</span>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Peça em seguida: “as cinco telas do fluxo nesta nova linguagem, a partir de <a class="dv-oid" href="#4a">4a</a>” · “hero em verde e âmbar para livro-caixa e festas” · “estados de borda redesenhados”</p>
+</section>
+
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
