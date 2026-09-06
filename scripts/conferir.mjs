@@ -117,7 +117,11 @@ const { problemas, avisos } = await pagina.evaluate((largura) => {
   };
 
   for (const el of document.querySelectorAll('*')) {
-    if (el.closest('[aria-hidden="true"]')) continue;
+    // `aria-hidden`: fundo decorativo, que sangra por definição.
+    // `.sr-only`: texto só para leitor de tela. Ele vive numa caixa de 1px com
+    // `overflow:hidden`, então o retângulo do filho é maior que o do pai por
+    // construção — e nada disso aparece na tela. O que não se vê não transborda.
+    if (el.closest('[aria-hidden="true"],.sr-only')) continue;
     const r = el.getBoundingClientRect();
     if (r.width > 0 && (r.right > largura + 0.5 || r.left < -0.5)) {
       problemas.push(`transbordo: ${el.tagName.toLowerCase()}.${nomeDe(el).slice(0, 30)}`);

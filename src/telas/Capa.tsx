@@ -1,16 +1,14 @@
 import { Navigate } from 'react-router-dom';
-import { ArrowDown, BookOpen, Check, Clock, Info, ShieldCheck, Users } from 'lucide-react';
+
+import capa from '@/assets/capa.webp';
+import { BookOpen, Clock, Info } from 'lucide-react';
 
 import { Botao } from '@/componentes/Botao';
 import { Carregando } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
-import { CenarioCapa } from '@/componentes/CenarioCapa';
-import { FUNDO_CAPA } from '@/componentes/fundo';
-import { MarcaQuorum } from '@/componentes/MarcaQuorum';
 import { CorpoTela, RotuloSecao, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
-import { QUORUM, vitrinePublica } from '@/lib/dados';
-import { formatBRL } from '@/lib/format';
+import { vitrinePublica } from '@/lib/dados';
 import { sair, useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
 
@@ -47,198 +45,92 @@ export function Capa() {
 
 /* ── Visitante ──────────────────────────────────────────────────────────── */
 
-/** O valor da prancha. Ilustra a regra; não é registro de saída nenhuma. */
-const EXEMPLO_CENTAVOS = 840000;
+/**
+ * A capa é uma peça só: a arte da prancha, inteira.
+ *
+ * Decisão consciente de trocar código por imagem. A capa não mostra dado do
+ * banco — é argumento, não tela de trabalho —, então nada aqui precisa mudar
+ * quando o cofre muda. O que se perde é real e está tratado logo abaixo.
+ *
+ * O corte tem dois motivos, e nenhum é estético:
+ *
+ * 1. A barra de status da maquete (09:41 · 78%) saiu. Ela é o chrome do
+ *    aparelho, não do app: mantida, o celular desenha a dele por cima e ficam
+ *    duas.
+ * 2. A arte termina logo abaixo dos pilares, numa faixa lisa. Dali para baixo
+ *    é DOM de verdade, porque o botão e o link precisam ser botão e link —
+ *    com área de toque, foco visível e texto que escala. Controle desenhado
+ *    dentro de um PNG não clica, e "Ver um livro-caixa aberto" é a tese do
+ *    produto.
+ *
+ * A costura é invisível porque o degradê abaixo sai exatamente das cores da
+ * última linha da imagem: #01102F à esquerda, #000D26 à direita.
+ */
+const COSTURA =
+  'linear-gradient(100deg,#01102F,#000D26)';
 
 function Visitante() {
   const { dados } = useConsulta(() => vitrinePublica(), []);
 
   return (
-    <main
-      style={FUNDO_CAPA}
-      className="relative mx-auto flex min-h-dvh w-full max-w-[390px] flex-col overflow-hidden"
-    >
-      <CenarioCapa />
-
+    <main className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col bg-ground">
       {/*
-        `relative` e não `z-10`: a cena vem antes no DOM e o conteúdo é
-        posicionado, então já pinta por cima. Empilhar com z-index negativo na
-        cena jogaria ela atrás do fundo opaco do body e ela sumiria — foi
-        exatamente o que aconteceu na primeira tentativa.
+        `alt` vazio e o conteúdo em texto logo abaixo, invisível à vista.
+        Leitor de tela não lê pixel: sem isto, a manchete, a regra do quórum e
+        o valor simplesmente não existem para quem usa. Descrever tudo dentro
+        de um `alt` daria um parágrafo único e sem estrutura — separado, tem
+        título, hierarquia e ordem de leitura.
       */}
-      <div className="relative flex flex-1 flex-col px-4 pt-12 pb-6">
-        <header className="flex flex-col items-center text-center">
-          <MarcaQuorum tamanho={116} />
-          <h1 className="mt-1 text-[42px] leading-none font-extrabold tracking-[-0.035em] text-ink">
-            Quórum
-          </h1>
-          <p className="t-rotulo mt-3 text-[11px] tracking-[0.22em] text-blue-ink">
-            Tesouraria estudantil
-          </p>
-        </header>
+      <img
+        src={capa}
+        alt=""
+        width={780}
+        height={1232}
+        className="block w-full select-none"
+        draggable={false}
+      />
 
-        <p className="mt-7 text-center text-[26px] leading-[1.16] font-extrabold tracking-[-0.03em] text-balance text-ink">
-          O caixa da atlética
-          <br />
-          <span className="text-blue">na sua mão.</span>
+      <div className="sr-only">
+        <h1>Quórum — tesouraria estudantil</h1>
+        <p>O caixa da atlética na sua mão. Mais transparência, mais confiança, mais conquistas.</p>
+        <p>
+          Duas assinaturas de três: com o quórum atingido, a saída é aprovada.
+          Livro-caixa aberto. Tudo registrado.
         </p>
+      </div>
 
-        <p className="t-corpo mt-3 text-center text-pretty text-ink">
-          Mais transparência. Mais confiança.
-          <br />
-          Mais conquistas.
-        </p>
+      <div
+        style={{ background: COSTURA }}
+        className="flex flex-1 flex-col gap-2 px-4 pt-5 pb-6"
+      >
+        <a
+          href="/entrar"
+          className="flex min-h-[58px] items-center justify-center rounded-[18px] bg-blue px-4 text-center text-[16px] font-bold text-ground"
+        >
+          Entrar →
+        </a>
 
-        <Diagrama />
-
-        <ul className="mt-5 grid grid-cols-3 gap-3">
-          <Pilar icone={Users}>
-            {QUORUM.de} de {QUORUM.entre}
-            <br />
-            assinaturas
-          </Pilar>
-          <Pilar icone={BookOpen}>
-            Livro-caixa
-            <br />
-            aberto
-          </Pilar>
-          <Pilar icone={ShieldCheck}>
-            Tudo
-            <br />
-            registrado
-          </Pilar>
-        </ul>
-
-        <div className="mt-auto flex flex-col gap-2 pt-10">
+        {/*
+          O livro-caixa aberto é a tese do produto, e a capa precisa deixar
+          entrar sem conta nenhuma. Só aparece quando existe uma entidade
+          pública de verdade para abrir — link para o vazio não vai ao ar.
+        */}
+        {dados?.entidade && (
           <a
-            href="/entrar"
-            className="flex min-h-[58px] items-center justify-center rounded-[18px] bg-blue px-4 text-center text-[16px] font-bold text-ground"
+            href={`/e/${dados.entidade.slug}/livro`}
+            className="flex min-h-[46px] items-center justify-center text-center text-[14px] font-bold text-blue"
           >
-            Entrar →
+            Ver um livro-caixa aberto
           </a>
+        )}
 
-          {/*
-            O livro-caixa aberto é a tese do produto, e a capa precisa deixar
-            entrar sem conta nenhuma. Só aparece quando existe uma entidade
-            pública de verdade para abrir — link para o vazio não vai ao ar.
-          */}
-          {dados?.entidade && (
-            <a
-              href={`/e/${dados.entidade.slug}/livro`}
-              className="flex min-h-[44px] items-center justify-center text-center text-[14px] font-bold text-blue"
-            >
-              Ver um livro-caixa aberto
-            </a>
-          )}
+        <div className="mx-1 mt-1 h-px bg-white/12" />
 
-          <div className="mx-1 mt-1 h-px bg-white/12" />
-
-          <p className="t-meta pt-1 text-center text-ink-3">
-            Hackathon Universitário&nbsp;&nbsp;·&nbsp;&nbsp;Superteam Brasil
-          </p>
-        </div>
+        <p className="t-meta pt-1 text-center text-ink-3">
+          Hackathon Universitário&nbsp;&nbsp;·&nbsp;&nbsp;Superteam Brasil
+        </p>
       </div>
     </main>
-  );
-}
-
-/**
- * A regra em forma: duas assinaturas de três, e o que acontece depois.
- *
- * É diagrama, não extrato. Por isso as pessoas são iniciais e não nomes, e não
- * há data nem comprovante em lugar nenhum: inventar uma saída que teria
- * acontecido, com gente que existe, seria mentir para quem avalia. O que a peça
- * afirma é só a regra — e essa é verdadeira.
- */
-function Diagrama() {
-  return (
-    <section
-      aria-label="Como funciona"
-      className="mx-auto mt-7 w-full max-w-[286px] rounded-[20px] border border-white/12 bg-[#0F2743]/60 p-3.5 backdrop-blur-md"
-    >
-      <div className="flex items-center justify-center gap-2.5">
-        <Avatar iniciais="LM" assinou />
-        <Avatar iniciais="MS" assinou />
-        <Avatar iniciais="RT" />
-      </div>
-
-      {/*
-        A chave que abraça os três. Desenhada e não composta com bordas: uma
-        borda só encosta no que ela cerca, e aqui a linha precisa passar por
-        baixo dos três e virar para cima nas pontas.
-      */}
-      <svg
-        viewBox="0 0 190 14"
-        className="mx-auto mt-2.5 h-3.5 w-[186px]"
-        fill="none"
-        aria-hidden
-      >
-        <path
-          d="M4 0 L4 8 Q4 12 8 12 L182 12 Q186 12 186 8 L186 0"
-          stroke="#9AA9BD"
-          strokeOpacity=".6"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          
-        />
-      </svg>
-
-      <p className="t-corpo mt-2 text-center text-ink">
-        {QUORUM.de} de {QUORUM.entre} assinaturas
-      </p>
-
-      <ArrowDown size={19} strokeWidth={2} className="mx-auto my-2 text-ink-2" aria-hidden />
-
-      <div className="flex min-h-[74px] items-center gap-3.5 rounded-[16px] border border-white/12 bg-[#12304F]/55 px-4 py-3.5">
-        <span className="flex size-[34px] flex-none items-center justify-center rounded-full bg-green">
-          <Check size={19} strokeWidth={3} className="text-ground" aria-hidden />
-        </span>
-        <div className="min-w-0">
-          <div className="t-item text-ink">Saída aprovada</div>
-          {/* Valor em tinta neutra: o verde já está no selo, e duas cores
-              semânticas visíveis por tela é o teto. */}
-          <div className="t-valor mt-1.5 text-ink-2">{formatBRL(EXEMPLO_CENTAVOS)}</div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Quem assinou e quem falta.
- *
- * O que falta é tracejado e cinza, nunca vermelho: a pessoa não recusou, só
- * ainda não assinou. Vermelho em avatar de gente é regra quebrada.
- */
-function Avatar({ iniciais, assinou = false }: { iniciais: string; assinou?: boolean }) {
-  return (
-    <span
-      className={`relative flex size-[54px] flex-none items-center justify-center rounded-[14px] text-[15px] font-extrabold ${
-        assinou
-          ? 'border border-green/45 bg-green-tint text-green'
-          : 'border border-dashed border-dash text-ink-3'
-      }`}
-    >
-      {iniciais}
-      <span
-        className={`absolute -right-1.5 -bottom-1.5 flex size-[21px] items-center justify-center rounded-full ${
-          assinou ? 'bg-green' : 'border-[1.5px] border-ink-3/70 bg-transparent'
-        }`}
-      >
-        {assinou && <Check size={13} strokeWidth={3.5} className="text-ground" aria-hidden />}
-      </span>
-    </span>
-  );
-}
-
-function Pilar({ icone, children }: { icone: typeof Users; children: React.ReactNode }) {
-  return (
-    <li className="flex min-h-[104px] flex-col items-center gap-2.5 rounded-[16px] px-1 py-3 text-center">
-      <TileIcone icone={icone} acento="blue" tamanho="xl" />
-      <span className="text-[12.5px] leading-[1.35] font-semibold text-pretty text-ink">
-        {children}
-      </span>
-    </li>
   );
 }
 
