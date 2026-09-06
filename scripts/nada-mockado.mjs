@@ -19,7 +19,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { chromium } from 'playwright';
 
-const BASE = process.env.BASE_URL ?? 'http://localhost:3000';
+const BASE = process.env.BASE_URL ?? 'http://localhost:8080';
 const RAIZ = process.cwd();
 const EXECUTAVEL =
   process.env.CHROMIUM_PATH ??
@@ -29,7 +29,6 @@ const EXECUTAVEL =
 const ROTAS = (process.env.ROTAS ?? [
   '/',
   '/entrar',
-  '/estilo',
   '/e/aaaeng',
   '/e/aaaeng/aprovacoes',
   '/e/aaaeng/livro',
@@ -48,7 +47,7 @@ const anota = (rota, texto) => problemas.push(`${rota} — ${texto}`);
 function arquivos(dir) {
   const saida = [];
   for (const nome of readdirSync(dir)) {
-    if (nome === 'node_modules' || nome === '.next' || nome === '.git') continue;
+    if (nome === 'node_modules' || nome === 'dist' || nome === '.git') continue;
     const caminho = join(dir, nome);
     if (statSync(caminho).isDirectory()) saida.push(...arquivos(caminho));
     else if (/\.(tsx?|mjs)$/.test(caminho)) saida.push(caminho);
@@ -67,10 +66,7 @@ const MARCAS = [
   { padrao: /onClick=\{\s*\(\)\s*=>\s*\{\s*\}\s*\}/, o_que: 'clique que não faz nada' },
 ];
 
-for (const caminho of arquivos(join(RAIZ, 'app')).concat(
-  arquivos(join(RAIZ, 'components')),
-  arquivos(join(RAIZ, 'lib')),
-)) {
+for (const caminho of arquivos(join(RAIZ, 'src'))) {
   const linhas = readFileSync(caminho, 'utf8').split('\n');
   linhas.forEach((linha, i) => {
     for (const { padrao, o_que } of MARCAS) {
@@ -96,8 +92,9 @@ for (const rota of ROTAS) {
   const resposta = await pagina.goto(BASE + rota, { waitUntil: 'networkidle' });
   const status = resposta?.status() ?? 0;
 
-  // 307 aqui é o portão de login mandando o visitante para /entrar, e é o
-  // comportamento certo — não é rota quebrada.
+  // Num SPA o servidor devolve sempre o mesmo index.html: quem decide a rota é
+  // o roteador, no navegador. Por isso status nunca denuncia link morto aqui —
+  // quem denuncia é o texto da tela, conferido na terceira etapa.
   if (status >= 400) {
     anota(rota, `respondeu ${status}`);
     continue;

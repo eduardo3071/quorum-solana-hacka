@@ -1,37 +1,13 @@
-node_modules/
-.next/
-out/
-build/
-dist/
-
-# Segredos — NUNCA commitar.
-# .env.local guarda a service role key e as chaves dos signatários.
+node_modules
+dist
 .env
 .env.local
-.env*.local
-.env.production
-
-# Chaves da Solana. O formato padrão de keypair é um .json com o array de
-# bytes do segredo — não parece segredo à primeira vista e passa despercebido
-# num `git add .`. Estes nomes cobrem o que o solana-keygen e os scripts de
-# devnet costumam gerar.
-*.keypair.json
-id.json
-keypair*.json
-wallet*.json
-**/keys/
-**/.keys/
-**/keypairs/
-
-# Vercel / TS
-.vercel
-*.tsbuildinfo
-next-env.d.ts
-
+*.local
 .DS_Store
-*.pem
-npm-debug.log*
 
-# Estado do cofre na devnet: guarda a createKey do multisig.
-.cofre-devnet.json
-dist
+# O app Next tem o próprio ciclo de build, em backend/.
+backend/node_modules
+backend/.next
+backend/.env.local
+backend/.cofre-devnet.json
+tsconfig.tsbuildinfo

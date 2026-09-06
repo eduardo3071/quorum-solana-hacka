@@ -14,7 +14,7 @@
 import { chromium } from 'playwright';
 
 const ROTA = process.argv[2] ?? '/estilo';
-const BASE = process.env.BASE_URL ?? 'http://localhost:3000';
+const BASE = process.env.BASE_URL ?? 'http://localhost:8080';
 const LARGURA = 390;
 
 // O ambiente já traz o Chromium; não baixe outro.

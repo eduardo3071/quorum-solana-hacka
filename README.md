@@ -1,157 +1,140 @@
 # Quórum
 
-Tesouraria com quórum para entidades estudantis brasileiras.
+Tesouraria com quórum para entidades estudantis brasileiras — atléticas,
+comissões de formatura, empresas juniores.
 
-O dinheiro da atlética fica num cofre que exige **duas assinaturas de três**
-para qualquer saída, e o livro-caixa é **aberto aos associados, sem login**.
-Cofre 2-de-3 na Solana devnet (Squads v4) e livro-caixa público.
+O dinheiro da entidade fica num cofre que exige **duas assinaturas de três**
+para qualquer saída, e o **livro-caixa é aberto aos associados, sem login**.
 
-As regras que o código não quebra estão em [`CLAUDE.md`](CLAUDE.md). O design
-está fechado: as pranchas em `design/` são a especificação, e `design/TOKENS.md`
-traz os tokens aplicados em `app/globals.css`.
+O problema que resolve: hoje o dinheiro da atlética passa pela conta pessoal do
+tesoureiro, e ninguém consegue conferir nada.
 
----
+## Duas partes, um repositório
 
-## Rodar na sua máquina
+```
+/            interface · React + Vite · roda no navegador
+/backend     API · Next · assina no cofre, guarda as chaves
+```
+
+Estavam em repositórios separados porque cada ferramenta quer a raiz para si.
+Agora é um `main` só, com as duas histórias preservadas.
+
+| parte | quem constrói | onde publica |
+| --- | --- | --- |
+| raiz | Lovable | `*.lovable.app` |
+| `backend/` | Vercel, com **Root Directory = `backend`** | `*.vercel.app` |
+
+A separação **não é organização, é segurança**: as bibliotecas da rede e as três
+chaves privadas dos signatários não podem ir para o navegador. Chave privada no
+pacote do front é chave publicada. O front pede, o servidor assina.
+
+O contrato entre os dois está em [`docs/API.md`](docs/API.md).
+
+## Rodar
 
 ```bash
+# interface
 npm install
-cp .env.example .env.local     # preencha, veja a tabela abaixo
-npm run chaves                 # gera os três signatários da devnet
-# cole cada endereço em https://faucet.solana.com (rede: devnet)
-npm run saldo                  # confere se o faucet caiu
-npm run seed                   # popula o banco com o cenário do vídeo
-npm run dev
+cp .env.example .env
+npm run dev                 # http://localhost:8080
+
+# API, noutro terminal
+cd backend
+npm install
+cp .env.example .env.local
+npm run chaves              # gera os três signatários da devnet
+npm run seed                # popula o banco com o cenário do vídeo
+npm run dev                 # http://localhost:3000
 ```
 
-O cofre na rede é criado pela tela de aprovações (`?estado=vivo`) ou pelo
-terminal:
+Com os dois de pé, ponha `VITE_API_URL=http://localhost:3000` no `.env` da raiz.
 
-```bash
-npm run ciclo                  # cria o cofre, propõe, assina, executa
-```
+### Variáveis
 
-## Variáveis de ambiente
+Na raiz, tudo público — protegido pela política de acesso do banco, não pelo
+segredo da chave:
 
-| Variável | Onde | O que é |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | público | URL do projeto |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | público | chave anônima, protegida por RLS |
-| `SUPABASE_SERVICE_ROLE_KEY` | **servidor** | ignora RLS — vazou, acabou |
-| `SOLANA_RPC_URL` | **servidor** | RPC dedicado de devnet |
-| `SIGNER_TESOUREIRA` · `PRESIDENTE` · `CONSELHO` | **servidor** | chaves em base58, só devnet |
-| `NEXT_PUBLIC_SITE_URL` | público | endereço de produção, para o link do e-mail voltar certo |
-| `SIGNER_COMPRADOR` | servidor | opcional — quem paga o ingresso na demonstração |
-| `COTACAO_CENTAVOS_POR_SOL` | servidor | opcional — cotação da demonstração, padrão 10000000 |
-| `ORIGENS_PERMITIDAS` | servidor | origens liberadas para chamar `/api/*` de outro domínio |
-
-Nada sensível leva o prefixo `NEXT_PUBLIC_`. O bundler remove do browser tudo
-que não tem esse prefixo, e `lib/env.ts` estoura no boot dizendo qual variável
-falta — em vez de virar um 401 obscuro três telas adiante.
-
-## Publicar na Vercel
-
-1. **Importe o repositório** em vercel.com. O Next é detectado sozinho; não há
-   configuração de build para mexer.
-2. **Cadastre as variáveis** da tabela acima em Settings → Environment
-   Variables, para Production e Preview. Marque `NEXT_PUBLIC_SITE_URL` com o
-   domínio final, com `https://` e sem barra no fim.
-3. **Autorize o domínio no Supabase**: Authentication → URL Configuration.
-   Ponha o domínio em *Site URL* e adicione `https://SEU-DOMINIO/auth/confirmar`
-   em *Redirect URLs*. Sem isso o link do e-mail devolve a pessoa para
-   `localhost` — é a falha número um de quem publica.
-4. **Aplique as migrações** de `supabase/migrations/` no projeto, em ordem, se
-   o banco for outro.
-5. `npm run seed` apontando para o banco de produção, se quiser o cenário do
-   vídeo lá.
-
-### As três coisas que quebram na Vercel e não na sua máquina
-
-**Endpoint de Solana no runtime edge.** As bibliotecas usam APIs de Node e
-falham com erro obscuro de módulo. Todo Route Handler que toca a rede declara
-`export const runtime = 'nodejs'`. Se criar um novo, declare também.
-
-**Link do e-mail voltando para `localhost`.** Acontece quando a origem é
-montada do cabeçalho `host` e a URL de produção não está na lista de redirect
-do Supabase. `lib/acoes.ts` prefere `NEXT_PUBLIC_SITE_URL`, depois o domínio
-que a Vercel injeta, e só então o cabeçalho — mas o Supabase recusa qualquer
-URL fora da lista, então o passo 3 acima não é opcional.
-
-**RPC público estrangulando no meio da gravação.** O RPC público de devnet
-limita por requisições e derruba a demonstração na pior hora. Em produção
-`SOLANA_RPC_URL` é obrigatório: sem ele, `conexao()` estoura com uma frase que
-diz o que fazer, em vez de virar 429 intermitente.
-
-## Rotas
-
-| Rota | Prancha | Acesso |
-| --- | --- | --- |
-| `/estilo` | folha de estilo | conferência |
-| `/e/[slug]` | 5a-cofre | privada, com abas |
-| `/e/[slug]/aprovacoes` | 5b-aprovações | privada, com abas |
-| `/e/[slug]/propor` | — | privada, só diretoria |
-| `/e/[slug]/festas` | — | privada, com abas |
-| `/e/[slug]/socios` | — | privada, com abas |
-| `/e/[slug]/livro` | 5c-livro-caixa | **pública, sem login** |
-| `/f/[slug]` | 5d-página da festa | pública |
-| `/perfil` | 5e-perfil | privada, com abas |
-
-`?estado=vivo` em `/e/[slug]/aprovacoes` troca o painel pelo que fala com a
-devnet de verdade.
-
-## Scripts
-
-| Comando | O que faz |
+| variável | o que é |
 | --- | --- |
-| `npm run dev` · `build` · `start` | Next |
-| `npm run typecheck` | TypeScript, sem emitir |
-| `npm run seed` | popula o banco (`-- --forcar` refaz do zero) |
-| `npm run conferir <rota>` | layout e acessibilidade da rota, contra as regras do `CLAUDE.md` |
-| `npm run nada-mockado` | varre o app inteiro atrás de link morto, controle decorativo e dado de mentira |
-| `npm run chaves` | gera os três signatários da devnet |
-| `npm run saldo` | saldo em SOL dos signatários |
-| `npm run setup` · `ciclo` · `assinar` · `executar` | o cofre pelo terminal |
+| `VITE_SUPABASE_URL` | URL do projeto Supabase |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | chave anônima |
+| `VITE_API_URL` | **deixe em branco** — o padrão já é o endereço da API |
 
-`conferir` roda com o servidor de pé e sai com código 1 se alguma regra falhar,
-então serve em CI:
+Em `backend/`, o que não pode sair do servidor: `SUPABASE_SERVICE_ROLE_KEY`,
+`SOLANA_RPC_URL` e as três `SIGNER_*`. Detalhes em
+[`backend/README.md`](backend/README.md).
 
-```bash
-npm run dev &
-npm run conferir /e/aaaeng/livro
+**A `service_role` nunca entra na raiz.** Ela ignora toda política de acesso; no
+navegador seria o banco inteiro aberto.
+
+### Os dois endereços não são o mesmo
+
+```
+https://…lovable.app    ← a interface
+https://…vercel.app     ← a API
 ```
 
-## Interface em outro domínio
+O nome é parecido e a confusão é fácil. O domínio da interface não tem
+`/api/estado` nem `/api/executar`: apontar `VITE_API_URL` para ele faz toda
+chamada do cofre receber o `index.html` de volta. O código avisa no console
+quando os dois coincidem, e resposta sem JSON vira uma mensagem que nomeia a
+variável errada.
 
-As telas deste repositório são completas e funcionam sozinhas. Se a interface
-for construída fora — no Lovable, por exemplo —, este app vira a **API** e o
-outro domínio vira a **interface**:
+O endereço da interface vai em dois lugares, esses sim obrigatórios:
+`ORIGENS_PERMITIDAS` no ambiente da API, e os *Redirect URLs* do Supabase.
 
-- `docs/API.md` — o contrato dos endpoints e o que o RLS deixa cada um ler.
-- `docs/BRIEF-lovable.md` — briefing pronto para colar, com tokens, regras e
-  vocabulário.
+## Telas
 
-Cadastre a origem em `ORIGENS_PERMITIDAS` e o domínio nos *Redirect URLs* do
-Supabase, senão o link do e-mail não volta.
+| rota | acesso |
+| --- | --- |
+| `/` | pública — capa, com o formulário de entrada |
+| `/entrar` | pública |
+| `/e/:slug` | privada · cofre |
+| `/e/:slug/aprovacoes` | privada · a tela do vídeo |
+| `/e/:slug/aprovacoes?estado=vivo` | privada · o cofre na rede, de verdade |
+| `/e/:slug/propor` | privada · só diretoria |
+| `/e/:slug/festas` · `/socios` | privada |
+| `/e/:slug/livro` | **pública, sem login** |
+| `/f/:slug` | **pública, sem login** |
+| `/perfil` | privada |
 
-As bibliotecas da rede e as chaves privadas continuam **só no servidor**. É por
-isso que os endpoints existem: o front pede, o servidor assina. Chave privada
-no bundle do front é chave publicada.
+O livro-caixa e a página da festa abrem sem conta nenhuma. É a tese do produto —
+não coloque login na frente delas.
 
-## Sobre o pagamento
+## As regras que o código não quebra
 
-**Em produção esta etapa é Pix**, por parceiro autorizado: o comprador lê um QR
-de Pix, o dinheiro cai em conta de pagamento da entidade e o parceiro converte
-o saldo para o cofre. O desenho é idêntico — referência única por compra,
-conciliação por essa referência, lançamento automático no livro-caixa. Muda
-quem custodia e quem confirma.
+Estão em [`CLAUDE.md`](CLAUDE.md), e valem para as duas partes. As que mais
+custam quando se esquece:
 
-**Neste repositório o pagamento acontece em devnet**, porque é o que dá para
-demonstrar de ponta a ponta sem intermediário autorizado. Por isso nenhum
-componente de execução afirma que é Pix. Ver o cabeçalho de `lib/pagamento.ts`.
+- **Dinheiro é integer em centavos.** Nunca float, nem em variável
+  intermediária: `19.99 * 100` dá `1998.9999999999998`.
+- **Falta de quórum não é erro.** `/api/executar` responde 200 com
+  `bloqueado: true`, e a tela mostra o bloco vermelho desenhado. Um `catch`
+  genérico ali destrói a demonstração.
+- **Nenhuma palavra de blockchain na interface**, e **nenhum "Pix" nos
+  componentes de execução**. O pagamento roda em devnet; em produção seria Pix
+  por parceiro autorizado, e dizer que já é seria mentir para quem avalia.
+- **DARK-ONLY.** O design está fechado: as pranchas em `design/` são a
+  especificação.
 
-Rede: **devnet, sempre**. `conexao()` recusa qualquer RPC de mainnet.
+## Conferir
 
----
+Cada parte tem os seus, e os dois saem com código 1 se algo falhar:
 
-O bundle original do Claude Design está em `project/`, e o histórico das
-decisões de design em `chats/`.
+```bash
+# interface
+npm run build && npx vite preview --port 8080 &
+npm run conferir /e/aaaeng/livro    # layout e acessibilidade
+npm run nada-mockado                # link morto, controle decorativo, dado falso
+
+# API
+cd backend && npm run dev &
+npm run conferir /estilo
+```
+
+`conferir` mede sobreposição de texto, chip quebrado em duas linhas, valor
+partido no meio, transbordo, foco visível, nome de controle e contraste WCAG AA.
+
+`nada-mockado` abre cada tela, segue cada link e reprova destino que responde
+erro ou cai em "não encontrado" — mais ícone de ação sem ação e campo fora de
+formulário.
