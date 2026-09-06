@@ -10,3 +10,4 @@ backend/node_modules
 backend/.next
 backend/.env.local
 backend/.cofre-devnet.json
+tsconfig.tsbuildinfo
