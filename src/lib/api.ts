@@ -9,9 +9,28 @@
  * Contrato completo em `docs/API.md` do repositório da API.
  */
 
+/**
+ * Onde a API mora.
+ *
+ * CUIDADO: não é o endereço desta interface. Os dois têm nome parecido —
+ * `solana-hacka-university.lovable.app` é o SPA, `...vercel.app` é a API — e
+ * apontar um para o outro faz toda chamada do cofre receber o index.html de
+ * volta. O padrão abaixo já está certo; só mexa se a API mudar de domínio.
+ */
 const BASE = (
   import.meta.env.VITE_API_URL ?? 'https://solana-hacka-university.vercel.app'
 ).replace(/\/+$/, '');
+
+if (
+  typeof window !== 'undefined' &&
+  BASE.replace(/^https?:\/\//, '') === window.location.host
+) {
+  console.error(
+    `[api] VITE_API_URL aponta para esta mesma interface (${BASE}). ` +
+      'A API é outro endereço — o do app Next. Deixe a variável em branco para ' +
+      'usar o padrão.',
+  );
+}
 
 /** Erro que já vem escrito para aparecer na tela, em português. */
 export class ErroDaApi extends Error {
@@ -35,6 +54,19 @@ async function chamar<T>(rota: string, corpo?: unknown): Promise<T> {
   } catch {
     // Sem rede: é outra tela, não o mesmo erro de um 503 do servidor.
     throw new ErroDaApi('O celular está sem internet', 0);
+  }
+
+  const tipo = resposta.headers.get('content-type') ?? '';
+
+  // HTML onde deveria vir JSON é quase sempre o mesmo engano: VITE_API_URL
+  // apontando para a interface em vez da API. Dizer isso é mais útil que
+  // "erro inesperado" — o sintoma some assim que a variável muda.
+  if (!tipo.includes('json')) {
+    throw new ErroDaApi(
+      `O endereço da API respondeu ${resposta.status} sem JSON. Confira VITE_API_URL: ` +
+        'ela precisa apontar para o app da API, não para esta interface.',
+      resposta.status,
+    );
   }
 
   const dados = await resposta.json().catch(() => ({}));

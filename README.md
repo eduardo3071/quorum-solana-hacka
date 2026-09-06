@@ -36,10 +36,26 @@ npm run dev               # http://localhost:8080
 | --- | --- |
 | `VITE_SUPABASE_URL` | URL do projeto Supabase |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | chave anônima — pública por natureza, protegida por RLS |
-| `VITE_API_URL` | endereço da API; sem ela, usa a de produção |
+| `VITE_API_URL` | **deixe em branco** — o padrão já é o endereço da API |
 
 **A chave `service_role` nunca entra aqui.** Ela ignora toda política de acesso;
 no navegador seria o banco inteiro aberto.
+
+### Os dois endereços não são o mesmo
+
+```
+https://solana-hacka-university.lovable.app   ← a interface (este projeto)
+https://solana-hacka-university.vercel.app    ← a API (o app Next)
+```
+
+O nome é parecido e a confusão é fácil. O domínio da interface **não tem**
+`/api/estado` nem `/api/executar`: apontar `VITE_API_URL` para ele faz toda
+chamada do cofre receber o `index.html` de volta. Por isso o código avisa no
+console quando as duas coincidem, e a resposta sem JSON vira uma mensagem que
+diz exatamente qual variável está errada.
+
+O endereço da interface vai em dois outros lugares, esses sim obrigatórios:
+`ORIGENS_PERMITIDAS` no ambiente da API, e os *Redirect URLs* do Supabase.
 
 Para o link do e-mail voltar certo, o domínio precisa estar em **Authentication
 → URL Configuration → Redirect URLs** no painel do Supabase. E para o front
