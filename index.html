@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Quórum · tesouraria com quórum</title>
+    <meta
+      name="description"
+      content="O dinheiro da entidade num cofre que exige duas assinaturas de três, com livro-caixa aberto aos associados."
+    />
+    <!--
+      O fundo vai no HTML e não só no React: entre o primeiro byte e a primeira
+      renderização existe um instante, e nele um app escuro não pode piscar
+      branco. Era o "erro de tela branca" perseguido no repositório anterior.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html, body, #raiz { min-height: 100dvh; background: #101823; }
+      body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="raiz"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
