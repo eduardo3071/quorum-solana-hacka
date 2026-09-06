@@ -1,10 +1,17 @@
 node_modules
 dist
-.env
-.env.local
-*.local
 .DS_Store
 tsconfig.tsbuildinfo
+
+# O `.env` da raiz É versionado, de propósito — leia o cabeçalho dele. Só as
+# duas credenciais públicas do Supabase entram lá, e o site publicado pelo
+# Lovable é construído a partir deste repositório: sem o arquivo, a build sai
+# sem credencial nenhuma.
+#
+# Para sobrepor sem mexer no versionado, use `.env.local`, que fica de fora:
+.env.local
+.env.*.local
+*.local
 
 # O app Next tem o próprio ciclo de build, em backend/.
 backend/node_modules
