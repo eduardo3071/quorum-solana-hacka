@@ -99,11 +99,28 @@ const { problemas, avisos } = await pagina.evaluate((largura) => {
     }
   }
 
-  // Nada transborda a largura da prancha.
+  /*
+   * Nada transborda a largura da prancha.
+   *
+   * Fundo decorativo é exceção, e é exceção de verdade: uma cena de fundo
+   * sangra pelas bordas por definição, como uma foto de capa sangra. Marcar
+   * isso apontaria justamente para o comportamento certo. O critério é
+   * `aria-hidden`: o que não é lido não é conteúdo, e o que não é conteúdo não
+   * tem largura a respeitar.
+   *
+   * `className` num nó SVG é um SVGAnimatedString, não uma string — sem o
+   * `baseVal` a mensagem saía "[object SVGAnimatedString]" e não dizia nada.
+   */
+  const nomeDe = (el) => {
+    const c = el.className;
+    return typeof c === 'string' ? c : (c?.baseVal ?? '');
+  };
+
   for (const el of document.querySelectorAll('*')) {
+    if (el.closest('[aria-hidden="true"]')) continue;
     const r = el.getBoundingClientRect();
     if (r.width > 0 && (r.right > largura + 0.5 || r.left < -0.5)) {
-      problemas.push(`transbordo: ${el.tagName.toLowerCase()}.${String(el.className).slice(0, 30)}`);
+      problemas.push(`transbordo: ${el.tagName.toLowerCase()}.${nomeDe(el).slice(0, 30)}`);
     }
   }
 
