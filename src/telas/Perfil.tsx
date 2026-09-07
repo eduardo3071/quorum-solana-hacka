@@ -8,17 +8,13 @@ import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
 import {
-  QUORUM,
   atualizarMeuPerfil,
   entidadePorSlug,
-  lancamentos,
   nomeDoPapel,
   pendentes,
   propostas,
   signatarios,
-  totais,
 } from '@/lib/dados';
-import { formatCompacto } from '@/lib/format';
 import { retratoReduzido } from '@/lib/imagem';
 import { sair, useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
@@ -47,14 +43,12 @@ export function Perfil() {
       const entidade = await entidadePorSlug(slug);
       if (!entidade) return null;
 
-      const [linhas, lista, diretoria] = await Promise.all([
-        lancamentos(entidade.id),
+      const [lista, diretoria] = await Promise.all([
         propostas(entidade.id),
         signatarios(entidade.id),
       ]);
       return {
         entidade,
-        soma: totais(linhas),
         emAberto: pendentes(lista),
         diretoria,
       };
@@ -108,7 +102,7 @@ export function Perfil() {
     );
   }
 
-  const { entidade, soma, emAberto, diretoria } = dados;
+  const { entidade, emAberto, diretoria } = dados;
 
   const atual: Pessoais = salvos ?? {
     nome: eu.nome,
@@ -124,39 +118,6 @@ export function Perfil() {
       <Hero titulo="Perfil" />
 
       <CorpoTela respiroAbas className="pt-3">
-        <section className="flex-none rounded-card border border-line bg-surface">
-          <div className="flex items-center gap-[13px] p-3.5">
-            <Retrato nome={atual.nome} foto={atual.foto} />
-            <div className="min-w-0 flex-1">
-              <h2 className="t-secao text-ink">{atual.nome}</h2>
-              <div className="mt-[5px] truncate text-[12px] leading-[1.3] text-ink-3">
-                {eu.email ?? sessao.user?.email}
-              </div>
-              {linhaCurso && (
-                <div className="mt-[3px] truncate text-[12px] leading-[1.3] text-ink-2">
-                  {linhaCurso}
-                </div>
-              )}
-              <div className="mt-2 flex gap-[7px]">
-                <span className="t-chip rounded-chip bg-blue-tint px-[7px] py-[5px] text-blue">
-                  {nomeDoPapel[eu.papel]}
-                </span>
-                {eu.papel !== 'socio' && (
-                  <span className="t-chip rounded-chip bg-green-tint px-[7px] py-[5px] text-green">
-                    Assinante
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 border-t border-line">
-            <Numero valor={formatCompacto(soma.saldo)} rotulo="Sob sua guarda" borda />
-            <Numero valor={String(emAberto.length)} rotulo="Aguardando" borda />
-            <Numero valor={`${QUORUM.de} de ${QUORUM.entre}`} rotulo="Quórum do cofre" />
-          </div>
-        </section>
-
         {editando ? (
           <FormularioPessoais
             inicial={atual}
@@ -409,25 +370,6 @@ function Campo({
         className="mt-1.5 block w-full rounded-tile-sm border border-line bg-surface-2 px-[13px] py-[12px] text-[13px] leading-none text-ink placeholder:text-ink-3 focus:border-blue focus:outline-none"
       />
     </label>
-  );
-}
-
-function Numero({
-  valor,
-  rotulo,
-  borda = false,
-}: {
-  valor: string;
-  rotulo: string;
-  borda?: boolean;
-}) {
-  return (
-    <div className={`p-3 ${borda ? 'border-r border-line' : ''}`}>
-      <div className="num text-[15px] leading-none font-extrabold tracking-[-0.03em] text-ink">
-        {valor}
-      </div>
-      <div className="mt-1.5 text-[10.5px] leading-[1.3] text-ink-3">{rotulo}</div>
-    </div>
   );
 }
 
