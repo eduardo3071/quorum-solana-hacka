@@ -51,17 +51,45 @@ export async function cofreDaEntidade(
   };
 }
 
+/**
+ * Aponta a entidade para um cofre novo — e solta as propostas do antigo.
+ *
+ * `propostas.tx_index` é um índice DENTRO de um multisig; ele não significa
+ * nada fora dele. Trocar o cofre sem limpar os índices deixava cada proposta
+ * apontando para uma proposta que não existe no cofre novo, e `situacao()`
+ * estourava ao procurá-la — 503 na tela, "não conseguimos ler o cofre agora",
+ * sem nada quebrado na rede.
+ *
+ * Pior: era uma armadilha sem saída. `POST /api/proposta` é idempotente e
+ * desiste quando `tx_index` já tem valor, então a proposta ficava presa para
+ * sempre num cofre que não é mais o da entidade, e nenhum botão da tela a
+ * tirava de lá.
+ *
+ * Zerar é o certo, e não perde nada: a saída antiga continua na devnet, não
+ * assinada e sem executar, e a linha do banco volta ao estado "existe no livro,
+ * ainda não foi levada ao cofre" — que tem tela e botão próprios.
+ */
 export async function gravarCofreDaEntidade(
   entidadeId: string,
   multisigPda: PublicKey,
   vaultPda: PublicKey,
 ) {
-  const { error } = await criarClienteServiceRole()
+  const supabase = criarClienteServiceRole();
+
+  const { error } = await supabase
     .from('entidades')
     .update({ multisig_pda: multisigPda.toBase58(), vault_pda: vaultPda.toBase58() })
     .eq('id', entidadeId);
 
   if (error) throw error;
+
+  const { error: erroPropostas } = await supabase
+    .from('propostas')
+    .update({ tx_index: null, destino_devnet: null })
+    .eq('entidade_id', entidadeId)
+    .not('tx_index', 'is', null);
+
+  if (erroPropostas) throw erroPropostas;
 }
 
 /* ── A proposta ─────────────────────────────────────────────────────────── */
