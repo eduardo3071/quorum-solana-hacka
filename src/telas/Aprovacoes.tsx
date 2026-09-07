@@ -317,6 +317,35 @@ function nomesDosAssentos(diretoria: Membro[]): Record<Assento, string> {
   };
 }
 
+/** O e-mail de cada assento, para o aviso de "falta a sua assinatura". */
+function contatosDosAssentos(
+  diretoria: Membro[],
+): Partial<Record<Assento, string | null>> {
+  const de = (papel: Membro['papel']) =>
+    diretoria.find((m) => m.papel === papel)?.email ?? null;
+
+  return {
+    tesoureira: de('tesoureiro'),
+    presidente: de('presidente'),
+    conselho: de('conselho'),
+  };
+}
+
+/** Quem da diretoria ainda não assinou esta proposta, tirando você. */
+function faltantesDaProposta(
+  diretoria: Membro[],
+  proposta: { assinaturas: { membro_id: string }[] },
+  meuId: string | null,
+): Membro[] {
+  return diretoria.filter(
+    (m) =>
+      m.id !== meuId &&
+      m.papel !== 'socio' &&
+      !proposta.assinaturas.some((a) => a.membro_id === m.id),
+  );
+}
+
+
 function Moldura({
   slug,
   entidade,
