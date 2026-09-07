@@ -74,25 +74,17 @@ export function Receber() {
 
   return (
     <Moldura slug={slug}>
-      <Painel slug={slug} chave={dados.chave.chave} saldo={dados.chave.saldoCentavos} />
+      <Painel slug={slug} chave={dados.chave.chave} />
     </Moldura>
   );
 }
 
-function Painel({
-  slug,
-  chave,
-  saldo,
-}: {
-  slug: string;
-  chave: string;
-  saldo: number;
-}) {
+function Painel({ slug, chave }: { slug: string; chave: string }) {
   const [copiado, setCopiado] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [falha, setFalha] = useState<string | null>(null);
   const [lancadas, setLancadas] = useState<EntradaLancada[] | null>(null);
-  const [saldoAtual, setSaldoAtual] = useState(saldo);
+
 
   async function copiar() {
     try {
