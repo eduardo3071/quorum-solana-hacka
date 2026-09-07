@@ -93,7 +93,20 @@ async function subirApi() {
    * Resolvendo o arquivo, o filho é um processo Node direto: funciona igual nos
    * três sistemas e o `kill()` acerta quem deve.
    */
-  const next = createRequire(import.meta.url).resolve('next/dist/bin/next');
+  let next;
+  try {
+    next = createRequire(import.meta.url).resolve('next/dist/bin/next');
+  } catch {
+    console.error(
+      'Não achei o Next aqui. Rode `npm install` dentro de backend/ — o do\n' +
+        'diretório de cima não serve, são dois projetos.',
+    );
+    process.exit(1);
+  }
+
+  const base = `http://127.0.0.1:${PORTA_API}`;
+  console.log(`Subindo a API em ${base}`);
+  console.log('Na primeira vez ela compila, e isso leva um tempo.\n');
 
   const filho = spawn(process.execPath, [next, 'dev', '-p', String(PORTA_API)], {
     env: {
@@ -102,36 +115,74 @@ async function subirApi() {
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon-de-mentira',
       SUPABASE_SERVICE_ROLE_KEY: 'servico-de-mentira',
     },
-    stdio: 'ignore',
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
-
-  filho.on('error', (e) => {
-    console.error(`Não consegui subir a API: ${e.message}`);
-    process.exit(1);
-  });
-
-  const base = `http://127.0.0.1:${PORTA_API}`;
 
   /*
-   * Espera pelo 401 de `/api/executar`, e não por `/api/estado`: a recusa por
-   * falta de token acontece antes de qualquer ida à rede, então ela responde
-   * na hora. `estado` iria à devnet e demoraria — ou penduraria, num ambiente
-   * sem saída.
+   * O que o Next disser fica guardado, e só aparece se algo der errado.
+   *
+   * Antes isto era `stdio: 'ignore'`: quando o Next falhava, o script ficava
+   * dois minutos calado e terminava dizendo "não subiu", sem a única
+   * informação que resolveria — o que o Next tinha reclamado.
    */
-  for (let i = 0; i < 120; i++) {
+  let saida = '';
+  const guardar = (d) => {
+    saida += d.toString();
+    if (saida.length > 20000) saida = saida.slice(-20000);
+  };
+  filho.stdout.on('data', guardar);
+  filho.stderr.on('data', guardar);
+
+  let morreu = null;
+  filho.on('error', (e) => (morreu = e.message));
+  filho.on('exit', (codigo) => {
+    if (morreu === null) morreu = `o Next encerrou sozinho (código ${codigo})`;
+  });
+
+  const explodir = (motivo) => {
+    derrubar(filho);
+    const cauda = saida.trim().split('\n').slice(-25).join('\n');
+    console.error(`\n✗ ${motivo}`);
+    if (cauda) console.error(`\nO que o Next disse:\n${cauda}`);
+    process.exit(1);
+  };
+
+  const LIMITE = 180;
+  for (let s = 1; s <= LIMITE; s++) {
     await new Promise((r) => setTimeout(r, 1000));
+
+    if (morreu) explodir(morreu);
+
+    /*
+     * Se a porta estiver ocupada, o Next NÃO falha: ele sobe na porta seguinte
+     * e avisa. Sem esta checagem o script sondaria a 3311 para sempre, que é
+     * exatamente a cara de um travamento.
+     */
+    if (/Port \d+ is in use/i.test(saida)) {
+      explodir(
+        `A porta ${PORTA_API} está ocupada, então o Next subiu noutra. ` +
+          'Feche o que está usando essa porta e rode de novo.',
+      );
+    }
+
     try {
       const r = await fetch(`${base}/api/executar`, { method: 'POST' });
-      if (r.status === 401) return { filho, base };
+      if (r.status === 401) {
+        console.log(`API de pé em ${s}s.\n`);
+        return { filho, base };
+      }
     } catch {
       // Ainda subindo.
     }
+
+    // Um sinal de vida a cada cinco segundos. Silêncio prolongado num terminal
+    // é indistinguível de processo travado, e a pessoa mata o script.
+    if (s % 5 === 0) process.stdout.write(`  … ${s}s\n`);
   }
 
-  derrubar(filho);
-  throw new Error(
-    `A API não subiu em ${PORTA_API} depois de 2 minutos. ` +
-      'Confira se a porta está livre e se `npm install` já rodou aqui.',
+  explodir(
+    `A API não respondeu em ${LIMITE}s. Confira se a porta ${PORTA_API} está ` +
+      'livre e se `npm install` já rodou aqui.',
   );
 }
 
@@ -224,6 +275,15 @@ async function bate(base, rota, caso) {
 /* ── O relatório ────────────────────────────────────────────────────────── */
 
 const remoto = process.argv[2]?.replace(/\/+$/, '');
+
+// Ctrl+C no meio da espera não pode deixar o Next rodando atrás: a porta ficaria
+// presa e a próxima execução falharia por um motivo que não tem nada a ver.
+let emAndamento = null;
+process.on('SIGINT', () => {
+  console.log('\n\nInterrompido. Derrubando a API…');
+  derrubar(emAndamento);
+  process.exit(130);
+});
 const problemas = [];
 
 let filho = null;
@@ -234,6 +294,7 @@ try {
   if (!remoto) {
     falso = await subirFalso();
     ({ filho, base } = await subirApi());
+    emAndamento = filho;
   }
 
   console.log(`Conferindo o acesso em ${base}\n`);
