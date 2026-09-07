@@ -8,7 +8,6 @@ import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
 import {
-  QUORUM,
   atualizarMeuPerfil,
   entidadePorSlug,
   lancamentos,
@@ -16,9 +15,7 @@ import {
   pendentes,
   propostas,
   signatarios,
-  totais,
 } from '@/lib/dados';
-import { formatCompacto } from '@/lib/format';
 import { retratoReduzido } from '@/lib/imagem';
 import { sair, useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
@@ -124,39 +121,6 @@ export function Perfil() {
       <Hero titulo="Perfil" />
 
       <CorpoTela respiroAbas className="pt-3">
-        <section className="flex-none rounded-card border border-line bg-surface">
-          <div className="flex items-center gap-[13px] p-3.5">
-            <Retrato nome={atual.nome} foto={atual.foto} />
-            <div className="min-w-0 flex-1">
-              <h2 className="t-secao text-ink">{atual.nome}</h2>
-              <div className="mt-[5px] truncate text-[12px] leading-[1.3] text-ink-3">
-                {eu.email ?? sessao.user?.email}
-              </div>
-              {linhaCurso && (
-                <div className="mt-[3px] truncate text-[12px] leading-[1.3] text-ink-2">
-                  {linhaCurso}
-                </div>
-              )}
-              <div className="mt-2 flex gap-[7px]">
-                <span className="t-chip rounded-chip bg-blue-tint px-[7px] py-[5px] text-blue">
-                  {nomeDoPapel[eu.papel]}
-                </span>
-                {eu.papel !== 'socio' && (
-                  <span className="t-chip rounded-chip bg-green-tint px-[7px] py-[5px] text-green">
-                    Assinante
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 border-t border-line">
-            <Numero valor={formatCompacto(soma.saldo)} rotulo="Sob sua guarda" borda />
-            <Numero valor={String(emAberto.length)} rotulo="Aguardando" borda />
-            <Numero valor={`${QUORUM.de} de ${QUORUM.entre}`} rotulo="Quórum do cofre" />
-          </div>
-        </section>
-
         {editando ? (
           <FormularioPessoais
             inicial={atual}
