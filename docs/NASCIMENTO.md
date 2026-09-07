@@ -14,6 +14,42 @@ toque no banco.
 
 ---
 
+## Duas pessoas, e o produto só conhece uma
+
+Este documento nasceu errado num ponto, e a correção muda a ordem das fases.
+
+Ele tratava "criar conta" e "criar entidade" como o mesmo movimento. Não são —
+e a diferença não é de tela, é de **quem são essas pessoas**:
+
+| | a diretoria | o associado |
+| --- | --- | --- |
+| quantos | três por entidade | dezenas a centenas |
+| o que faz | propõe, assina, executa, cadastra | paga, compra ingresso, confere |
+| como entra | funda a entidade, ou é convidada | **pede para entrar** |
+| o que vê | o cofre por dentro | saldo, recibos, livro-caixa |
+
+Uma atlética tem **três** signatários e **sessenta e dois** associados. Ou seja:
+para cada pessoa que funda uma entidade, vinte pedem para entrar numa que já
+existe. O produto hoje só sabe atender a primeira — e a Fase 1, como foi
+entregue, colocou justamente a porta mais rara em primeiro lugar.
+
+Foi a única que existia. Não é a que deveria vir primeiro.
+
+**O caminho certo:** a pessoa cria a conta e cai numa tela que pergunta *de qual
+entidade você faz parte?* — busca pelo nome, pede para entrar, e a diretoria
+aprova. Fundar uma entidade é o link discreto embaixo, para quem realmente vai
+fundar.
+
+**O banco já aguenta isso sem migração.** O enum `papel_membro` tem `socio`, e
+`membros.ativo` existe e ninguém usa. Uma solicitação pendente é exatamente
+`papel = 'socio', ativo = false`: aparece para a diretoria aprovar, e enquanto
+não aprovam, as políticas de RLS — que filtram por `ativo` — já não deixam essa
+pessoa ver nada. A peça estava pronta e o produto não a usava.
+
+Isso entra como **Fase 1b**, e é ela que deveria ter sido a Fase 1.
+
+---
+
 ## Fase 0 · O que existe hoje, medido
 
 Auditado em `6fb9288`, arquivo por arquivo. Não é impressão.
@@ -103,6 +139,56 @@ aparece primeiro e aponta para `/entrar?aba=criar`; a tela de criar não expulsa
 mais quem já entrou; o e-mail vem fixo da sessão, sem campo para digitar; e
 `/api/vinculo` é chamado quando a sessão não acha membro. `npm run conferir` em
 `/` e `/entrar` sem violação, e `npm run acesso` passando nos sete crachás.
+
+---
+
+## Fase 1b · Pedir para entrar — a porta que faltou
+
+**O problema:** vinte pessoas pedem para entrar numa entidade para cada uma que
+funda. A Fase 1 entregou a porta da minoria em primeiro lugar, porque era a
+única que existia.
+
+- [ ] Na tela de "sem entidade", **"Entrar numa entidade"** passa a ser o cartão
+      principal, com busca por nome. "Criar uma entidade" vira link discreto no
+      fim — quem funda sabe que veio fundar.
+- [ ] `GET /api/entidades?busca=` — lista pública de nome, tipo e universidade.
+      Nada de saldo: é a lista telefônica, não o cofre.
+- [ ] `POST /api/solicitacao` — insere `membros` com `papel='socio'` e
+      `ativo=false`, ligado ao `user_id` da sessão. **Sem migração:** o enum e a
+      coluna já existem.
+- [ ] Recusar solicitação repetida para a mesma entidade — a chave única
+      `(entidade_id, user_id)` da 0001 já garante isso; o endpoint só precisa
+      traduzir o erro para uma frase.
+- [ ] `Socios.tsx` mostra os pendentes para a diretoria, com aprovar e recusar.
+      Aprovar é `ativo = true`.
+- [ ] Enquanto pendente, a capa diz "pedido enviado a X" em vez de "sem
+      entidade" — hoje as duas situações são a mesma tela, e não são a mesma
+      coisa.
+
+**Por que é seguro:** as políticas de RLS já filtram por `ativo`. Uma
+solicitação pendente não enxerga cofre, proposta nem associado — sem que
+ninguém escreva uma política nova.
+
+**Como conferir:** de uma conta nova, peça para entrar na A.A.A. Engenharia.
+De outra, como diretoria, aprove. A primeira passa a ver o livro-caixa e o
+saldo, e continua sem conseguir assinar nada.
+
+---
+
+## Fase 1c · O produto do associado
+
+Hoje o `socio` entra e vê a tela da diretoria com botões que não pode usar. São
+sessenta e dois deles por entidade, e nenhuma tela é deles.
+
+- [ ] `/e/:slug` do associado é outra tela: mensalidade em dia ou não, próximo
+      evento, ingressos comprados, saldo da entidade, livro-caixa.
+- [ ] Sem "Propor saída", sem "Aprovar", sem "Sócios". A barra de abas do
+      associado tem menos abas, e isso é a interface dizendo a verdade.
+- [ ] Recibo de cada compra, com o comprovante da rede.
+
+**Por que importa para o julgamento:** a tese do produto é transparência para
+quem paga. Se quem paga não tem tela, a tese é uma promessa sobre a tela de
+outra pessoa.
 
 ---
 
@@ -228,7 +314,8 @@ arquivar — e arquivada continua legível.
 
 ## O caminho completo, quando as sete estiverem de pé
 
-1. Entra com o e-mail → **"Criar uma entidade"** *(Fase 1)*
+1. Entra com o e-mail → **"Entrar numa entidade"** ou, quem funda,
+   **"Criar uma entidade"** *(Fase 1 e 1b)*
 2. Escolhe tipo, nome e universidade → cai no cofre vazio *(existe)*
 3. Cadastra presidente e conselho *(Fase 3)* → convite por e-mail *(Fase 7)*
 4. Cria o cofre 2 de 3 *(Fase 2)*
