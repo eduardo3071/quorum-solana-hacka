@@ -455,9 +455,12 @@ export function PainelCofre({
 
       {bloqueio && (
         <BlocoBloqueio className="mt-3.5">
-          Falta a assinatura de {primeiroNome(nomes.presidente)} ou de{' '}
-          {primeiroNome(nomes.conselho)}. Ao assinar, a saída é executada na
-          hora.
+          {faltantes.length > 0
+            ? `Falta a assinatura de ${faltantes
+                .map((a) => primeiroNome(nomes[a]))
+                .join(' ou de ')}. Ao assinar, a saída é executada na hora.`
+            : 'Falta a assinatura da outra pessoa da diretoria. Ao assinar, a saída é executada na hora.'}
+
           {bloqueio.explorador && (
             <>
               {' '}
