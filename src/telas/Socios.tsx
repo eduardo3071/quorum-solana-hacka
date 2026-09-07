@@ -34,6 +34,8 @@ import { NaoEncontrada } from './NaoEncontrada';
  */
 export function Socios() {
   const { slug = '' } = useParams();
+  const { membro: eu } = useSessao();
+
 
   const { dados, carregando, erro, recarregar } = useConsulta(async () => {
     const entidade = await entidadePorSlug(slug);
