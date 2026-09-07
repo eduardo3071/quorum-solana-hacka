@@ -148,11 +148,12 @@ export function FormularioCriarEntidade() {
         <div className="min-w-0">
           <div className="t-item text-ink">{pronto.nome} está criada</div>
           <p className="t-desc mt-1.5 text-pretty text-green-ink">
-            Abra o e-mail em <strong>{pronto.email}</strong> e toque no link para
-            entrar como primeiro signatário. Se o link não chegar, peça outro na
-            aba <strong>Entrar</strong> — a entidade já existe e espera por você.
+            Confirme o e-mail em <strong>{pronto.email}</strong> e depois entre
+            com sua senha para assumir como primeiro signatário. A entidade já
+            existe e espera por você.
           </p>
         </div>
+
       </div>
     );
   }
@@ -228,8 +229,19 @@ export function FormularioCriarEntidade() {
           </p>
         </div>
       ) : (
-        <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
+        <>
+          <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
+          <CampoSenha
+            id="senha-criar"
+            rotulo="Crie uma senha"
+            valor={senha}
+            aoMudar={setSenha}
+            autoComplete="new-password"
+            dica="Pelo menos 8 caracteres."
+          />
+        </>
       )}
+
 
       {erro && <p className="t-desc text-pretty text-red">{erro}</p>}
 
