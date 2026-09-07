@@ -129,13 +129,7 @@ function Painel({ slug, chave }: { slug: string; chave: string }) {
         </button>
       </div>
 
-      <div className="flex min-h-[64px] items-center justify-between gap-3 rounded-card border border-line bg-surface px-3.5 py-3">
-        <div className="flex flex-col">
-          <span className="t-rotulo text-ink-3">No caixa</span>
-          <span className="t-valor text-ink">{formatBRL(saldoAtual)}</span>
-        </div>
-        <ArrowDown size={19} strokeWidth={1.7} className="text-green" aria-hidden />
-      </div>
+
 
       <p className="t-desc text-pretty text-ink-2">
         Quem quiser pagar a entidade — outra liga, um patrocinador, um associado —
