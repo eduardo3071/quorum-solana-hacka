@@ -31,6 +31,9 @@ export async function POST(req: Request) {
   try {
     membro = await exigirMembro(req, {
       slug: typeof corpo.entidadeSlug === 'string' ? corpo.entidadeSlug : null,
+      // Ver a chave e conferir o extrato é de qualquer associado: o livro-caixa
+      // já é aberto, e esconder o endereço de quem paga não protege ninguém.
+      papeis: ['presidente', 'tesoureiro', 'conselho', 'socio'],
     });
   } catch (e) {
     const recusa = respostaDeAcesso(e);
@@ -39,12 +42,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const recebimento = await chaveDeRecebimento(membro.entidade_id, membro.nome ?? '');
+    const recebimento = await chaveDeRecebimento(membro.entidade_id, membro.entidade_slug);
 
     if (corpo.conferir === true) {
       const { lancadas, conferidas } = await conferirEntradas(
         membro.entidade_id,
-        membro.nome ?? '',
+        membro.entidade_slug,
       );
       return NextResponse.json({ ...recebimento, lancadas, conferidas });
     }
