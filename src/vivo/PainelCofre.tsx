@@ -31,6 +31,38 @@ import { PassoTempo } from './PassoTempo';
  */
 export type Assento = 'tesoureira' | 'presidente' | 'conselho';
 
+export const ASSENTOS: Assento[] = ['tesoureira', 'presidente', 'conselho'];
+
+/** Do papel na diretoria para o lugar que a pessoa ocupa no cofre. */
+export const ASSENTO_DO_PAPEL: Record<string, Assento> = {
+  tesoureiro: 'tesoureira',
+  presidente: 'presidente',
+  conselho: 'conselho',
+};
+
+/**
+ * O aviso para quem falta assinar.
+ *
+ * Abre o e-mail já escrito, com o destino, o valor e o link da tela de
+ * aprovações — a pessoa avisada assina no lugar dela, no aparelho dela.
+ */
+export function avisoPorEmail(
+  email: string,
+  proposta: PropostaDoPainel,
+  link = window.location.href,
+): string {
+  const assunto = 'Falta sua assinatura para liberar uma saída';
+  const corpo = [
+    `Uma saída de ${formatBRL(proposta.valorCentavos)} para ${proposta.destino} está retida no cofre.`,
+    '',
+    'Falta a sua assinatura para o quórum. Abra o link abaixo, entre com a sua conta e assine pelo seu lugar:',
+    link,
+  ].join('\n');
+
+  return `mailto:${email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+}
+
+
 /** A proposta em reais. O valor em SOL é da rede; este é o do livro-caixa. */
 export type PropostaDoPainel = {
   destino: string;
