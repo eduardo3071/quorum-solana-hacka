@@ -17,6 +17,7 @@
  */
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
+import { createRequire } from 'node:module';
 import process from 'node:process';
 
 const PORTA_API = 3311;
@@ -79,7 +80,22 @@ function subirFalso() {
 /* ── A API ──────────────────────────────────────────────────────────────── */
 
 async function subirApi() {
-  const filho = spawn('npx', ['next', 'dev', '-p', String(PORTA_API)], {
+  /*
+   * Chama o `next` pelo caminho do arquivo, com o mesmo Node que roda este
+   * script — e não `spawn('npx', …)`.
+   *
+   * No Windows o executável é `npx.cmd`, e `spawn` sem `shell` não resolve a
+   * extensão: dá `ENOENT` e o script morre antes de conferir nada. `shell:true`
+   * consertaria a chamada e quebraria a limpeza, porque aí quem morre no
+   * `kill()` é o shell, não o servidor — e a porta fica ocupada até alguém
+   * reiniciar a máquina.
+   *
+   * Resolvendo o arquivo, o filho é um processo Node direto: funciona igual nos
+   * três sistemas e o `kill()` acerta quem deve.
+   */
+  const next = createRequire(import.meta.url).resolve('next/dist/bin/next');
+
+  const filho = spawn(process.execPath, [next, 'dev', '-p', String(PORTA_API)], {
     env: {
       ...process.env,
       NEXT_PUBLIC_SUPABASE_URL: `http://127.0.0.1:${PORTA_FALSA}`,
@@ -87,6 +103,11 @@ async function subirApi() {
       SUPABASE_SERVICE_ROLE_KEY: 'servico-de-mentira',
     },
     stdio: 'ignore',
+  });
+
+  filho.on('error', (e) => {
+    console.error(`Não consegui subir a API: ${e.message}`);
+    process.exit(1);
   });
 
   const base = `http://127.0.0.1:${PORTA_API}`;
@@ -107,8 +128,33 @@ async function subirApi() {
     }
   }
 
+  derrubar(filho);
+  throw new Error(
+    `A API não subiu em ${PORTA_API} depois de 2 minutos. ` +
+      'Confira se a porta está livre e se `npm install` já rodou aqui.',
+  );
+}
+
+/**
+ * Derruba o servidor e o que ele tiver aberto.
+ *
+ * `kill()` manda o sinal só para o filho direto. No Linux e no Mac o `next dev`
+ * entende o sinal e leva os processos dele junto; no Windows não existe sinal —
+ * `TerminateProcess` mata só aquele PID e os netos ficam segurando a porta.
+ * `taskkill /T` derruba a árvore inteira.
+ */
+function derrubar(filho) {
+  if (!filho || filho.killed) return;
+
+  if (process.platform === 'win32') {
+    try {
+      spawn('taskkill', ['/pid', String(filho.pid), '/T', '/F'], { stdio: 'ignore' });
+      return;
+    } catch {
+      // Sem taskkill (raro): cai no kill comum, melhor que nada.
+    }
+  }
   filho.kill();
-  throw new Error(`A API não subiu em ${PORTA_API} depois de 2 minutos.`);
 }
 
 /* ── Os casos ───────────────────────────────────────────────────────────── */
@@ -229,7 +275,7 @@ try {
     );
   }
 } finally {
-  filho?.kill();
+  derrubar(filho);
   falso?.close();
 }
 
