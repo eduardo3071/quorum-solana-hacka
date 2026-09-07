@@ -12,11 +12,11 @@ import { FormularioCriarEntidade } from './FormularioCriarEntidade';
 import { FormularioEntrada } from './FormularioEntrada';
 
 const AVISOS: Record<string, string> = {
-  expirado: 'Esse link já venceu ou já foi usado. Peça outro abaixo.',
-  link: 'O link veio incompleto. Peça outro abaixo.',
-  'outro-navegador':
-    'Abra o link no mesmo aparelho em que você pediu. Se preferir, peça outro aqui.',
+  expirado: 'Sua sessão venceu. Entre de novo com e-mail e senha.',
+  link: 'O link veio incompleto. Entre com e-mail e senha.',
+  'outro-navegador': 'Entre com seu e-mail e sua senha para continuar.',
 };
+
 
 type Aba = 'entrar' | 'criar';
 
