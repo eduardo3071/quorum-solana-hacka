@@ -11,7 +11,13 @@ import { Hero } from '@/componentes/Hero';
 import { IndicadorAssinaturas } from '@/componentes/IndicadorAssinaturas';
 import { CorpoTela, RotuloSecao, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
-import { PainelCofre, type Assento } from '@/vivo/PainelCofre';
+import {
+  ASSENTO_DO_PAPEL,
+  PainelCofre,
+  avisoPorEmail,
+  type Assento,
+} from '@/vivo/PainelCofre';
+
 import {
   QUORUM,
   associados,
@@ -118,6 +124,9 @@ export function Aprovacoes() {
               rubrica: alvo.rubrica,
             }}
             nomes={nomesDosAssentos(diretoria)}
+            contatos={contatosDosAssentos(diretoria)}
+            meuAssento={eu ? (ASSENTO_DO_PAPEL[eu.papel] ?? null) : null}
+
             saldoCentavos={soma.saldo}
             associados={quantos}
             entidadeSlug={slug}
