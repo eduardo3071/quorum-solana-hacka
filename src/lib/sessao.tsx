@@ -101,6 +101,14 @@ export function ProvedorDeSessao({ children }: { children: React.ReactNode }) {
 export const useSessao = () => useContext(Contexto);
 
 export async function sair() {
-  await supabase.auth.signOut();
-  window.location.assign('/entrar');
+  // Navega para /entrar aconteça o que acontecer: se a chamada de saída
+  // falhar ou travar na rede, o botão não pode virar peso de papel — quem
+  // quer sair precisa sair.
+  try {
+    await supabase.auth.signOut();
+  } catch {
+    // Sessão local já era; a saída visual acontece mesmo assim.
+  } finally {
+    window.location.assign('/entrar');
+  }
 }
