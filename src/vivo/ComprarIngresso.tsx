@@ -282,6 +282,22 @@ export function ComprarIngresso({
             direto no cofre da entidade.
           </p>
 
+          {/*
+            A única linha da interface que fala de rede, e ela paga o próprio
+            espaço.
+
+            O código do QR carrega um endereço, e endereço é o mesmo texto em
+            qualquer rede — quem escanear com a carteira apontada para a rede
+            errada manda valor de verdade para um endereço que ninguém consegue
+            abrir. São centavos, e mesmo assim é dinheiro de alguém.
+
+            Some junto com a demonstração: quando o pagamento for por parceiro
+            autorizado, não há rede de teste nem aviso a dar.
+          */}
+          <p className="t-meta mt-2 text-center text-pretty text-ink-3">
+            Demonstração em rede de teste — nenhum valor real é movimentado.
+          </p>
+
           <div className="mt-3.5 border-t border-line pt-3">
             <div className="t-rotulo text-ink-2">Referência da compra</div>
             {/* Rola em vez de quebrar: referência partida no meio é referência
