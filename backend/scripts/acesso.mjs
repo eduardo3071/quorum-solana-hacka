@@ -345,13 +345,35 @@ try {
     console.log(`${falhou ? '✗' : '✓'} ${caso.nome.padEnd(38)} ${linhas.join('  ')}`);
   }
 
-  // `/api/estado` fica aberta de propósito. Se um dia alguém a trancar sem
-  // querer, o livro-caixa público perde a fonte — melhor descobrir aqui.
+  /*
+   * `/api/estado` fica aberta de propósito, e o que se confere aqui é só isso:
+   * que ela NÃO exige sessão. O código dela pode ser qualquer um.
+   *
+   * Em particular, 503 é esperado em quem já tem um `.cofre-devnet.json`: com
+   * um cofre registrado, `situacao()` vai à rede, e este conferidor aponta o
+   * RPC para uma porta fechada de propósito. Quem nunca criou cofre recebe 200,
+   * porque a leitura para antes de sair da máquina. As duas coisas passam — o
+   * que reprovaria é 401 ou 403.
+   */
   const estado = await fetch(`${base}/api/estado`);
-  if (estado.status === 401 || estado.status === 403) {
-    problemas.push(`/api/estado trancou (${estado.status}); ela é pública de propósito`);
+  const trancada = estado.status === 401 || estado.status === 403;
+
+  if (trancada) {
+    problemas.push(
+      `/api/estado respondeu ${estado.status}: ela é pública de propósito, e o ` +
+        'livro-caixa aberto depende disso.',
+    );
   }
-  console.log(`✓ ${'/api/estado segue aberta'.padEnd(38)} estado ${estado.status}`);
+
+  const nota =
+    estado.status === 200
+      ? ''
+      : '  ← não é tranca; a rede está fechada neste conferidor';
+
+  console.log(
+    `${trancada ? '✗' : '✓'} ${'/api/estado não pede sessão'.padEnd(38)} ` +
+      `estado ${estado.status}${nota}`,
+  );
 
   if (remoto) {
     console.log(
