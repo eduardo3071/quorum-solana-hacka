@@ -109,6 +109,29 @@ export function Aprovacoes() {
   if (!dados) return <NaoEncontrada />;
 
   const { entidade, abertas, valorRetido, diretoria, alvo, soma, quantos } = dados;
+  const ocupados = assentosOcupados(diretoria);
+
+  // Duas pessoas da diretoria, no mínimo: uma saída só é retida de verdade se
+  // existir uma segunda pessoa capaz de assinar.
+  if (ocupados.length < QUORUM.de) {
+    return (
+      <Moldura
+        slug={slug}
+        entidade={entidade.nome}
+        subtitulo="Falta um segundo assinante"
+        variante="blue"
+      >
+        <Vazio
+          titulo="A diretoria precisa de duas pessoas"
+          acao={{ texto: 'Abrir sócios ativos', href: `/e/${slug}/socios` }}
+        >
+          Hoje só {diretoria[0]?.nome ?? 'uma pessoa'} pode assinar. Promova
+          outra pessoa a presidência, tesouraria ou conselho fiscal em Sócios
+          ativos — assim que isso acontecer, esta tela se atualiza sozinha.
+        </Vazio>
+      </Moldura>
+    );
+  }
 
   if (aoVivo) {
     return (
@@ -130,7 +153,9 @@ export function Aprovacoes() {
             }}
             nomes={nomesDosAssentos(diretoria)}
             contatos={contatosDosAssentos(diretoria)}
+            assentosOcupados={ocupados}
             meuAssento={eu ? (ASSENTO_DO_PAPEL[eu.papel] ?? null) : null}
+
 
             saldoCentavos={soma.saldo}
             associados={quantos}
