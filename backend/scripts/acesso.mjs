@@ -114,6 +114,31 @@ async function subirApi() {
       NEXT_PUBLIC_SUPABASE_URL: `http://127.0.0.1:${PORTA_FALSA}`,
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'anon-de-mentira',
       SUPABASE_SERVICE_ROLE_KEY: 'servico-de-mentira',
+
+      /*
+       * As chaves do cofre saem de cena, e isto NÃO é detalhe.
+       *
+       * O Next carrega o `.env.local` de quem roda, e quem já gerou as chaves
+       * tem ali as três de verdade. Sem estas linhas, o caso "signatária no
+       * cofre dela → passa" atravessava a autorização e ia até o fim: criava um
+       * multisig na devnet, abastecia o caixa, abria uma proposta e
+       * SOBRESCREVIA o `.cofre-devnet.json` — trocando o cofre para o qual a
+       * demonstração aponta. A cada execução, outro. Aconteceu de verdade antes
+       * desta correção.
+       *
+       * O formato `<...>` é o que `signatario()` já reconhece como não
+       * preenchido: ele recusa antes de qualquer ida à rede, e a recusa vira
+       * 400 — que é o que este conferidor quer ver, porque significa "passou
+       * pela fechadura e parou na configuração".
+       *
+       * Um conferidor de fechadura não abre a porta para ver se abriu.
+       */
+      SIGNER_TESOUREIRA: '<conferidor-de-acesso>',
+      SIGNER_PRESIDENTE: '<conferidor-de-acesso>',
+      SIGNER_CONSELHO: '<conferidor-de-acesso>',
+      // Segunda tranca: se algum caminho futuro escapar da primeira, a rede é
+      // uma porta fechada em vez da devnet.
+      SOLANA_RPC_URL: 'http://127.0.0.1:1',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });

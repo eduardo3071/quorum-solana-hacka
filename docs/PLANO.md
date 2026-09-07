@@ -180,7 +180,10 @@ problema visto de três ângulos.
   adivinhar em qual cofre mexer é o erro que ninguém percebe até o dinheiro sair
   do lugar errado.
 
-**Como conferir:** `npm run acesso`, em `backend/`. Ele sobe um GoTrue de
+**Como conferir:** `npm run acesso`, em `backend/`. Ele é inofensivo: apaga as
+três chaves do cofre do ambiente do filho, então nenhum caso chega à devnet.
+Sem isso o caso que deve passar ia até o fim e criava um multisig de verdade a
+cada execução — um conferidor de fechadura não abre a porta para ver se abriu. Ele sobe um GoTrue de
 mentira e a API contra ele, roda os sete casos nos quatro endpoints e sai com
 código 1 se algum falhar. O Supabase de mentira não é preciosismo: sem ele todo
 token é recusado porque a validação não alcança o Supabase real, e o caso
