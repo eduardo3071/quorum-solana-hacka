@@ -135,6 +135,22 @@ export function Cofre() {
           </a>
         )}
 
+        {/*
+          A entidade também RECEBE. A chave é a do caixa do cofre — sem ela na
+          tela, o cofre só sabia sair.
+        */}
+        {entidade.multisig_pda && (
+          <a
+            href={`/e/${slug}/receber`}
+            className="flex min-h-[52px] items-center justify-between gap-3 rounded-card border border-green/30 bg-green-tint px-3.5 py-3"
+          >
+            <span className="t-desc text-pretty text-ink">
+              Receber dinheiro na chave da entidade
+            </span>
+            <span className="t-chip whitespace-nowrap text-green">Ver ›</span>
+          </a>
+        )}
+
         {esperando > 0 && (
           <a
             href={`/e/${slug}/socios`}
