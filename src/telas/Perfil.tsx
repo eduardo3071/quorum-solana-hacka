@@ -105,7 +105,7 @@ export function Perfil() {
     );
   }
 
-  const { entidade, soma, emAberto, diretoria } = dados;
+  const { entidade, emAberto, diretoria } = dados;
 
   const atual: Pessoais = salvos ?? {
     nome: eu.nome,
@@ -373,25 +373,6 @@ function Campo({
         className="mt-1.5 block w-full rounded-tile-sm border border-line bg-surface-2 px-[13px] py-[12px] text-[13px] leading-none text-ink placeholder:text-ink-3 focus:border-blue focus:outline-none"
       />
     </label>
-  );
-}
-
-function Numero({
-  valor,
-  rotulo,
-  borda = false,
-}: {
-  valor: string;
-  rotulo: string;
-  borda?: boolean;
-}) {
-  return (
-    <div className={`p-3 ${borda ? 'border-r border-line' : ''}`}>
-      <div className="num text-[15px] leading-none font-extrabold tracking-[-0.03em] text-ink">
-        {valor}
-      </div>
-      <div className="mt-1.5 text-[10.5px] leading-[1.3] text-ink-3">{rotulo}</div>
-    </div>
   );
 }
 
