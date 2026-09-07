@@ -85,6 +85,17 @@ export class SemProposta extends Error {
 }
 
 /**
+ * Todo id daqui é UUID, e quem manda o id é a URL — ou seja, qualquer um.
+ *
+ * Sem esta conferência, `?proposta=teste` chegava ao Postgres, que respondia
+ * 22P02 (`invalid input syntax for type uuid`), e o `throw error` abaixo
+ * transformava um id malformado em 503 "não conseguimos ler o cofre agora" —
+ * a mesma frase de um RPC fora do ar. Duas coisas opostas com a mesma cara:
+ * uma é a rede que caiu, a outra é um texto que nunca poderia existir no banco.
+ */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
  * Carrega a proposta e confere que ela é da entidade de quem chama.
  *
  * A conferência não é redundante com `exigirMembro`: aquela responde "você é da
@@ -96,6 +107,10 @@ export async function propostaDaEntidade(
   propostaId: string,
   entidadeId: string,
 ): Promise<PropostaDoBanco> {
+  // Id que não tem forma de UUID não existe no banco por definição: é o mesmo
+  // "não achei" de uma busca que voltou vazia, e não vale uma ida ao Postgres.
+  if (!UUID.test(propostaId)) throw new SemProposta();
+
   const { data, error } = await criarClienteServiceRole()
     .from('propostas')
     .select('id, entidade_id, destino, valor_centavos, rubrica, status, tx_index, destino_devnet')
