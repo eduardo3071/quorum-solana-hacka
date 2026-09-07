@@ -123,7 +123,7 @@ export async function membros(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase
       .from('membros')
-      .select('id, nome, papel, email, ativo')
+      .select('id, nome, papel, email, ativo, curso, periodo, foto_url')
       .eq('entidade_id', entidadeId)
       .eq('ativo', true)
       .order('papel')
@@ -144,7 +144,7 @@ export async function solicitacoes(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase
       .from('membros')
-      .select('id, nome, papel, email, ativo')
+      .select('id, nome, papel, email, ativo, curso, periodo, foto_url')
       .eq('entidade_id', entidadeId)
       .eq('ativo', false)
       .order('nome'),
@@ -155,7 +155,7 @@ export async function signatarios(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase
       .from('membros')
-      .select('id, nome, papel, email, ativo')
+      .select('id, nome, papel, email, ativo, curso, periodo, foto_url')
       .eq('entidade_id', entidadeId)
       .eq('ativo', true)
       .neq('papel', 'socio')
