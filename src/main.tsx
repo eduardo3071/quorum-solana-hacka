@@ -18,6 +18,7 @@ import { NaoEncontrada } from '@/telas/NaoEncontrada';
 import { NovaFesta } from '@/telas/NovaFesta';
 import { Perfil } from '@/telas/Perfil';
 import { Propor } from '@/telas/Propor';
+import { Receber } from '@/telas/Receber';
 import { RedefinirSenha } from '@/telas/RedefinirSenha';
 import { Socios } from '@/telas/Socios';
 
@@ -81,6 +82,7 @@ if (faltaConfigurar) {
             <Route path="/e/:slug" element={<Cofre />} />
             <Route path="/e/:slug/aprovacoes" element={<Aprovacoes />} />
             <Route path="/e/:slug/propor" element={<Propor />} />
+            <Route path="/e/:slug/receber" element={<Receber />} />
             <Route path="/e/:slug/festas" element={<Festas />} />
             <Route path="/e/:slug/festas/nova" element={<NovaFesta />} />
             <Route path="/e/:slug/socios" element={<Socios />} />

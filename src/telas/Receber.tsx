@@ -124,7 +124,7 @@ function Painel({
     <>
       <div className="flex flex-col gap-2 rounded-card border border-line bg-surface px-3.5 py-3">
         <span className="t-rotulo text-ink-3">Chave da entidade</span>
-        <span className="t-mono break-all text-[12px] leading-[1.5] text-ink">
+        <span className="break-all font-mono text-[12px] leading-[1.5] text-ink">
           {chave}
         </span>
         <button
