@@ -60,6 +60,10 @@ export async function POST(req: Request) {
         // O memo fica na rede para sempre. Nome do fornecedor e rubrica bastam
         // para alguém auditando entender a saída sem abrir o app.
         memo: `${proposta.destino} · ${proposta.rubrica}`,
+        // Quando quem propôs informou uma chave de recebimento de verdade, o
+        // dinheiro vai para ela. É o que fecha o circuito: a saída de uma
+        // entidade é a entrada de outra.
+        destino: proposta.destinoDevnet,
       },
     );
 

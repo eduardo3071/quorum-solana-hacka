@@ -349,18 +349,23 @@ export async function criarCofre() {
  * demonstração e para nada além dela: toda proposta da tela viraria a mesma
  * saída na rede.
  *
- * O destino continua sendo uma chave nova a cada proposta. Na devnet ele
- * precisa existir para a transferência ter para onde ir; quem o guarda é a
- * coluna `destino_devnet`, e o comentário da migração 0009 diz o que ele NÃO é.
+ * O destino vem de fora quando quem propôs informou uma chave de verdade — a
+ * chave de recebimento de outra entidade, por exemplo. Sem ela, cai numa chave
+ * nova: na devnet o destino precisa existir para a transferência ter para onde
+ * ir. Quem o guarda é a coluna `destino_devnet`.
  */
 export async function criarProposta(
   multisigPda: PublicKey,
   vaultPda: PublicKey,
-  { lamports, memo }: { lamports: number; memo: string },
+  {
+    lamports,
+    memo,
+    destino: destinoPedido,
+  }: { lamports: number; memo: string; destino?: PublicKey | null },
 ) {
   const conn = conexao();
   const tesoureira = signatario('tesoureira');
-  const destino = Keypair.generate().publicKey;
+  const destino = destinoPedido ?? Keypair.generate().publicKey;
 
   const info = await Multisig.fromAccountAddress(conn, multisigPda);
   const transactionIndex = paraBigInt(info.transactionIndex) + 1n;
