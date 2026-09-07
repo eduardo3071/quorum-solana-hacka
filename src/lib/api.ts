@@ -309,6 +309,34 @@ export async function criarFesta(dados: {
   return data as { criada: true; slug: string; nome: string };
 }
 
+/* ── Papéis ─────────────────────────────────────────────────────────────── */
+
+/**
+ * A diretoria promove ou rebaixa quem já faz parte.
+ *
+ * Pelo mesmo caminho da festa, e pela mesma razão: `membros` não aceita escrita
+ * do navegador. Promover é dar assento no cofre — quem confere isso é o
+ * servidor.
+ */
+export async function mudarPapel(dados: {
+  entidadeSlug: string;
+  membroId: string;
+  papel: 'presidente' | 'tesoureiro' | 'conselho' | 'socio';
+}): Promise<{ mudado: true; nome: string; papel: string }> {
+  const { data, error } = await supabase.functions.invoke('papel', { body: dados });
+
+  if (error) {
+    const corpo = (await (error as { context?: Response }).context
+      ?.json()
+      .catch(() => null)) as { erro?: string } | null;
+    throw new ErroDaApi(corpo?.erro ?? 'Não conseguimos registrar agora.', 0);
+  }
+
+  return data as { mudado: true; nome: string; papel: string };
+}
+
+
+
 
 
 export type Cobranca = {
