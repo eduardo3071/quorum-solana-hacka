@@ -223,9 +223,37 @@ export function Aprovacoes() {
           </BlocoBloqueio>
         )}
 
-        <Botao className="mt-3" href={`/e/${slug}/aprovacoes?estado=vivo`}>
-          {podeAssinar ? 'Assinar e executar' : 'Cobrar a segunda assinatura'}
-        </Botao>
+        {podeAssinar ? (
+          <Botao className="mt-3" href={`/e/${slug}/aprovacoes?estado=vivo`}>
+            Assinar e executar
+          </Botao>
+        ) : (
+          <div className="mt-3 flex flex-col gap-2">
+            {faltantesDaProposta(diretoria, emFoco, eu?.id ?? null).map((m) => (
+              <Botao
+                key={m.id}
+                variante="secundario"
+                href={
+                  m.email
+                    ? avisoPorEmail(
+                        m.email,
+                        {
+                          destino: emFoco.destino,
+                          chave: emFoco.chave_pix,
+                          valorCentavos: emFoco.valor_centavos,
+                          rubrica: emFoco.rubrica,
+                        },
+                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo`,
+                      )
+                    : undefined
+                }
+              >
+                Avisar {m.nome}
+              </Botao>
+            ))}
+          </div>
+        )}
+
 
         {eu && (
           <p className="t-meta mt-3 text-ink-3">
