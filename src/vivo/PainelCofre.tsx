@@ -136,7 +136,9 @@ export function PainelCofre({
   proposta,
   nomes,
   contatos,
+  assentosOcupados = ASSENTOS,
   meuAssento,
+
   saldoCentavos,
   associados,
   entidadeSlug,
