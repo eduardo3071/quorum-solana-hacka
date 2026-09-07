@@ -136,20 +136,22 @@ a ordem importa: a Fase 1 destrava a 2.
 
 **Bloqueia todas as outras.** É só painel, não tem código.
 
-🆗1. **Vercel → `ORIGENS_PERMITIDAS`** = `https://solana-hacka-university.lovable.app`
-   (Production e Preview). Sem ela a lista de origens fica vazia em produção e
-   o navegador recusa toda chamada do Lovable para a API. Redeploy depois — a
-   variável só entra num build novo.
-🆗2. **Vercel → renomear `SITE_URL` para `NEXT_PUBLIC_SITE_URL`**, ou apagar.
-   Do jeito que está, nenhum código a lê.
-🆗3. **Supabase → Redirect URLs** com `https://solana-hacka-university.lovable.app/auth/confirmar`.
-🆗4. **Supabase → resetar a `service_role`**, e atualizar na Vercel. Nessa ordem,
-   ou a API cai entre uma coisa e outra. A chave atual foi colada em chat e foi
-   num zip.
-5. **Google**: ligar o provedor em Authentication → Providers, **ou** remover o
-   botão. Hoje ele faz chamada real e responde uma mensagem honesta de que o
-   provedor está desligado — o que é aceitável, mas não é bonito na
-   apresentação.
+Quatro dos cinco já foram feitos.
+
+- [x] **Vercel → `ORIGENS_PERMITIDAS`** = `https://solana-hacka-university.lovable.app`
+      (Production e Preview). Sem ela a lista de origens fica vazia em produção
+      e o navegador recusa toda chamada do Lovable para a API. Redeploy depois
+      — a variável só entra num build novo.
+- [x] **Vercel → `SITE_URL` renomeada para `NEXT_PUBLIC_SITE_URL`**, ou apagada.
+      Do jeito que estava, nenhum código a lia.
+- [x] **Supabase → Redirect URLs** com
+      `https://solana-hacka-university.lovable.app/auth/confirmar`.
+- [x] **Supabase → `service_role` resetada**, e atualizada na Vercel. A chave
+      antiga tinha sido colada em chat e ido num zip; a partir daqui ela não
+      abre mais nada.
+- [ ] **Google**: ligar o provedor em Authentication → Providers, **ou** remover
+      o botão. Hoje ele faz chamada real e responde uma mensagem honesta de que
+      o provedor está desligado — aceitável, mas não bonito na apresentação.
 
 **Como conferir:** abrir o Lovable, F12 → Console, entrar na tela de
 aprovações. Nenhum erro com as palavras *CORS policy*.
