@@ -19,6 +19,16 @@ import { NaoEncontrada } from './NaoEncontrada';
 const RUBRICAS: Rubrica[] = ['Eventos', 'Marketing', 'Esporte', 'Associados'];
 
 /**
+ * A chave de recebimento de uma entidade, como ela aparece na tela Receber.
+ *
+ * Quando o campo traz uma dessas, a saída vai para ela de verdade: a saída de
+ * uma entidade passa a ser a entrada de outra. Qualquer outro texto — CNPJ,
+ * e-mail, telefone — continua valendo como identificação de quem recebe, e o
+ * destino na rede fica com o servidor.
+ */
+const CHAVE_DE_RECEBIMENTO = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+/**
  * O destino do botão flutuante da barra de abas.
  *
  * A proposta que ele cria é a mesma que aparece na tela de aprovações
@@ -119,6 +129,7 @@ function Formulario({
       valor_centavos: centavos,
       rubrica,
       status: 'pendente',
+      destino_devnet: CHAVE_DE_RECEBIMENTO.test(chave) ? chave : null,
     });
 
     setPendente(false);
@@ -135,6 +146,10 @@ function Formulario({
     <form onSubmit={enviar} className="flex flex-col gap-3">
       <Campo id="destino" rotulo="Para quem" placeholder="Som Beira-Mar ME" />
       <Campo id="chave" rotulo="Chave do destinatário" placeholder="24.881.402/0001-77" />
+      <p className="t-meta -mt-1 text-pretty text-ink-3">
+        CNPJ, e-mail ou telefone identificam quem recebe. Se você colar a chave
+        de recebimento de outra entidade, o valor vai direto para o cofre dela.
+      </p>
       <Campo id="valor" rotulo="Valor" placeholder="840,00" inputMode="decimal" />
 
       <div>
