@@ -83,7 +83,9 @@ export async function conferirEntradas(
     'confirmed',
   );
 
-  const candidatas = assinaturas.filter((a) => !a.err).map((a) => a.signature);
+  const candidatas = assinaturas
+    .filter((a: { err: unknown }) => !a.err)
+    .map((a: { signature: string }) => a.signature);
   if (candidatas.length === 0) return { lancadas: [], conferidas: 0 };
 
   const { data: jaLancadas, error: erroLeitura } = await supabase
