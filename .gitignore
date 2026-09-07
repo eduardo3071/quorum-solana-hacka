@@ -13,18 +13,19 @@ tsconfig.tsbuildinfo
 .env.*.local
 *.local
 
-# O app Next tem o próprio ciclo de build, em api/.
-api/node_modules
-api/.next
-api/.env.local
-api/.cofre-devnet.json
-
-# Os mesmos artefatos, mas na raiz. Quem roda o Next daqui — ou traz uma pasta
-# de quando ele morava na raiz — gera estes, e sem estas linhas eles entram num
-# `git add .` sem ninguém notar. Já aconteceu: `.cofre-devnet.json` guarda a
-# createKey do multisig, e createKey é chave privada.
-/.next
-/.cofre-devnet.json
+# O app Next tem o próprio ciclo de build, hoje em api/.
+#
+# Estas regras NÃO citam a pasta de propósito. Elas já citaram, e foi assim que
+# a createKey do multisig entrou no repositório duas vezes: a primeira quando
+# alguém rodou o Next na raiz, a segunda quando a pasta virou `api/` e a cópia
+# antiga de `backend/` continuou no disco de quem trabalhava — fora de todas as
+# regras, e recolhida inteira por um `git add .`.
+#
+# Enquanto o padrão for `**/`, mudar a pasta de nome não abre buraco nenhum.
+**/node_modules
+**/.next
+**/.env.local
+**/.cofre-devnet.json
 
 # Chave privada da Solana costuma ser um .json com o array de bytes do segredo.
 # Não parece segredo à primeira vista.

@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 /**
  * A raiz desta porta não é o app.
  *
@@ -39,13 +37,12 @@ export default function Raiz() {
         sem isso ela fala com a API publicada, que pode estar noutra versão.
       </p>
 
-      <Link
-        href="/estilo"
-        className="flex min-h-[50px] items-center justify-center rounded-btn bg-blue px-4 text-[13.5px] font-bold text-ground"
-      >
-        Ver a folha de estilo
-      </Link>
-
+      {/*
+        Não há botão aqui de propósito. O único que existia levava a `/estilo`,
+        que era tela — e tela não mora mais nesta pasta. Botão que promete
+        produto numa porta que não serve produto é a confusão que esta página
+        foi escrita para acabar.
+      */}
       <p className="t-meta text-pretty text-ink-3">
         Os endpoints ficam em <code>/api</code>. Sem sessão, os do cofre
         respondem 401 — <code>npm run acesso</code> confere isso.
