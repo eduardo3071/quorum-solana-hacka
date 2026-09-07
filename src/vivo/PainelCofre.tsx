@@ -103,6 +103,8 @@ function mensagemDe(e: unknown, padrao: string): string {
 export function PainelCofre({
   proposta,
   nomes,
+  contatos,
+  meuAssento,
   saldoCentavos,
   associados,
   entidadeSlug,
@@ -110,6 +112,10 @@ export function PainelCofre({
 }: {
   proposta: PropostaDoPainel;
   nomes: Record<Assento, string>;
+  /** O e-mail de cada signatário, para avisar quem falta assinar. */
+  contatos?: Partial<Record<Assento, string | null>>;
+  /** Qual lugar do cofre é de quem está na tela. `null` para associado. */
+  meuAssento: Assento | null;
   saldoCentavos: number;
   associados: number;
   /** De qual entidade é o cofre. Ver `AlvoDoCofre` em `lib/api.ts`. */
@@ -117,6 +123,7 @@ export function PainelCofre({
   /** Qual proposta assinar e executar — a linha do banco, não a da rede. */
   propostaId: string;
 }) {
+
   /*
    * `useMemo` e não um objeto solto: `lerSituacao` depende dele, e objeto novo
    * a cada render faria o efeito disparar sem parar — uma consulta à rede por
