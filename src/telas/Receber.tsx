@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ArrowDown, Copy } from 'lucide-react';
+import { Copy } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
 import { Botao } from '@/componentes/Botao';
