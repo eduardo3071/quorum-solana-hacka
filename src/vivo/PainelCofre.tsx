@@ -228,11 +228,29 @@ export function PainelCofre({
     const d = await comEspera(`Assinatura de ${nomes[assento]}`, () =>
       assinarNoCofre(assento, alvo),
     );
-    if (!d) return;
+    if (!d) return null;
     setSituacao({ ...d, existe: true });
     setBloqueio(null);
     setFase('pronto');
+    return d;
   }
+
+  /**
+   * Assina pelo próprio lugar e, se o quórum fechar com essa assinatura,
+   * executa em seguida.
+   *
+   * Um toque só para quem está na tela, mas duas etapas de verdade: se ainda
+   * faltar gente, a saída continua retida e o painel passa a mostrar quem falta.
+   */
+  async function assinarEExecutar(assento: Assento) {
+    const d = await assinar(assento);
+    if (!d) return;
+
+    const feitasAgora = d.assinaturasFeitas ?? 0;
+    const necessariasAgora = d.assinaturasNecessarias ?? 2;
+    if (feitasAgora >= necessariasAgora) await executar(assento);
+  }
+
 
   async function executar(assento: Assento) {
     const d = await comEspera('Enviando a saída', () =>
