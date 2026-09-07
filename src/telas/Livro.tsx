@@ -1,5 +1,5 @@
-import { useParams, useSearchParams } from 'react-router-dom';
-import { ArrowDown, ArrowUp, Search, SlidersHorizontal } from 'lucide-react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { ArrowDown, ArrowUp, ChevronLeft, Search, SlidersHorizontal } from 'lucide-react';
 
 import { Chip } from '@/componentes/Chip';
 import { COR_DA_RUBRICA, type Rubrica } from '@/componentes/acentos';
@@ -31,6 +31,45 @@ const FILTROS: { rotulo: string; rubrica?: Rubrica }[] = [
   { rotulo: 'Esporte', rubrica: 'Esporte' },
   { rotulo: 'Sócios', rubrica: 'Associados' },
 ];
+
+const CLASSE_VOLTAR =
+  'inline-flex min-h-[36px] items-center gap-1 pr-2 text-[13px] leading-none ' +
+  'font-semibold whitespace-nowrap text-white/85';
+
+/**
+ * Voltar, numa tela que qualquer pessoa abre por link solto.
+ *
+ * Esta é a única tela privada-por-fora do produto: não tem abas, e quem chega
+ * pode vir de dois lugares muito diferentes. Da diretoria, que veio do cofre e
+ * espera a tela anterior. Ou do grupo da faculdade, com o link colado — e essa
+ * pessoa não tem tela anterior nenhuma dentro do app: `history.back()` a
+ * jogaria de volta no WhatsApp, que é pior que não haver botão.
+ *
+ * O roteador numera cada entrada que ele mesmo empilha em `history.state.idx`.
+ * Zero (ou ausente) significa que esta página é a primeira do app nesta aba —
+ * aí voltar é ir para a capa, com link de verdade, que abre em aba nova e
+ * aparece na barra de status do navegador.
+ */
+function Voltar() {
+  const navegar = useNavigate();
+  const indice = (window.history.state as { idx?: number } | null)?.idx ?? 0;
+
+  if (indice > 0) {
+    return (
+      <button type="button" onClick={() => navegar(-1)} className={CLASSE_VOLTAR}>
+        <ChevronLeft size={15} strokeWidth={2} aria-hidden />
+        Voltar
+      </button>
+    );
+  }
+
+  return (
+    <Link to="/" className={CLASSE_VOLTAR}>
+      <ChevronLeft size={15} strokeWidth={2} aria-hidden />
+      Voltar
+    </Link>
+  );
+}
 
 /**
  * 5c · Livro-caixa público.
@@ -74,7 +113,10 @@ export function Livro() {
   if (consulta.erro) {
     return (
       <Tela>
-        <Hero className="pb-4" titulo="Livro-caixa" />
+        <Hero className="pb-4">
+          <Voltar />
+          <h1 className="t-hero mt-1.5 text-white">Livro-caixa</h1>
+        </Hero>
         <CorpoTela>
           <Erro titulo="Não conseguimos abrir o livro-caixa agora">
             O extrato não carregou. Nada mudou no cofre — tente recarregar a
@@ -88,7 +130,10 @@ export function Livro() {
   if (consulta.carregando || !consulta.dados) {
     return (
       <Tela>
-        <Hero className="pb-4" titulo="Livro-caixa" />
+        <Hero className="pb-4">
+          <Voltar />
+          <h1 className="t-hero mt-1.5 text-white">Livro-caixa</h1>
+        </Hero>
         <CorpoTela>
           {consulta.carregando ? (
             <Carregando linhas={5} />
@@ -113,7 +158,8 @@ export function Livro() {
   return (
     <Tela>
       <Hero className="pb-4">
-        <div className="flex items-center justify-between gap-3">
+        <Voltar />
+        <div className="mt-1.5 flex items-center justify-between gap-3">
           <span className="t-rotulo whitespace-nowrap text-white/80">
             Livro-caixa público
           </span>
