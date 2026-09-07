@@ -82,6 +82,11 @@ export function Aprovacoes() {
     };
   }, [slug, eu?.id]);
 
+  // Em tempo real: assinatura feita no aparelho de outra pessoa, proposta nova
+  // ou promoção na diretoria aparecem aqui sem ninguém recarregar a página.
+  useTempoReal(['propostas', 'assinaturas', 'membros'], recarregar);
+
+
   if (erro) {
     return (
       <Moldura slug={slug} entidade="" subtitulo="">
