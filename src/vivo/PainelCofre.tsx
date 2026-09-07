@@ -418,9 +418,11 @@ export function PainelCofre({
   const completo = feitas >= necessarias;
   /* Só a própria pessoa assina pelo lugar dela. */
   const minhaVez = !!meuAssento && !assinaram.includes(meuAssento);
-  const faltantes = ASSENTOS.filter(
+  // Só cobra assinatura de quem existe no catálogo da diretoria.
+  const faltantes = assentosOcupados.filter(
     (a) => !assinaram.includes(a) && a !== meuAssento,
   );
+
 
 
   return (
