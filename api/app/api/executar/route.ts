@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { respostaDeAcesso } from '@/lib/autorizacao';
 import { assentoPara, contextoDaProposta } from '@/lib/cofre/contexto';
-import { registrarExecucao } from '@/lib/cofre/entidade';
+import { registrarEntradaNoDestino, registrarExecucao } from '@/lib/cofre/entidade';
 import { executar } from '@/lib/cofre/servidor';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
         chave: proposta.destinoDevnet.toBase58(),
         valorCentavos: proposta.valorCentavos,
         rubrica: proposta.rubrica,
-        origem: membro.entidade_nome ?? 'outra entidade',
+        origem: membro.entidade_slug,
         txSignature: resultado.assinatura,
       });
 
