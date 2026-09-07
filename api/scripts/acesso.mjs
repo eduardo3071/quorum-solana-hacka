@@ -98,7 +98,7 @@ async function subirApi() {
     next = createRequire(import.meta.url).resolve('next/dist/bin/next');
   } catch {
     console.error(
-      'Não achei o Next aqui. Rode `npm install` dentro de backend/ — o do\n' +
+      'Não achei o Next aqui. Rode `npm install` dentro de api/ — o do\n' +
         'diretório de cima não serve, são dois projetos.',
     );
     process.exit(1);

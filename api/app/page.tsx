@@ -3,14 +3,14 @@ import Link from 'next/link';
 /**
  * A raiz desta porta não é o app.
  *
- * Até aqui `backend/` carregava uma cópia inteira das telas — onze páginas de
- * antes da separação. Elas liam o banco pela versão antiga, não passavam pela
- * autorização nova e, pior, PARECIAM o produto: quem abrisse localhost:3000
- * achava que estava vendo o Quórum, e via uma interface velha.
+ * Esta pasta já se chamou `backend/` e carregava uma cópia inteira das telas —
+ * onze páginas de antes da separação. Elas liam o banco pela versão antiga, não
+ * passavam pela autorização nova e, pior, PARECIAM o produto: quem abrisse
+ * localhost:3000 achava que estava vendo o Quórum, e via uma interface velha.
  *
  * Não é hipótese: aconteceu. A dúvida "por que a interface está antiga?" custou
- * uma rodada inteira. Uma página que diz o que é custa nada e não deixa
- * ninguém se perder de novo.
+ * uma rodada inteira. Daí o nome `api/` e daí esta página: as duas dizem a
+ * mesma coisa, e nenhuma das duas custa nada.
  */
 export default function Raiz() {
   return (
@@ -28,7 +28,7 @@ export default function Raiz() {
       <pre className="overflow-x-auto rounded-card border border-line bg-surface p-4 text-[12.5px] leading-[1.7] text-ink-2">
         <code>
           {'# a interface\ncd ..\nnpm run dev      → http://localhost:8080\n\n'}
-          {'# a API (esta porta)\ncd backend\nnpm run dev      → http://localhost:3000'}
+          {'# a API (esta porta)\ncd api\nnpm run dev      → http://localhost:3000'}
         </code>
       </pre>
 

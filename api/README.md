@@ -3,7 +3,7 @@
 **Esta é a subpasta da API.** A interface está na raiz do repositório; leia o
 [README de lá](../README.md) primeiro.
 
-Na Vercel, este projeto precisa de **Root Directory = `backend`**. Sem isso o
+Na Vercel, este projeto precisa de **Root Directory = `api`**. Sem isso o
 build tenta construir o SPA da raiz e não acha o Next.
 
 Tesouraria com quórum para entidades estudantis brasileiras.

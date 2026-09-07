@@ -13,7 +13,7 @@ tesoureiro, e ninguém consegue conferir nada.
 
 ```
 /            interface · React + Vite · roda no navegador
-/backend     API · Next · assina no cofre, guarda as chaves
+/api         API · Next · assina no cofre, guarda as chaves
 ```
 
 Estavam em repositórios separados porque cada ferramenta quer a raiz para si.
@@ -22,7 +22,7 @@ Agora é um `main` só, com as duas histórias preservadas.
 | parte | quem constrói | onde publica |
 | --- | --- | --- |
 | raiz | Lovable | `*.lovable.app` |
-| `backend/` | Vercel, com **Root Directory = `backend`** | `*.vercel.app` |
+| `api/` | Vercel, com **Root Directory = `api`** | `*.vercel.app` |
 
 A separação **não é organização, é segurança**: as bibliotecas da rede e as três
 chaves privadas dos signatários não podem ir para o navegador. Chave privada no
@@ -39,7 +39,7 @@ cp .env.example .env
 npm run dev                 # http://localhost:8080
 
 # API, noutro terminal
-cd backend
+cd api
 npm install
 cp .env.example .env.local
 npm run chaves              # gera os três signatários da devnet
@@ -60,9 +60,9 @@ segredo da chave:
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | chave anônima |
 | `VITE_API_URL` | **deixe em branco** — o padrão já é o endereço da API |
 
-Em `backend/`, o que não pode sair do servidor: `SUPABASE_SERVICE_ROLE_KEY`,
+Em `api/`, o que não pode sair do servidor: `SUPABASE_SERVICE_ROLE_KEY`,
 `SOLANA_RPC_URL` e as três `SIGNER_*`. Detalhes em
-[`backend/README.md`](backend/README.md).
+[`api/README.md`](api/README.md).
 
 **A `service_role` nunca entra na raiz.** Ela ignora toda política de acesso; no
 navegador seria o banco inteiro aberto.
@@ -128,8 +128,7 @@ npm run conferir /e/aaaeng/livro    # layout e acessibilidade
 npm run nada-mockado                # link morto, controle decorativo, dado falso
 
 # API
-cd backend && npm run dev &
-npm run conferir /estilo
+cd api && npm run acesso            # quem pode chamar cada endpoint
 ```
 
 `conferir` mede sobreposição de texto, chip quebrado em duas linhas, valor
@@ -138,3 +137,7 @@ partido no meio, transbordo, foco visível, nome de controle e contraste WCAG AA
 `nada-mockado` abre cada tela, segue cada link e reprova destino que responde
 erro ou cai em "não encontrado" — mais ícone de ação sem ação e campo fora de
 formulário.
+
+`acesso` sobe um Supabase de mentira e bate nos quatro endpoints do cofre com
+sete crachás diferentes — sem token, token podre, associado, signatário de
+outra entidade — conferindo o código de cada recusa. Não toca na devnet.

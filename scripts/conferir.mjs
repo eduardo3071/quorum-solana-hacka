@@ -2,7 +2,7 @@
  * Confere uma rota contra as regras de layout do projeto.
  *
  *   npm run dev
- *   node scripts/conferir.mjs /estilo
+ *   node scripts/conferir.mjs /e/aaaeng/livro
  *
  * As regras do CLAUDE.md viram teste executável aqui, porque olhar print a
  * print não escala para 12 pranchas e é justamente esse tipo de erro —
@@ -13,7 +13,7 @@
  */
 import { chromium } from 'playwright';
 
-const ROTA = process.argv[2] ?? '/estilo';
+const ROTA = process.argv[2] ?? '/e/aaaeng/livro';
 const BASE = process.env.BASE_URL ?? 'http://localhost:8080';
 const LARGURA = 390;
 

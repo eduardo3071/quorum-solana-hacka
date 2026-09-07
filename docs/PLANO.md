@@ -31,7 +31,7 @@ plantou.
 
 **2. O cofre não é da entidade — é de um arquivo.**
 `entidades.multisig_pda` é lida em cinco lugares e **nunca escrita**. O
-multisig real vive em `backend/.cofre-devnet.json`, um por servidor. Os
+multisig real vive em `api/.cofre-devnet.json`, um por servidor. Os
 endpoints `/api/estado`, `/api/assinar`, `/api/executar` e `/api/proposta` não
 recebem identificador nenhum: operam sempre sobre esse cofre único. Com duas
 entidades no banco, as duas apontam para o mesmo dinheiro.
@@ -80,7 +80,7 @@ ser a tesouraria de ninguém. Quer ser a **regra de quem pode tirar** e o
 ### O contrato inteligente já existe
 
 Vale dizer alto, porque é o ponto menos óbvio do próprio projeto: **o cofre não
-é simulado.** O `backend/package.json` depende de `@sqds/multisig`, e o código
+é simulado.** O `api/package.json` depende de `@sqds/multisig`, e o código
 chama o **Squads v4**, um programa publicado na rede. Criar cofre, propor
 saída, aprovar e executar são instruções dele. Quando falta a segunda
 assinatura, quem recusa é o contrato — o `6008` que a tela mostra vem de lá,
@@ -168,7 +168,7 @@ problema visto de três ângulos.
 - `src/lib/api.ts` manda `Authorization: Bearer <access_token>` em toda chamada,
   lido de `supabase.auth.getSession()`. Sem sessão, sai sem cabeçalho: token
   vazio faria o servidor responder "sessão expirou" a quem nunca entrou.
-- `backend/lib/autorizacao.ts` valida o token com a **chave anônima** (validar
+- `api/lib/autorizacao.ts` valida o token com a **chave anônima** (validar
   assinatura de JWT não precisa de poder nenhum) e consulta `membros` com a
   service role — aqui se está *decidindo* o acesso, e sob RLS "não é membro"
   ficaria indistinguível de "entidade não existe".
@@ -180,7 +180,7 @@ problema visto de três ângulos.
   adivinhar em qual cofre mexer é o erro que ninguém percebe até o dinheiro sair
   do lugar errado.
 
-**Como conferir:** `npm run acesso`, em `backend/`. Ele é inofensivo: apaga as
+**Como conferir:** `npm run acesso`, em `api/`. Ele é inofensivo: apaga as
 três chaves do cofre do ambiente do filho, então nenhum caso chega à devnet.
 Sem isso o caso que deve passar ia até o fim e criava um multisig de verdade a
 cada execução — um conferidor de fechadura não abre a porta para ver se abriu. Ele sobe um GoTrue de
@@ -231,7 +231,7 @@ diretoria.
 - A `createKey` é usada uma vez e **descartada**: ela não é signatária, não
   move dinheiro, e guardá-la só cria mais um segredo para vazar. (Já vazou uma
   vez, no commit `ba90b8b`.)
-- `backend/.cofre-devnet.json` deixa de ser fonte de verdade. Vira só a saída
+- `api/.cofre-devnet.json` deixa de ser fonte de verdade. Vira só a saída
   dos scripts de linha de comando.
 
 ### 1.3 · A proposta existe na rede e no banco — **feita**
@@ -372,7 +372,7 @@ código nosso não auditado seria pior que o problema que o produto resolve.
   entrada é texto e não link, de propósito, porque link para o vazio é pior que
   frase solta. Com as páginas, viram links.
 - **Um repositório, um deploy.** A Vercel já aponta para o monorepo com
-  *Root Directory* = `backend`. O repositório antigo
+  *Root Directory* = `api`. O repositório antigo
   (`Solana-Hacka-University`) pode ser arquivado.
 
 ---

@@ -13,11 +13,11 @@ tsconfig.tsbuildinfo
 .env.*.local
 *.local
 
-# O app Next tem o próprio ciclo de build, em backend/.
-backend/node_modules
-backend/.next
-backend/.env.local
-backend/.cofre-devnet.json
+# O app Next tem o próprio ciclo de build, em api/.
+api/node_modules
+api/.next
+api/.env.local
+api/.cofre-devnet.json
 
 # Os mesmos artefatos, mas na raiz. Quem roda o Next daqui — ou traz uma pasta
 # de quando ele morava na raiz — gera estes, e sem estas linhas eles entram num

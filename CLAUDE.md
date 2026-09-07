@@ -6,14 +6,18 @@ Cofre 2-de-3 na Solana (Squads v4) + livro-caixa público.
 ## Onde fica o quê
 
     /            interface · React + Vite · roda no navegador
-    /backend     API · Next · assina no cofre, guarda as chaves
+    /api         API · Next · assina no cofre, guarda as chaves
 
 A separação não é organização, é segurança: bibliotecas da rede e chaves
 privadas só no servidor. Estas regras valem para as duas partes.
 
+`api/` não tem tela. Nenhum componente, nenhuma rota de produto — só os
+Route Handlers, as migrações e os scripts de operação. Toda interface
+mora na raiz, e é lá que se mexe nela.
+
 ## Stack
 
-Vite + React na raiz · Next App Router em `backend/` · TypeScript · Tailwind
+Vite + React na raiz · Next App Router em `api/` · TypeScript · Tailwind
 Supabase (Postgres, Auth, RLS) · Solana devnet · deploy na Vercel
 
 > Estado: shadcn/ui ainda **não** foi instalado — é tarefa do B1.
@@ -81,7 +85,6 @@ No máximo duas cores semânticas visíveis por tela.
 
 | Rota | Prancha | Acesso |
 | --- | --- | --- |
-| `/estilo` | folha de estilo | conferência |
 | `/e/[slug]` | 5a-cofre | privada, com abas |
 | `/e/[slug]/aprovacoes` | 5b-aprovacoes | privada, com abas |
 | `/e/[slug]/livro` | 5c-livro-caixa | **pública, sem login, sem abas** |
@@ -89,3 +92,7 @@ No máximo duas cores semânticas visíveis por tela.
 | `/perfil` | 5e-perfil-carteirinha | privada, com abas |
 
 6a–6f são estados dessas telas, não rotas de navegação.
+
+A rota `/estilo` existiu como conferência da folha de estilo e foi
+removida junto com a cópia dos componentes que morava em `api/`. A
+especificação continua sendo `design/` — a prancha, não a página.

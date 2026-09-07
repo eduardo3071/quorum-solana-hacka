@@ -100,7 +100,7 @@ for (const rota of ROTAS) {
     continue;
   }
 
-  const achados = await pagina.evaluate((catalogo) => {
+  const achados = await pagina.evaluate(() => {
     const problemas = [];
     const links = [];
 
@@ -118,11 +118,9 @@ for (const rota of ROTAS) {
      * nem campo é enfeite com cara de controle. Foi o caso das linhas do
      * perfil e da busca do livro-caixa.
      */
-    // A folha de estilo mostra componentes como amostra: lá o ícone sem ação
-    // é o espécime, não uma promessa quebrada.
-    for (const svg of catalogo
-      ? []
-      : document.querySelectorAll('svg.lucide-chevron-right, svg.lucide-search')) {
+    for (const svg of document.querySelectorAll(
+      'svg.lucide-chevron-right, svg.lucide-search',
+    )) {
       const acionavel = svg.closest('a[href],button,input,form,label,[role="button"]');
       if (!acionavel) {
         const perto = (svg.closest('div')?.textContent ?? '').trim().slice(0, 40);
@@ -139,7 +137,7 @@ for (const rota of ROTAS) {
     }
 
     return { problemas, links };
-  }, rota === '/estilo');
+  });
 
   for (const p of achados.problemas) anota(rota, p);
   for (const l of achados.links) {

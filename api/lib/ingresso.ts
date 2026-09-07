@@ -15,7 +15,7 @@
  */
 import 'server-only';
 
-import type { Rubrica } from '@/components/acentos';
+import type { Rubrica } from '@/lib/rubricas';
 import {
   centavosParaLamports,
   cofreDeCobranca,
