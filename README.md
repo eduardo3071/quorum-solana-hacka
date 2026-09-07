@@ -19,10 +19,10 @@ tesoureiro, e ninguém consegue conferir nada.
 Estavam em repositórios separados porque cada ferramenta quer a raiz para si.
 Agora é um `main` só, com as duas histórias preservadas.
 
-| parte | quem constrói | onde publica |
-| --- | --- | --- |
-| raiz | Lovable | `*.lovable.app` |
-| `api/` | Vercel, com **Root Directory = `api`** | `*.vercel.app` |
+| parte | quem constrói | onde publica | quem abre |
+| --- | --- | --- | --- |
+| raiz | Lovable | `*.lovable.app` | **as pessoas** |
+| `api/` | Vercel, com **Root Directory = `api`** | `*.vercel.app` | o navegador delas |
 
 A separação **não é organização, é segurança**: as bibliotecas da rede e as três
 chaves privadas dos signatários não podem ir para o navegador. Chave privada no
@@ -70,11 +70,19 @@ navegador seria o banco inteiro aberto.
 ### Os dois endereços não são o mesmo
 
 ```
-https://…lovable.app    ← a interface
-https://…vercel.app     ← a API
+https://…lovable.app    ← a INTERFACE · é este o link que se manda
+https://…vercel.app     ← a API · abre uma página que diz "Isto é a API"
 ```
 
-O nome é parecido e a confusão é fácil. O domínio da interface não tem
+**O endereço da Vercel nunca vai mostrar o Quórum, e isso está certo.** Aquele
+projeto tem *Root Directory* = `api`, e `api/` não contém tela nenhuma — só os
+Route Handlers. A página que ele serve existe para dizer isso em voz alta: a
+dúvida "por que a interface está errada?" já custou três idas e vindas.
+
+Quem demonstra o produto abre o `.lovable.app`. O `.vercel.app` é a porta que o
+navegador chama por baixo, sozinho, quando alguém assina ou executa.
+
+O nome é parecido e a troca é fácil. O domínio da interface não tem
 `/api/estado` nem `/api/executar`: apontar `VITE_API_URL` para ele faz toda
 chamada do cofre receber o `index.html` de volta. O código avisa no console
 quando os dois coincidem, e resposta sem JSON vira uma mensagem que nomeia a
