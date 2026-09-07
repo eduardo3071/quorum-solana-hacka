@@ -41,6 +41,8 @@ import {
 } from '@/lib/format';
 import { useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
+import { useTempoReal } from '@/lib/useTempoReal';
+
 
 import { NaoEncontrada } from './NaoEncontrada';
 
