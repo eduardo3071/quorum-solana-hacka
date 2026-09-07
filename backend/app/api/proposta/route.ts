@@ -15,8 +15,23 @@ export const dynamic = 'force-dynamic';
  * repetir a demonstração sem refazer o cofre, que custa taxa e rent.
  */
 export async function POST(req: Request) {
+  /*
+   * Lê o corpo só para saber de qual entidade se está falando. Sem isto a
+   * autorização cairia na "única entidade de quem chama" — e alguém pedindo o
+   * cofre da entidade B teria o da A mexido, calado. O conferidor `npm run
+   * acesso` pegou exatamente isso.
+   */
+  let corpo: Record<string, unknown> = {};
   try {
-    await exigirMembro(req);
+    corpo = await req.json();
+  } catch {
+    // Corpo vazio segue valendo: cai na entidade única.
+  }
+
+  try {
+    await exigirMembro(req, {
+      slug: typeof corpo.entidadeSlug === 'string' ? corpo.entidadeSlug : null,
+    });
   } catch (e) {
     const recusa = respostaDeAcesso(e);
     if (recusa) return recusa;

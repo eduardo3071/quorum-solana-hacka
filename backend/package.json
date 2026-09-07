@@ -16,7 +16,8 @@
     "setup": "node scripts/cofre/setup.mjs",
     "ciclo": "node scripts/cofre/ciclo.mjs",
     "assinar": "node scripts/cofre/assinar.mjs",
-    "executar": "node scripts/cofre/executar.mjs"
+    "executar": "node scripts/cofre/executar.mjs",
+    "acesso": "node scripts/acesso.mjs"
   },
   "dependencies": {
     "@solana/web3.js": "^1.98.4",

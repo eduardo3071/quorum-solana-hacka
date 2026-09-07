@@ -180,9 +180,16 @@ problema visto de três ângulos.
   adivinhar em qual cofre mexer é o erro que ninguém percebe até o dinheiro sair
   do lugar errado.
 
-Verificado com um GoTrue de mentira, porque a saída do contêiner bloqueia o
-Supabase real e todo token pareceria inválido — o teste passaria pelo motivo
-errado:
+**Como conferir:** `npm run acesso`, em `backend/`. Ele sobe um GoTrue de
+mentira e a API contra ele, roda os sete casos nos quatro endpoints e sai com
+código 1 se algum falhar. O Supabase de mentira não é preciosismo: sem ele todo
+token é recusado porque a validação não alcança o Supabase real, e o caso
+"token inválido → 401" passaria pelo motivo errado, sem nunca provar que um
+token BOM é aceito. Fechadura que trava com qualquer chave não foi testada —
+foi observada emperrada.
+
+Contra o que está no ar: `npm run acesso -- https://…vercel.app`. Cobre os três
+casos que não precisam de usuário conhecido, e diz quais ficaram de fora.
 
 | quem chama | resposta |
 | --- | --- |
@@ -193,6 +200,11 @@ errado:
 | sem entidade | **403** · "Você não faz parte desta entidade." |
 | slug de outra entidade | **403** |
 | signatária, slug certo | **passa** — chega na lógica do cofre |
+
+O conferidor pagou por si na primeira execução: `/api/proposta` e `/api/cofre`
+liam a autorização **sem olhar o corpo**, então ignoravam o `entidadeSlug` e
+caíam na entidade única de quem chamava. Quem pedisse o cofre da entidade B
+teria o da A mexido, calado. Corrigido.
 
 > O CORS continua, mas deixou de ser a única defesa. Ele protege o navegador de
 > terceiros; a autorização protege o endpoint.
