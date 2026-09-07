@@ -56,6 +56,23 @@ function tokenDe(request: Request): string | null {
 }
 
 /**
+ * Quem está chamando — só isso, sem exigir que já seja membro de nada.
+ *
+ * `exigirMembro` não serve para o vínculo: ele recusa justamente quem ainda não
+ * tem linha ligada à sessão, que é a pessoa inteira que o vínculo existe para
+ * atender. Aqui a pergunta é anterior — "este token é de alguém de verdade, e
+ * qual é o e-mail dessa pessoa?" — e a resposta vem do token validado, nunca do
+ * corpo da requisição.
+ */
+export async function usuarioDaRequisicao(request: Request) {
+  const token = tokenDe(request);
+  if (!token) {
+    throw new ErroDeAcesso('Entre para continuar.', 401);
+  }
+  return usuarioDoToken(token);
+}
+
+/**
  * Valida o token contra o Supabase.
  *
  * Com a chave anônima, não com a service role: validar assinatura de JWT não

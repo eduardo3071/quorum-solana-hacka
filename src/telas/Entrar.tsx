@@ -57,12 +57,23 @@ export function Entrar() {
 
   // Quem chega por link vencido quer entrar, não criar. `?aba=criar` abre na
   // outra, para a capa poder mandar direto.
-  const [aba, setAba] = useState<Aba>(busca.get('aba') === 'criar' ? 'criar' : 'entrar');
+  const querCriar = busca.get('aba') === 'criar';
+  const [aba, setAba] = useState<Aba>(querCriar ? 'criar' : 'entrar');
 
   const erro = busca.get('erro') ?? undefined;
   const proxima = busca.get('proxima') ?? undefined;
 
-  if (sessao.user) return <Navigate to={proxima ?? '/'} replace />;
+  /*
+   * Quem já entrou não precisa entrar de novo — mas pode muito bem estar
+   * fundando uma entidade.
+   *
+   * O desvio abaixo mandava toda sessão válida de volta para a capa, e isso
+   * fechava um ciclo: a capa de quem não tem entidade oferece "criar uma", o
+   * link vem para cá, e daqui a pessoa era devolvida à mesma tela que a
+   * mandou. O botão parecia quebrado, e o formulário — que existe e funciona —
+   * continuava inalcançável para exatamente quem mais precisava dele.
+   */
+  if (sessao.user && !querCriar) return <Navigate to={proxima ?? '/'} replace />;
 
   const entrando = aba === 'entrar';
 

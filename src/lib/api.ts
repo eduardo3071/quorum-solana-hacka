@@ -131,6 +131,25 @@ export const criarEntidade = (dados: {
   email: string;
 }) => chamar<{ criada: true; slug: string; nome: string }>('/api/entidade', dados);
 
+/**
+ * Casa a sessão com a linha da diretoria, pelo e-mail.
+ *
+ * A linha de `membros` quase sempre nasce ANTES da sessão: a diretoria cadastra
+ * alguém pelo e-mail semanas antes de essa pessoa entrar, e quem funda a própria
+ * entidade tem a linha criada com `user_id` nulo, porque naquele instante ainda
+ * não havia sessão nenhuma com que casar.
+ *
+ * Sem este passo a pessoa entra, a sessão é válida, e mesmo assim ela não é
+ * membro de nada — fica no estado "sem entidade" para sempre, com a entidade
+ * dela existindo no banco. Aconteceu, com duas.
+ *
+ * Quem decide o que casa é o servidor, pelo e-mail do token validado. Daqui só
+ * se pede: mandar o e-mail na chamada seria deixar o navegador escolher de quem
+ * ele é.
+ */
+export const vincularSessao = () =>
+  chamar<{ vinculadas: number; entidadeSlug: string | null }>('/api/vinculo', {});
+
 /* ── O cofre ────────────────────────────────────────────────────────────── */
 
 export type Assento = 'tesoureira' | 'presidente' | 'conselho';

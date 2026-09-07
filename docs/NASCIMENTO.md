@@ -61,27 +61,48 @@ hoje inteira e dizer o resto com honestidade.
 
 ---
 
-## Fase 1 · A porta
+## Fase 1 · A porta — **feita** (`main`)
 
 **O problema:** conta nova = beco sem saída.
 
-- [ ] Na tela de "sem entidade" (`Capa.tsx`), acrescentar um cartão
+- [x] Na tela de "sem entidade" (`Capa.tsx`), acrescentar um cartão
       **"Criar uma entidade"** acima de "Falta a diretoria te cadastrar",
       levando a `/entrar?aba=criar`.
-- [ ] Reordenar o texto: quem chega ali tem dois futuros possíveis — ser
+- [x] Reordenar o texto: quem chega ali tem dois futuros possíveis — ser
       cadastrado por alguém, ou fundar a própria. Hoje a tela só conhece o
       primeiro, e o primeiro é o menos provável para quem acabou de descobrir o
       produto.
-- [ ] `Entrar.tsx` passa a ler `?aba=criar` para já abrir na aba certa. Sem
+- [x] `Entrar.tsx` passa a ler `?aba=criar` para já abrir na aba certa. Sem
       isso o link entrega a pessoa na aba de login, que é de onde ela veio.
-- [ ] Depois de criar, redirecionar para `/e/<slug>` em vez de voltar para a
+- [x] Depois de criar, redirecionar para `/e/<slug>` em vez de voltar para a
       capa. A entidade existe: mostre-a.
+
+Um quinto item apareceu ao implementar, e sem ele os outros quatro seriam um
+botão para o mesmo beco:
+
+- [x] **`POST /api/vinculo`** — casa `membros.user_id` com a sessão, pelo
+      e-mail do token validado.
+
+O vínculo já foi `privado.vincular_membro()` e **nunca rodou uma vez**: morava
+num schema que o PostgREST não publica, então a chamada do navegador falhava
+calada (a própria 0006 descreve isso). A 0006 removeu a função e passou o
+vínculo para o servidor, em `lib/dados.ts` — arquivo que depois foi apagado
+numa limpeza do `api/`, sem que ninguém notasse, porque quem já estava
+vinculado continuou entrando.
+
+Só quem chegava depois ficava eternamente "sem entidade". O banco tinha duas
+entidades criadas assim, com `user_id` nulo e o fundador trancado do lado de
+fora — foi assim que o problema apareceu.
 
 **Como conferir:** entre com um e-mail que não é de nenhuma entidade. Deve
 haver um botão para criar uma. Crie. Você deve cair no cofre da sua entidade
 nova, vazio, com o seu nome como tesoureiro.
 
-**Custo:** uma tela, sem endpoint novo. Cabe hoje.
+**Conferido:** as duas telas no Chromium com um Supabase forjado — o cartão
+aparece primeiro e aponta para `/entrar?aba=criar`; a tela de criar não expulsa
+mais quem já entrou; o e-mail vem fixo da sessão, sem campo para digitar; e
+`/api/vinculo` é chamado quando a sessão não acha membro. `npm run conferir` em
+`/` e `/entrar` sem violação, e `npm run acesso` passando nos sete crachás.
 
 ---
 

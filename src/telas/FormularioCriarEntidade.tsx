@@ -3,7 +3,13 @@ import { Mail } from 'lucide-react';
 
 import { CampoEmail } from '@/componentes/CampoEmail';
 import { TileIcone } from '@/componentes/TileIcone';
-import { criarEntidade, ErroDaApi, type TipoEntidade } from '@/lib/api';
+import {
+  criarEntidade,
+  ErroDaApi,
+  vincularSessao,
+  type TipoEntidade,
+} from '@/lib/api';
+import { useSessao } from '@/lib/sessao';
 import { supabase } from '@/lib/supabase';
 
 /** A ordem é a da prancha, não a do banco. */
@@ -23,6 +29,16 @@ const TIPOS: { valor: TipoEntidade; rotulo: string }[] = [
  * diz o que fazer nesse caso em vez de fingir que nada foi criado.
  */
 export function FormularioCriarEntidade() {
+  const sessao = useSessao();
+  /*
+   * Quem já entrou funda com o próprio e-mail, e não com um digitado.
+   *
+   * Não é conveniência: é a diferença entre criar a SUA entidade e criar uma
+   * entidade para outra pessoa. O servidor cadastra como primeiro signatário
+   * exatamente o endereço que chega aqui, e só o e-mail da sessão é comprovado.
+   */
+  const emailDaSessao = sessao.user?.email?.trim().toLowerCase() ?? null;
+
   const [nome, setNome] = useState('');
   const [tipo, setTipo] = useState<TipoEntidade>('atletica');
   const [universidade, setUniversidade] = useState('');
@@ -35,7 +51,7 @@ export function FormularioCriarEntidade() {
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
 
-    const endereco = email.trim().toLowerCase();
+    const endereco = emailDaSessao ?? email.trim().toLowerCase();
     if (nome.trim().length < 2) {
       setErro('Diga o nome da entidade.');
       return;
@@ -55,6 +71,29 @@ export function FormularioCriarEntidade() {
         universidade: universidade.trim(),
         email: endereco,
       });
+
+      /*
+       * Com sessão aberta, não há link de e-mail a pedir: a pessoa já está
+       * dentro. O que falta é casar a linha recém-criada — que nasce com
+       * `user_id` nulo — com a sessão, e mostrar a entidade.
+       *
+       * A ida é por `location.assign`, não pelo roteador, e de propósito: o
+       * papel vem do contexto de sessão, que já foi carregado e não sabe do
+       * vínculo feito agora. Navegar por dentro entregaria a pessoa numa rota
+       * privada com o contexto de antes — ou seja, de volta para "sem
+       * entidade", que é o beco de onde ela veio. Fundar uma entidade acontece
+       * uma vez na vida; um recarregamento é preço justo por acertar sempre.
+       */
+      if (emailDaSessao) {
+        try {
+          await vincularSessao();
+        } catch (falha) {
+          // O vínculo tenta de novo sozinho no próximo carregamento da sessão.
+          console.error('[entidade] criada, vínculo adiado', falha);
+        }
+        window.location.assign(`/e/${criada.slug}`);
+        return;
+      }
 
       // O link volta para esta origem; o domínio precisa estar nos Redirect
       // URLs do painel do Supabase.
@@ -154,7 +193,22 @@ export function FormularioCriarEntidade() {
         />
       </Campo>
 
-      <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
+      {emailDaSessao ? (
+        <div className="min-w-0">
+          <div className="t-item-sm mb-2 text-ink">Seu e-mail</div>
+          {/*
+            Texto, não campo desabilitado: campo cinza convida a tentar digitar
+            e a descobrir que não dá. Aqui não há escolha a oferecer — a
+            entidade nasce de quem está logado — então a tela informa em vez de
+            simular uma decisão.
+          */}
+          <p className="num rounded-[14px] border border-white/12 bg-[#0A1526] px-3.5 py-3 text-[13px] leading-[1.4] break-all text-ink-2">
+            {emailDaSessao}
+          </p>
+        </div>
+      ) : (
+        <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
+      )}
 
       {erro && <p className="t-desc text-pretty text-red">{erro}</p>}
 

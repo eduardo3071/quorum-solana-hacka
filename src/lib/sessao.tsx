@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 
 import { supabase } from '@/lib/supabase';
+import { vincularSessao } from '@/lib/api';
 import type { Membro } from '@/lib/dados';
 
 /**
@@ -39,6 +40,17 @@ export function ProvedorDeSessao({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let vivo = true;
 
+    /** A linha da diretoria desta sessão, ou nada. */
+    async function lerMembro(userId: string) {
+      const { data } = await supabase
+        .from('membros')
+        .select('id, nome, papel, email, ativo, entidade_id, entidades(slug)')
+        .eq('user_id', userId)
+        .eq('ativo', true)
+        .maybeSingle();
+      return data;
+    }
+
     async function carregar(s: Session | null) {
       if (!vivo) return;
 
@@ -47,14 +59,32 @@ export function ProvedorDeSessao({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const { data } = await supabase
-        .from('membros')
-        .select('id, nome, papel, email, ativo, entidade_id, entidades(slug)')
-        .eq('user_id', s.user.id)
-        .eq('ativo', true)
-        .maybeSingle();
-
+      let data = await lerMembro(s.user.id);
       if (!vivo) return;
+
+      /*
+       * Nada casado ainda? Pergunte ao servidor antes de desistir.
+       *
+       * A linha de `membros` nasce antes da sessão — cadastrada pela diretoria,
+       * ou criada por quem fundou a entidade — e nasce com `user_id` nulo. É
+       * este pedido que as une, e ele só pode acontecer no servidor: a política
+       * de `membros` proíbe o próprio usuário de escrever, e proíbe com razão.
+       *
+       * Uma tentativa por carregamento, e falha silenciosa de propósito. Se a
+       * API estiver fora do ar, o certo é cair na tela de "sem entidade" — que
+       * é verdadeira, e tem saída — e não numa tela de erro que a pessoa não
+       * pode resolver.
+       */
+      if (!data) {
+        try {
+          const { vinculadas } = await vincularSessao();
+          if (!vivo) return;
+          if (vinculadas > 0) data = await lerMembro(s.user.id);
+        } catch {
+          // Segue para o estado sem entidade.
+        }
+        if (!vivo) return;
+      }
 
       if (!data) {
         setSessao({

@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 
 import capa from '@/assets/capa.webp';
-import { BookOpen, Clock, Info } from 'lucide-react';
+import { BookOpen, Clock, Plus } from 'lucide-react';
 
 import { Botao } from '@/componentes/Botao';
 import { Carregando } from '@/componentes/Estados';
@@ -137,11 +137,21 @@ function Visitante() {
 /* ── Entrou, mas ninguém o cadastrou ────────────────────────────────────── */
 
 /**
- * Convite pendente, não erro.
+ * Convite pendente, não erro — e não beco sem saída.
  *
- * Por isso o hero é âmbar — a cor da espera — e não vermelho. A pessoa fez tudo
- * certo: entrou com um e-mail que a diretoria ainda não cadastrou. O vermelho
+ * Por isso o hero é âmbar, a cor da espera, e não vermelho. A pessoa fez tudo
+ * certo: entrou com um e-mail que nenhuma entidade cadastrou ainda. O vermelho
  * está reservado para bloqueio, recusa e erro, e nada aqui é isso.
+ *
+ * Quem chega aqui tem DOIS futuros, e por muito tempo a tela só conhecia um.
+ * Ela dizia "espere a diretoria te cadastrar" e oferecia sair da conta — o que
+ * faz sentido para quem foi convidado e ainda não entrou na lista, e nenhum
+ * para quem acabou de descobrir o produto e quer fundar a própria atlética.
+ * Esse segundo caso é o mais provável de quem chega sozinho, e era justamente
+ * o que não tinha porta: o formulário existia, a um clique que ninguém dava.
+ *
+ * Fundar vem primeiro por isso. Esperar convite vem logo abaixo, com o mesmo
+ * texto de sempre.
  */
 function SemEntidade({ email }: { email: string }) {
   const { dados } = useConsulta(() => vitrinePublica(), []);
@@ -157,13 +167,28 @@ function SemEntidade({ email }: { email: string }) {
       />
 
       <CorpoTela className="pt-3.5 pb-4">
+        <a
+          href="/entrar?aba=criar"
+          className="flex items-start gap-3 rounded-card border border-blue/35 bg-blue-tint p-4"
+        >
+          <TileIcone icone={Plus} acento="blue" tamanho="lg" />
+          <div className="min-w-0">
+            <h2 className="t-item text-ink">Criar uma entidade</h2>
+            <p className="t-desc mt-1.5 text-pretty text-blue-ink">
+              Atlética, centro acadêmico, empresa júnior ou comissão de
+              formatura. Você entra como o primeiro dos três signatários, e os
+              outros dois vêm por convite.
+            </p>
+          </div>
+        </a>
+
         <section className="flex items-start gap-3 rounded-card border border-line bg-surface p-4">
           <TileIcone icone={Clock} acento="amber" tamanho="lg" />
           <div className="min-w-0">
-            <h2 className="t-item text-ink">Falta a diretoria te cadastrar</h2>
+            <h2 className="t-item text-ink">Ou espere te cadastrarem</h2>
             <p className="t-desc mt-1.5 text-pretty text-ink-2">
-              Seu e-mail está reconhecido, mas nenhuma entidade adicionou você
-              como signatário ou associado. Assim que a diretoria cadastrar, o
+              Se a sua entidade já usa o Quórum, peça à diretoria para adicionar
+              este e-mail como signatário ou associado. Assim que cadastrarem, o
               cofre aparece aqui.
             </p>
           </div>
@@ -189,16 +214,12 @@ function SemEntidade({ email }: { email: string }) {
           </>
         )}
 
-        <section className="flex items-start gap-3 rounded-card border border-line bg-surface p-4">
-          <TileIcone icone={Info} acento="blue" tamanho="lg" />
-          <div className="min-w-0">
-            <h2 className="t-item-sm text-ink">Já pediu para entrar?</h2>
-            <p className="t-desc mt-1.5 text-pretty text-ink-2">
-              Peça à diretoria para te cadastrar com este mesmo e-mail.
-            </p>
-          </div>
-        </section>
-
+        {/*
+          Aqui havia um terceiro cartão, "Já pediu para entrar?", dizendo para
+          pedir à diretoria com o mesmo e-mail. Virou repetição do cartão de
+          espera logo acima, que agora diz isso por inteiro. Três cartões para
+          duas saídas fazia a tela parecer mais cheia do que decidida.
+        */}
         <div className="mt-auto pt-2">
           <Botao variante="secundario" onClick={() => void sair()}>
             Sair desta conta
