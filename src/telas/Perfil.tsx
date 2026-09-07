@@ -1,4 +1,5 @@
-import { Building2, Check, LogOut, User } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Building2, Camera, Check, LogOut, Pencil, User } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
 import { Botao } from '@/componentes/Botao';
@@ -8,6 +9,7 @@ import { CorpoTela, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
 import {
   QUORUM,
+  atualizarMeuPerfil,
   entidadePorSlug,
   lancamentos,
   nomeDoPapel,
@@ -17,14 +19,28 @@ import {
   totais,
 } from '@/lib/dados';
 import { formatCompacto } from '@/lib/format';
+import { retratoReduzido } from '@/lib/imagem';
 import { sair, useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
+
+/** Os campos que a própria pessoa edita. Papel e vínculo não estão aqui. */
+type Pessoais = { nome: string; curso: string; periodo: string; foto: string };
 
 /** 5e · Perfil e carteirinha, com os dados de quem está logado. */
 export function Perfil() {
   const sessao = useSessao();
   const eu = sessao.membro;
   const slug = sessao.entidadeSlug ?? '';
+
+  /*
+   * Os dados pessoais vivem aqui depois de salvos.
+   *
+   * A sessão só relê a linha da diretoria quando o token muda, e recarregar a
+   * página inteira para ver o próprio nome novo é resposta grosseira. Então a
+   * tela guarda o que acabou de salvar e mostra isso.
+   */
+  const [salvos, setSalvos] = useState<Pessoais | null>(null);
+  const [editando, setEditando] = useState(false);
 
   const { dados, carregando, erro } = useConsulta(
     async () => {
@@ -94,6 +110,15 @@ export function Perfil() {
 
   const { entidade, soma, emAberto, diretoria } = dados;
 
+  const atual: Pessoais = salvos ?? {
+    nome: eu.nome,
+    curso: eu.curso ?? '',
+    periodo: eu.periodo ?? '',
+    foto: eu.foto_url ?? '',
+  };
+
+  const linhaCurso = [atual.curso, atual.periodo].filter(Boolean).join(' · ');
+
   return (
     <Tela>
       <Hero titulo="Perfil" />
@@ -101,14 +126,17 @@ export function Perfil() {
       <CorpoTela respiroAbas className="pt-3">
         <section className="flex-none rounded-card border border-line bg-surface">
           <div className="flex items-center gap-[13px] p-3.5">
-            <div className="flex size-[52px] flex-none items-center justify-center rounded-full bg-blue text-[20px] leading-none font-extrabold text-ground">
-              {eu.nome.charAt(0)}
-            </div>
+            <Retrato nome={atual.nome} foto={atual.foto} />
             <div className="min-w-0 flex-1">
-              <h2 className="t-secao text-ink">{eu.nome}</h2>
+              <h2 className="t-secao text-ink">{atual.nome}</h2>
               <div className="mt-[5px] truncate text-[12px] leading-[1.3] text-ink-3">
                 {eu.email ?? sessao.user?.email}
               </div>
+              {linhaCurso && (
+                <div className="mt-[3px] truncate text-[12px] leading-[1.3] text-ink-2">
+                  {linhaCurso}
+                </div>
+              )}
               <div className="mt-2 flex gap-[7px]">
                 <span className="t-chip rounded-chip bg-blue-tint px-[7px] py-[5px] text-blue">
                   {nomeDoPapel[eu.papel]}
@@ -129,6 +157,24 @@ export function Perfil() {
           </div>
         </section>
 
+        {editando ? (
+          <FormularioPessoais
+            inicial={atual}
+            aoCancelar={() => setEditando(false)}
+            aoSalvar={(novo) => {
+              setSalvos(novo);
+              setEditando(false);
+            }}
+          />
+        ) : (
+          <div className="flex-none">
+            <Botao variante="secundario" onClick={() => setEditando(true)}>
+              <Pencil size={16} strokeWidth={1.8} aria-hidden />
+              Editar dados pessoais
+            </Botao>
+          </div>
+        )}
+
         {/* Carteirinha — para mostrar na portaria da festa. */}
         <section
           className="flex-none overflow-hidden rounded-card p-4"
@@ -148,11 +194,22 @@ export function Perfil() {
             </span>
           </div>
 
-          <div className="mt-3.5 text-[22px] leading-[1.15] font-extrabold tracking-[-0.03em] text-white">
-            {eu.nome}
-          </div>
-          <div className="mt-[5px] text-[12.5px] leading-[1.4] font-medium text-white/88">
-            {nomeDoPapel[eu.papel]}
+          <div className="mt-3.5 flex items-center gap-3">
+            {atual.foto && (
+              <img
+                src={atual.foto}
+                alt=""
+                className="size-[46px] flex-none rounded-full border border-white/40 object-cover"
+              />
+            )}
+            <div className="min-w-0">
+              <div className="text-[22px] leading-[1.15] font-extrabold tracking-[-0.03em] text-white">
+                {atual.nome}
+              </div>
+              <div className="mt-[5px] text-[12.5px] leading-[1.4] font-medium text-white/88">
+                {linhaCurso ? `${nomeDoPapel[eu.papel]} · ${linhaCurso}` : nomeDoPapel[eu.papel]}
+              </div>
+            </div>
           </div>
 
           <div className="mt-3.5 rounded-tile-sm bg-ground/34 px-[11px] py-[9px] font-mono text-[11px] leading-none tracking-[0.02em] text-white/92">
@@ -177,7 +234,11 @@ export function Perfil() {
             icone={User}
             acento="blue"
             titulo="Dados pessoais"
-            detalhe={eu.email ?? sessao.user?.email ?? ''}
+            detalhe={
+              linhaCurso
+                ? `${linhaCurso} · ${eu.email ?? sessao.user?.email ?? ''}`
+                : (eu.email ?? sessao.user?.email ?? 'Curso e período em branco')
+            }
           />
         </div>
 
@@ -195,6 +256,169 @@ export function Perfil() {
 
       <BarraAbas ativa="perfil" slug={slug} pendencias={emAberto.length} />
     </Tela>
+  );
+}
+
+/** Retrato circular: a foto quando existe, a inicial quando não. */
+function Retrato({ nome, foto }: { nome: string; foto: string }) {
+  if (foto) {
+    return (
+      <img
+        src={foto}
+        alt={`Retrato de ${nome}`}
+        className="size-[52px] flex-none rounded-full border border-line object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="flex size-[52px] flex-none items-center justify-center rounded-full bg-blue text-[20px] leading-none font-extrabold text-ground">
+      {nome.charAt(0)}
+    </div>
+  );
+}
+
+function FormularioPessoais({
+  inicial,
+  aoSalvar,
+  aoCancelar,
+}: {
+  inicial: Pessoais;
+  aoSalvar: (dados: Pessoais) => void;
+  aoCancelar: () => void;
+}) {
+  const [nome, setNome] = useState(inicial.nome);
+  const [curso, setCurso] = useState(inicial.curso);
+  const [periodo, setPeriodo] = useState(inicial.periodo);
+  const [foto, setFoto] = useState(inicial.foto);
+  const [salvando, setSalvando] = useState(false);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const campoFoto = useRef<HTMLInputElement>(null);
+
+  async function escolherFoto(arquivo: File | undefined) {
+    if (!arquivo) return;
+    setAviso(null);
+    try {
+      setFoto(await retratoReduzido(arquivo));
+    } catch (e) {
+      setAviso(e instanceof Error ? e.message : 'Não deu para usar essa imagem.');
+    }
+  }
+
+  async function salvar() {
+    const limpo = nome.trim();
+    if (!limpo) {
+      setAviso('O nome não pode ficar em branco.');
+      return;
+    }
+
+    setSalvando(true);
+    setAviso(null);
+    try {
+      await atualizarMeuPerfil({
+        nome: limpo,
+        curso: curso.trim(),
+        periodo: periodo.trim(),
+        foto_url: foto,
+      });
+      aoSalvar({ nome: limpo, curso: curso.trim(), periodo: periodo.trim(), foto });
+    } catch {
+      setAviso('Não conseguimos salvar agora. Tente de novo em instantes.');
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <section className="flex-none rounded-card border border-line bg-surface p-3.5">
+      <h3 className="t-secao text-ink">Dados pessoais</h3>
+
+      <div className="mt-3.5 flex items-center gap-[13px]">
+        <Retrato nome={nome || '?'} foto={foto} />
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <button
+            type="button"
+            onClick={() => campoFoto.current?.click()}
+            className="flex items-center gap-2 self-start rounded-chip border border-line px-[11px] py-2 text-[12px] leading-none font-bold text-blue"
+          >
+            <Camera size={15} strokeWidth={1.8} aria-hidden />
+            {foto ? 'Trocar foto' : 'Escolher foto'}
+          </button>
+          {foto && (
+            <button
+              type="button"
+              onClick={() => setFoto('')}
+              className="self-start text-[11.5px] leading-none text-ink-3"
+            >
+              Remover foto
+            </button>
+          )}
+        </div>
+        <input
+          ref={campoFoto}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => void escolherFoto(e.target.files?.[0])}
+        />
+      </div>
+
+      <div className="mt-3.5 flex flex-col gap-[11px]">
+        <Campo rotulo="Nome" valor={nome} aoMudar={setNome} exemplo="Marina Alves" />
+        <Campo
+          rotulo="Curso"
+          valor={curso}
+          aoMudar={setCurso}
+          exemplo="Medicina"
+        />
+        <Campo
+          rotulo="Período"
+          valor={periodo}
+          aoMudar={setPeriodo}
+          exemplo="5º período"
+        />
+      </div>
+
+      {aviso && (
+        <p className="mt-3 text-[12px] leading-[1.4] text-red">{aviso}</p>
+      )}
+
+      <div className="mt-3.5 flex flex-col gap-[9px]">
+        <Botao
+          variante={salvando ? 'desabilitado' : 'primario'}
+          onClick={() => void salvar()}
+        >
+          {salvando ? 'Salvando…' : 'Salvar'}
+        </Botao>
+        <Botao variante="secundario" onClick={aoCancelar}>
+          Cancelar
+        </Botao>
+      </div>
+    </section>
+  );
+}
+
+function Campo({
+  rotulo,
+  valor,
+  aoMudar,
+  exemplo,
+}: {
+  rotulo: string;
+  valor: string;
+  aoMudar: (v: string) => void;
+  exemplo: string;
+}) {
+  return (
+    <label className="block">
+      <span className="t-rotulo text-ink-3">{rotulo}</span>
+      <input
+        value={valor}
+        onChange={(e) => aoMudar(e.target.value)}
+        placeholder={exemplo}
+        className="mt-1.5 block w-full rounded-tile-sm border border-line bg-surface-2 px-[13px] py-[12px] text-[13px] leading-none text-ink placeholder:text-ink-3 focus:border-blue focus:outline-none"
+      />
+    </label>
   );
 }
 
