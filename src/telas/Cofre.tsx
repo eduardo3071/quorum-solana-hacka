@@ -16,7 +16,7 @@ import { CartaoBanner } from '@/componentes/CartaoBanner';
 import { CartaoStat } from '@/componentes/CartaoStat';
 import { Chip } from '@/componentes/Chip';
 import { COR_DA_RUBRICA } from '@/componentes/acentos';
-import { Carregando, Erro, Vazio } from '@/componentes/Estados';
+import { Carregando, Erro } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { LinhaLista } from '@/componentes/LinhaLista';
 import { CorpoTela, Tela } from '@/componentes/Tela';
@@ -28,8 +28,10 @@ import {
   pendentes,
   propostas,
   retido,
+  solicitacoes,
   totais,
 } from '@/lib/dados';
+
 import { formatCompacto, formatComSinal, formatDataCurta } from '@/lib/format';
 import { useConsulta } from '@/lib/useConsulta';
 
