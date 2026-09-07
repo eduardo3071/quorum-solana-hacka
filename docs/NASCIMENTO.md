@@ -1,0 +1,221 @@
+# Do zero até uma entidade viva
+
+Hoje o Quórum tem uma entidade que funciona — a A.A.A. Engenharia — e ela
+**não nasceu pelo produto**. Nasceu de `api/scripts/seed.mjs`, que escreve com
+a service role em tabelas cujas políticas não dão INSERT a ninguém.
+
+Este documento é o caminho para que uma pessoa que acabou de criar a conta
+chegue no mesmo lugar **pelas telas**, sem script e sem SQL na mão.
+
+O teste que fecha tudo: `eduardocardosi520@gmail.com` cria uma atlética,
+cadastra dois colegas, cria o cofre, propõe uma saída, junta duas assinaturas,
+executa, e vê o lançamento aparecer no livro-caixa público — sem que ninguém
+toque no banco.
+
+---
+
+## Fase 0 · O que existe hoje, medido
+
+Auditado em `6fb9288`, arquivo por arquivo. Não é impressão.
+
+| passo | existe? | onde |
+| --- | --- | --- |
+| criar a entidade | **sim** | `POST /api/entidade` + `FormularioCriarEntidade` |
+| chegar nesse formulário | **não** | só por `/entrar`; a tela de "sem entidade" não oferece |
+| cadastrar a diretoria | **não** | `Socios.tsx` é somente leitura |
+| criar o cofre | **quase** | só dentro do `PainelCofre`, que exige uma proposta antes |
+| propor uma saída | sim | `Propor.tsx` — mas escreve direto no banco |
+| assinar e executar | **sim** | pela API, com autorização — provado em produção |
+| criar evento e lotes | **não** | só pelo seed |
+| ver o livro-caixa | sim | público, sem login |
+
+Três achados que mandam no plano:
+
+**1. A porta não existe.** Quem entra sem entidade cai na tela amarela
+"Falta a diretoria te cadastrar" (`Capa.tsx:163`), que oferece ver um
+livro-caixa alheio e sair da conta. O texto assume que alguém vai te cadastrar
+— e não contempla quem quer **criar a própria entidade**. O formulário existe e
+está a um clique de distância que ninguém dá.
+
+**2. O cofre depende de uma proposta.** `criarCofre()` mora dentro do
+`PainelCofre` (`src/vivo/PainelCofre.tsx:189`), e o `PainelCofre` só é montado
+quando `propostaRetida()` acha uma proposta pendente. Entidade recém-criada não
+tem nenhuma. Resultado: **não há caminho de tela para o primeiro cofre.**
+
+**3. As três chaves são globais.** `SIGNER_TESOUREIRA`, `SIGNER_PRESIDENTE` e
+`SIGNER_CONSELHO` são variáveis do ambiente do servidor, uma por papel — não
+uma por pessoa nem por entidade. Duas atléticas hoje compartilham os mesmos
+três signatários. Funciona para demonstrar; não é multi-entidade de verdade, e
+o documento não vai fingir que é.
+
+---
+
+## O que dá para fazer antes das 23h59 de hoje
+
+Só a **Fase 1**. Ela é pequena, some com o beco sem saída que você encontrou, e
+é exatamente o que um jurado faz: cria conta e tenta usar.
+
+As fases 2 a 6 são trabalho de dias. Estão aqui porque a pergunta era o caminho
+inteiro, e porque entregar meia funcionalidade hoje é pior que entregar a de
+hoje inteira e dizer o resto com honestidade.
+
+---
+
+## Fase 1 · A porta
+
+**O problema:** conta nova = beco sem saída.
+
+- [ ] Na tela de "sem entidade" (`Capa.tsx`), acrescentar um cartão
+      **"Criar uma entidade"** acima de "Falta a diretoria te cadastrar",
+      levando a `/entrar?aba=criar`.
+- [ ] Reordenar o texto: quem chega ali tem dois futuros possíveis — ser
+      cadastrado por alguém, ou fundar a própria. Hoje a tela só conhece o
+      primeiro, e o primeiro é o menos provável para quem acabou de descobrir o
+      produto.
+- [ ] `Entrar.tsx` passa a ler `?aba=criar` para já abrir na aba certa. Sem
+      isso o link entrega a pessoa na aba de login, que é de onde ela veio.
+- [ ] Depois de criar, redirecionar para `/e/<slug>` em vez de voltar para a
+      capa. A entidade existe: mostre-a.
+
+**Como conferir:** entre com um e-mail que não é de nenhuma entidade. Deve
+haver um botão para criar uma. Crie. Você deve cair no cofre da sua entidade
+nova, vazio, com o seu nome como tesoureiro.
+
+**Custo:** uma tela, sem endpoint novo. Cabe hoje.
+
+---
+
+## Fase 2 · O cofre antes da primeira saída
+
+**O problema:** o botão de criar cofre está escondido atrás de uma proposta que
+ainda não existe.
+
+- [ ] Mover a criação do cofre para a tela `/e/:slug` (Cofre), como estado
+      vazio próprio: "Esta entidade ainda não tem cofre" + botão.
+- [ ] `POST /api/cofre` já aceita `entidadeSlug` e já grava em
+      `entidades.multisig_pda`/`vault_pda`. **Nenhuma mudança de servidor.**
+- [ ] O `PainelCofre` mantém o botão dele para o caso de o cofre sumir no meio
+      do caminho, mas deixa de ser o único lugar.
+
+**Como conferir:** entidade nova, sem proposta nenhuma → a tela do cofre
+oferece criar. Depois de criar, `/api/estado` responde `motivo: "proposta"` em
+vez de `motivo: "cofre"`.
+
+**Cuidado:** criar cofre zera `tx_index` das propostas da entidade
+(`gravarCofreDaEntidade`, commit `657f203`). Numa entidade nova não há o que
+zerar, mas o botão não pode ficar disponível depois — cofre já criado, botão
+some.
+
+---
+
+## Fase 3 · A diretoria
+
+**O problema:** o quórum é 2 de 3 e a entidade nasce com uma pessoa.
+
+- [ ] `POST /api/membro` — cadastra nome, e-mail e papel. Exige `exigirMembro`
+      com papel de diretoria: só quem já está dentro convida.
+- [ ] Recusar o terceiro signatário quando os três papéis já estiverem
+      ocupados. Quatro signatários num cofre 2-de-3 é uma promessa que a rede
+      não cumpre.
+- [ ] `Socios.tsx` ganha o formulário e a lista com papel editável.
+- [ ] `DELETE`/desativar: `membros.ativo` já existe e ninguém usa.
+
+**Como conferir:** cadastre presidente e conselho. A tela de aprovações passa a
+mostrar os três nomes no indicador de assinaturas, e `nomesDosAssentos()` para
+de cair no rótulo genérico.
+
+**O que NÃO resolve:** cadastrar a Letícia não dá a ela uma chave. Ela assina
+com `SIGNER_PRESIDENTE`, que é do servidor. Ver Fase 6.
+
+---
+
+## Fase 4 · A saída nasce no servidor
+
+Esta é a **Fase 2 do `PLANO.md`**, que continua aberta.
+
+- [ ] `POST /api/proposta-nova` cria a linha em `propostas` com validação de
+      valor em centavos, rubrica e destino.
+- [ ] `Propor.tsx:113` para de escrever direto no Supabase.
+- [ ] A política de INSERT em `propostas` some. Hoje ela existe só para o
+      navegador conseguir escrever.
+
+**Por que importa:** é o único lugar do fluxo do dinheiro em que o navegador
+ainda escreve sozinho. Assinar e executar já passam pela API com autorização.
+
+---
+
+## Fase 5 · A festa
+
+Sem isto, a metade Solana Pay do produto só existe na entidade semeada.
+
+- [ ] `POST /api/evento` — nome, data, local, capacidade, rubrica.
+- [ ] `POST /api/lote` — nome, preço em **centavos**, total.
+- [ ] Tela de criar evento a partir de `/e/:slug/festas`, que hoje só lista.
+- [ ] O slug do evento segue a mesma regra do slug da entidade
+      (`slugLivre`, em `api/app/api/entidade/route.ts`).
+
+**Como conferir:** crie um evento com um lote, abra `/f/<slug-do-evento>`,
+gere o QR e pague pela carteira de demonstração. A entrada aparece no seu
+livro-caixa, não no da A.A.A. Engenharia.
+
+---
+
+## Fase 6 · Uma chave por pessoa
+
+O limite estrutural. Enquanto ele existir, "multi-entidade" é uma meia-verdade.
+
+- [ ] Cada signatário guarda a própria chave — carteira do navegador, e o
+      servidor deixa de assinar por ninguém.
+- [ ] `POST /api/assinar` passa a receber uma transação já assinada em vez de
+      assinar com chave do ambiente.
+- [ ] `DEMO_ASSINA_POR_TODOS` some, e o parágrafo que a explica em
+      `api/lib/cofre/contexto.ts` some junto.
+- [ ] `membros` ganha `pubkey`, e é ela que entra na criação do multisig.
+
+**Consequência boa:** a demonstração deixa de precisar de um aparelho só, e o
+produto passa a ser verdadeiro quando alguém perguntar "quem tem a chave?".
+
+**Consequência cara:** exige carteira instalada, e um estudante que só quer ver
+o livro-caixa não vai instalar nada. O livro-caixa continua público e sem
+carteira — a tese não muda.
+
+---
+
+## Fase 7 · O convite
+
+- [ ] Cadastrar um membro dispara um e-mail com link de entrada.
+- [ ] `membros.user_id` casa com a sessão na primeira visita — o mecanismo já
+      existe, criado por `/api/entidade` para o primeiro signatário.
+- [ ] Enquanto o convite não é aceito, a lista mostra "aguardando".
+
+---
+
+## O que fica de fora, e por quê
+
+**Cobrar pela entidade.** Não há plano pago, e não haverá antes de existir
+alguém usando.
+
+**Trocar o slug depois de criado.** O livro-caixa é um link que se manda no
+grupo. Link que muda de endereço quebra a promessa do produto.
+
+**Apagar entidade.** Livro-caixa que some não é livro-caixa. No máximo,
+arquivar — e arquivada continua legível.
+
+**Rede principal.** `CLAUDE.md`: devnet, nunca mainnet neste repositório.
+
+---
+
+## O caminho completo, quando as sete estiverem de pé
+
+1. Entra com o e-mail → **"Criar uma entidade"** *(Fase 1)*
+2. Escolhe tipo, nome e universidade → cai no cofre vazio *(existe)*
+3. Cadastra presidente e conselho *(Fase 3)* → convite por e-mail *(Fase 7)*
+4. Cria o cofre 2 de 3 *(Fase 2)*
+5. Cria a festa e os lotes *(Fase 5)*
+6. Vende um ingresso — o valor cai no cofre *(existe)*
+7. Propõe uma saída *(Fase 4)*
+8. Duas assinaturas, execução, comprovante *(existe, provado)*
+9. Tudo aparece no livro-caixa público, sem login *(existe)*
+
+Cinco dos nove passos já funcionam. É por isso que este documento tem sete
+fases e não um recomeço.
