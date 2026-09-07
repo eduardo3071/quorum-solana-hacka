@@ -102,7 +102,7 @@ function Painel({ slug, chave }: { slug: string; chave: string }) {
     try {
       const r = await conferirEntradas(slug);
       setLancadas(r.lancadas);
-      setSaldoAtual(r.saldoCentavos);
+
     } catch (e) {
       setFalha(
         e instanceof Error ? e.message : 'Não conseguimos conferir agora.',
