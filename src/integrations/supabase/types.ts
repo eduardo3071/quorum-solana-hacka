@@ -63,6 +63,7 @@ export type Database = {
           slug: string
           tipo: Database["public"]["Enums"]["tipo_entidade"]
           universidade: string | null
+          vault_pda: string | null
         }
         Insert: {
           criado_em?: string
@@ -73,6 +74,7 @@ export type Database = {
           slug: string
           tipo: Database["public"]["Enums"]["tipo_entidade"]
           universidade?: string | null
+          vault_pda?: string | null
         }
         Update: {
           criado_em?: string
@@ -83,6 +85,7 @@ export type Database = {
           slug?: string
           tipo?: Database["public"]["Enums"]["tipo_entidade"]
           universidade?: string | null
+          vault_pda?: string | null
         }
         Relationships: []
       }
@@ -323,6 +326,7 @@ export type Database = {
           criado_em: string
           criado_por: string
           destino: string
+          destino_devnet: string | null
           entidade_id: string
           id: string
           rubrica: Database["public"]["Enums"]["rubrica"]
@@ -335,6 +339,7 @@ export type Database = {
           criado_em?: string
           criado_por: string
           destino: string
+          destino_devnet?: string | null
           entidade_id: string
           id?: string
           rubrica: Database["public"]["Enums"]["rubrica"]
@@ -347,6 +352,7 @@ export type Database = {
           criado_em?: string
           criado_por?: string
           destino?: string
+          destino_devnet?: string | null
           entidade_id?: string
           id?: string
           rubrica?: Database["public"]["Enums"]["rubrica"]
