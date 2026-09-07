@@ -240,7 +240,7 @@ function Pessoa({
             aria-label={`Mudar o papel de ${m.nome}`}
             disabled={ocupado}
             onClick={() => setAberto((v) => !v)}
-            className="flex min-h-9 flex-none items-center gap-1.5 rounded-btn border border-line bg-elev px-2.5 disabled:opacity-50"
+            className="flex min-h-9 flex-none items-center gap-1.5 rounded-btn border border-line bg-surface-2 px-2.5 disabled:opacity-50"
           >
             <span className="t-chip whitespace-nowrap text-blue">Papel</span>
             <ChevronDown
@@ -272,7 +272,7 @@ function Pessoa({
                 className={`t-chip min-h-9 rounded-btn px-3 whitespace-nowrap disabled:opacity-50 ${
                   atual
                     ? 'border border-blue/40 bg-blue-tint text-blue'
-                    : 'border border-line bg-elev text-ink-2'
+                    : 'border border-line bg-surface-2 text-ink-2'
                 }`}
               >
                 {nomeDoPapel[p]}
