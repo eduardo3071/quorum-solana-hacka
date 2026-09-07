@@ -103,19 +103,32 @@ export function FormularioCriarEntidade() {
         return;
       }
 
-      // O link volta para esta origem; o domínio precisa estar nos Redirect
-      // URLs do painel do Supabase.
+      // O link de confirmação volta para esta origem; o domínio precisa estar
+      // nos Redirect URLs do painel do Supabase.
       const destino = new URL('/auth/confirmar', window.location.origin);
       destino.searchParams.set('proxima', `/e/${criada.slug}`);
 
-      const { error } = await supabase.auth.signInWithOtp({
+      const { data, error } = await supabase.auth.signUp({
         email: endereco,
+        password: senha,
         options: { emailRedirectTo: destino.toString() },
       });
 
-      if (error) console.error('[auth] entidade criada, link não saiu', error);
+      if (error) console.error('[auth] entidade criada, conta não nasceu', error);
+
+      // Sessão aberta na hora significa confirmação desligada: entra direto.
+      if (data?.session) {
+        try {
+          await vincularSessao();
+        } catch (falha) {
+          console.error('[entidade] criada, vínculo adiado', falha);
+        }
+        window.location.assign(`/e/${criada.slug}`);
+        return;
+      }
 
       setPronto({ nome: criada.nome, email: endereco });
+
     } catch (e) {
       console.error('[entidade] falha ao criar', e);
       setErro(
