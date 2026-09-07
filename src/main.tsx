@@ -16,7 +16,9 @@ import { Livro } from '@/telas/Livro';
 import { NaoEncontrada } from '@/telas/NaoEncontrada';
 import { Perfil } from '@/telas/Perfil';
 import { Propor } from '@/telas/Propor';
+import { RedefinirSenha } from '@/telas/RedefinirSenha';
 import { Socios } from '@/telas/Socios';
+
 
 import './globals.css';
 
@@ -56,6 +58,11 @@ if (faltaConfigurar) {
         <Routes>
           <Route path="/" element={<Capa />} />
           <Route path="/entrar" element={<Entrar />} />
+
+          {/* Pública de propósito: quem chega pelo link de nova senha ainda
+              não tem como entrar. */}
+          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+
 
           {/* O link do e-mail volta aqui; o cliente troca o código por sessão
               sozinho e a tela só espera. */}

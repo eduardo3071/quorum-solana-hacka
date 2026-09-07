@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Mail } from 'lucide-react';
 
 import { CampoEmail } from '@/componentes/CampoEmail';
+import { CampoSenha } from '@/componentes/CampoSenha';
 import { TileIcone } from '@/componentes/TileIcone';
 import {
   criarEntidade,
@@ -11,6 +12,7 @@ import {
 } from '@/lib/api';
 import { useSessao } from '@/lib/sessao';
 import { supabase } from '@/lib/supabase';
+
 
 /** A ordem é a da prancha, não a do banco. */
 const TIPOS: { valor: TipoEntidade; rotulo: string }[] = [
@@ -43,6 +45,7 @@ export function FormularioCriarEntidade() {
   const [tipo, setTipo] = useState<TipoEntidade>('atletica');
   const [universidade, setUniversidade] = useState('');
   const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
   const [pronto, setPronto] = useState<{ nome: string; email: string } | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -60,6 +63,11 @@ export function FormularioCriarEntidade() {
       setErro('Confira o e-mail — parece incompleto.');
       return;
     }
+    if (!emailDaSessao && senha.length < 8) {
+      setErro('A senha precisa ter pelo menos 8 caracteres.');
+      return;
+    }
+
 
     setPendente(true);
     setErro(null);
@@ -95,19 +103,32 @@ export function FormularioCriarEntidade() {
         return;
       }
 
-      // O link volta para esta origem; o domínio precisa estar nos Redirect
-      // URLs do painel do Supabase.
+      // O link de confirmação volta para esta origem; o domínio precisa estar
+      // nos Redirect URLs do painel do Supabase.
       const destino = new URL('/auth/confirmar', window.location.origin);
       destino.searchParams.set('proxima', `/e/${criada.slug}`);
 
-      const { error } = await supabase.auth.signInWithOtp({
+      const { data, error } = await supabase.auth.signUp({
         email: endereco,
+        password: senha,
         options: { emailRedirectTo: destino.toString() },
       });
 
-      if (error) console.error('[auth] entidade criada, link não saiu', error);
+      if (error) console.error('[auth] entidade criada, conta não nasceu', error);
+
+      // Sessão aberta na hora significa confirmação desligada: entra direto.
+      if (data?.session) {
+        try {
+          await vincularSessao();
+        } catch (falha) {
+          console.error('[entidade] criada, vínculo adiado', falha);
+        }
+        window.location.assign(`/e/${criada.slug}`);
+        return;
+      }
 
       setPronto({ nome: criada.nome, email: endereco });
+
     } catch (e) {
       console.error('[entidade] falha ao criar', e);
       setErro(
@@ -127,11 +148,12 @@ export function FormularioCriarEntidade() {
         <div className="min-w-0">
           <div className="t-item text-ink">{pronto.nome} está criada</div>
           <p className="t-desc mt-1.5 text-pretty text-green-ink">
-            Abra o e-mail em <strong>{pronto.email}</strong> e toque no link para
-            entrar como primeiro signatário. Se o link não chegar, peça outro na
-            aba <strong>Entrar</strong> — a entidade já existe e espera por você.
+            Confirme o e-mail em <strong>{pronto.email}</strong> e depois entre
+            com sua senha para assumir como primeiro signatário. A entidade já
+            existe e espera por você.
           </p>
         </div>
+
       </div>
     );
   }
@@ -207,8 +229,19 @@ export function FormularioCriarEntidade() {
           </p>
         </div>
       ) : (
-        <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
+        <>
+          <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
+          <CampoSenha
+            id="senha-criar"
+            rotulo="Crie uma senha"
+            valor={senha}
+            aoMudar={setSenha}
+            autoComplete="new-password"
+            dica="Pelo menos 8 caracteres."
+          />
+        </>
       )}
+
 
       {erro && <p className="t-desc text-pretty text-red">{erro}</p>}
 
