@@ -41,6 +41,8 @@ import {
 } from '@/lib/format';
 import { useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
+import { useTempoReal } from '@/lib/useTempoReal';
+
 
 import { NaoEncontrada } from './NaoEncontrada';
 
@@ -60,7 +62,7 @@ export function Aprovacoes() {
   const sessao = useSessao();
   const eu = sessao.membro;
 
-  const { dados, carregando, erro } = useConsulta(async () => {
+  const { dados, carregando, erro, recarregar } = useConsulta(async () => {
     const entidade = await entidadePorSlug(slug);
     if (!entidade) return null;
 
@@ -81,6 +83,11 @@ export function Aprovacoes() {
       quantos,
     };
   }, [slug, eu?.id]);
+
+  // Em tempo real: assinatura feita no aparelho de outra pessoa, proposta nova
+  // ou promoção na diretoria aparecem aqui sem ninguém recarregar a página.
+  useTempoReal(['propostas', 'assinaturas', 'membros'], recarregar);
+
 
   if (erro) {
     return (
@@ -104,6 +111,29 @@ export function Aprovacoes() {
   if (!dados) return <NaoEncontrada />;
 
   const { entidade, abertas, valorRetido, diretoria, alvo, soma, quantos } = dados;
+  const ocupados = assentosOcupados(diretoria);
+
+  // Duas pessoas da diretoria, no mínimo: uma saída só é retida de verdade se
+  // existir uma segunda pessoa capaz de assinar.
+  if (ocupados.length < QUORUM.de) {
+    return (
+      <Moldura
+        slug={slug}
+        entidade={entidade.nome}
+        subtitulo="Falta um segundo assinante"
+        variante="blue"
+      >
+        <Vazio
+          titulo="A diretoria precisa de duas pessoas"
+          acao={{ texto: 'Abrir sócios ativos', href: `/e/${slug}/socios` }}
+        >
+          Hoje só {diretoria[0]?.nome ?? 'uma pessoa'} pode assinar. Promova
+          outra pessoa a presidência, tesouraria ou conselho fiscal em Sócios
+          ativos — assim que isso acontecer, esta tela se atualiza sozinha.
+        </Vazio>
+      </Moldura>
+    );
+  }
 
   if (aoVivo) {
     return (
@@ -125,7 +155,9 @@ export function Aprovacoes() {
             }}
             nomes={nomesDosAssentos(diretoria)}
             contatos={contatosDosAssentos(diretoria)}
+            assentosOcupados={ocupados}
             meuAssento={eu ? (ASSENTO_DO_PAPEL[eu.papel] ?? null) : null}
+
 
             saldoCentavos={soma.saldo}
             associados={quantos}
@@ -344,6 +376,18 @@ function faltantesDaProposta(
       !proposta.assinaturas.some((a) => a.membro_id === m.id),
   );
 }
+
+/** Os lugares do cofre que têm alguém de verdade na diretoria. */
+function assentosOcupados(diretoria: Membro[]): Assento[] {
+  const ordem: Assento[] = ['tesoureira', 'presidente', 'conselho'];
+  const tem = new Set(
+    diretoria
+      .map((m) => ASSENTO_DO_PAPEL[m.papel])
+      .filter((a): a is Assento => !!a),
+  );
+  return ordem.filter((a) => tem.has(a));
+}
+
 
 
 function Moldura({

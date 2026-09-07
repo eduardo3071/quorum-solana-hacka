@@ -8,11 +8,19 @@ import { COR_DA_RUBRICA, type Rubrica } from '@/componentes/acentos';
 import { Carregando, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
-import { QUORUM, entidadePorSlug, pendentes, propostas } from '@/lib/dados';
+import {
+  QUORUM,
+  entidadePorSlug,
+  pendentes,
+  propostas,
+  signatarios,
+} from '@/lib/dados';
 import { paraCentavos } from '@/lib/format';
 import { useSessao } from '@/lib/sessao';
 import { supabase } from '@/lib/supabase';
 import { useConsulta } from '@/lib/useConsulta';
+import { useTempoReal } from '@/lib/useTempoReal';
+
 
 import { NaoEncontrada } from './NaoEncontrada';
 
@@ -39,12 +47,19 @@ export function Propor() {
   const sessao = useSessao();
   const eu = sessao.membro;
 
-  const { dados, carregando } = useConsulta(async () => {
+  const { dados, carregando, recarregar } = useConsulta(async () => {
     const entidade = await entidadePorSlug(slug);
     if (!entidade) return null;
-    const lista = await propostas(entidade.id);
-    return { entidade, emAberto: pendentes(lista) };
+    const [lista, diretoria] = await Promise.all([
+      propostas(entidade.id),
+      signatarios(entidade.id),
+    ]);
+    return { entidade, emAberto: pendentes(lista), diretoria };
   }, [slug]);
+
+  // Promover alguém na aba Sócios libera esta tela na hora, sem recarregar.
+  useTempoReal(['membros', 'propostas'], recarregar);
+
 
   if (carregando) {
     return (
@@ -76,6 +91,28 @@ export function Propor() {
       </Moldura>
     );
   }
+
+  // Duas pessoas na diretoria, no mínimo: sem a segunda, a saída ficaria retida
+  // para sempre e a proposta viraria uma promessa que ninguém pode cumprir.
+  if (dados.diretoria.length < QUORUM.de) {
+    return (
+      <Moldura
+        slug={slug}
+        entidade={dados.entidade.nome}
+        pendencias={dados.emAberto.length}
+      >
+        <Vazio
+          titulo="Falta um segundo assinante"
+          acao={{ texto: 'Abrir sócios ativos', href: `/e/${slug}/socios` }}
+        >
+          Uma saída precisa de {QUORUM.de} assinaturas de pessoas da diretoria.
+          Promova outra pessoa a presidência, tesouraria ou conselho fiscal em
+          Sócios ativos — esta tela libera na hora.
+        </Vazio>
+      </Moldura>
+    );
+  }
+
 
   return (
     <Moldura

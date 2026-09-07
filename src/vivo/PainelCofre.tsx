@@ -136,7 +136,9 @@ export function PainelCofre({
   proposta,
   nomes,
   contatos,
+  assentosOcupados = ASSENTOS,
   meuAssento,
+
   saldoCentavos,
   associados,
   entidadeSlug,
@@ -146,8 +148,16 @@ export function PainelCofre({
   nomes: Record<Assento, string>;
   /** O e-mail de cada signatário, para avisar quem falta assinar. */
   contatos?: Partial<Record<Assento, string | null>>;
+  /**
+   * Quais lugares do cofre têm alguém da diretoria de verdade.
+   *
+   * Sem isto a tela cobrava a assinatura de um "Conselho fiscal" que não existe
+   * na liga. Quem assina é gente do catálogo da diretoria, e ninguém mais.
+   */
+  assentosOcupados?: Assento[];
   /** Qual lugar do cofre é de quem está na tela. `null` para associado. */
   meuAssento: Assento | null;
+
   saldoCentavos: number;
   associados: number;
   /** De qual entidade é o cofre. Ver `AlvoDoCofre` em `lib/api.ts`. */
@@ -408,9 +418,11 @@ export function PainelCofre({
   const completo = feitas >= necessarias;
   /* Só a própria pessoa assina pelo lugar dela. */
   const minhaVez = !!meuAssento && !assinaram.includes(meuAssento);
-  const faltantes = ASSENTOS.filter(
+  // Só cobra assinatura de quem existe no catálogo da diretoria.
+  const faltantes = assentosOcupados.filter(
     (a) => !assinaram.includes(a) && a !== meuAssento,
   );
+
 
 
   return (
@@ -443,9 +455,12 @@ export function PainelCofre({
 
       {bloqueio && (
         <BlocoBloqueio className="mt-3.5">
-          Falta a assinatura de {primeiroNome(nomes.presidente)} ou de{' '}
-          {primeiroNome(nomes.conselho)}. Ao assinar, a saída é executada na
-          hora.
+          {faltantes.length > 0
+            ? `Falta a assinatura de ${faltantes
+                .map((a) => primeiroNome(nomes[a]))
+                .join(' ou de ')}. Ao assinar, a saída é executada na hora.`
+            : 'Falta a assinatura da outra pessoa da diretoria. Ao assinar, a saída é executada na hora.'}
+
           {bloqueio.explorador && (
             <>
               {' '}
