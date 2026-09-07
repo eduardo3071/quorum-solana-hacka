@@ -248,3 +248,59 @@ export async function registrarExecucao(proposta: {
   if (error) throw error;
   return true;
 }
+
+/**
+ * A saída de uma entidade é a entrada de outra.
+ *
+ * Quando o destino da saída é o caixa de outra entidade cadastrada, o livro-caixa
+ * dela precisa saber na hora. Antes isso só aparecia depois de alguém apertar
+ * "Conferir entradas" na tela Receber — o dinheiro estava lá, o livro não sabia,
+ * e a tela parecia dizer que a transferência não aconteceu.
+ *
+ * Idempotente por `tx_signature`: a mesma execução nunca lança duas vezes.
+ */
+export async function registrarEntradaNoDestino(destinoDevnet: {
+  chave: string;
+  valorCentavos: number;
+  rubrica: string;
+  origem: string;
+  txSignature: string;
+}): Promise<boolean> {
+  const supabase = criarClienteServiceRole();
+
+  const { data: destinataria, error: erroBusca } = await supabase
+    .from('entidades')
+    .select('id')
+    .eq('vault_pda', destinoDevnet.chave)
+    .maybeSingle();
+
+  if (erroBusca) throw erroBusca;
+  if (!destinataria) return false;
+
+  const { data: jaLancado, error: erroLeitura } = await supabase
+    .from('lancamentos')
+    .select('id')
+    .eq('entidade_id', destinataria.id)
+    .eq('tx_signature', destinoDevnet.txSignature)
+    .maybeSingle();
+
+  if (erroLeitura) throw erroLeitura;
+  if (jaLancado) return false;
+
+  const { error } = await supabase.from('lancamentos').insert({
+    entidade_id: destinataria.id,
+    tipo: 'entrada',
+    valor_centavos: destinoDevnet.valorCentavos,
+    rubrica: destinoDevnet.rubrica,
+    descricao: `Entrada recebida de ${destinoDevnet.origem}`,
+    tx_signature: destinoDevnet.txSignature,
+  });
+
+  if (error) {
+    if (error.code === '23505' || error.code === '23514') return false;
+    throw error;
+  }
+
+  return true;
+}
+
