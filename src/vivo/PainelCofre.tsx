@@ -400,34 +400,47 @@ export function PainelCofre({
         </BlocoBloqueio>
       )}
 
+      {!completo && !minhaVez && (
+        <BlocoBloqueio className="mt-3.5">
+          {meuAssento
+            ? 'Sua assinatura já está registrada. Falta a de outro signatário — só a própria pessoa pode assinar pelo lugar dela.'
+            : 'Seu acesso é de associado. Quem assina é a diretoria.'}
+        </BlocoBloqueio>
+      )}
+
       <div className="mt-3 flex flex-col gap-2">
-        {!completo && (
-          <>
-            <Botao
-              variante={bloqueio ? 'desabilitado' : 'primario'}
-              onClick={() => void executar('tesoureira')}
-            >
-              {bloqueio ? 'Executar saída' : 'Assinar e executar'}
-            </Botao>
-            {feitas === 0 && (
-              <Botao variante="secundario" onClick={() => void assinar('tesoureira')}>
-                Assinar como {primeiroNome(nomes.tesoureira)}
-              </Botao>
-            )}
-            {feitas > 0 && (
-              <Botao variante="secundario" onClick={() => void assinar('presidente')}>
-                Assinar como {primeiroNome(nomes.presidente)}
-              </Botao>
-            )}
-          </>
+        {!completo && minhaVez && (
+          <Botao
+            variante={bloqueio ? 'desabilitado' : 'primario'}
+            onClick={() => void assinarEExecutar(meuAssento as Assento)}
+          >
+            Assinar como {primeiroNome(nomes[meuAssento as Assento])}
+          </Botao>
         )}
 
+        {!completo &&
+          !minhaVez &&
+          faltantes.map((a) => (
+            <Botao
+              key={a}
+              variante="secundario"
+              href={contatos?.[a] ? avisoPorEmail(contatos[a] as string, proposta) : undefined}
+              onClick={contatos?.[a] ? undefined : () => undefined}
+            >
+              Avisar {primeiroNome(nomes[a])}
+            </Botao>
+          ))}
+
         {completo && (
-          <Botao onClick={() => void executar('presidente')}>
+          <Botao
+            variante={meuAssento ? 'primario' : 'desabilitado'}
+            onClick={() => void executar(meuAssento as Assento)}
+          >
             Executar saída · quórum atingido
           </Botao>
         )}
       </div>
+
 
       {bloqueio && (
         <p className="t-meta mt-3 text-pretty text-ink-3">
