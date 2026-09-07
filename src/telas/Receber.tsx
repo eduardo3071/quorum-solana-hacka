@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ArrowDown, Copy } from 'lucide-react';
+import { Copy } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
 import { Botao } from '@/componentes/Botao';
@@ -74,25 +74,17 @@ export function Receber() {
 
   return (
     <Moldura slug={slug}>
-      <Painel slug={slug} chave={dados.chave.chave} saldo={dados.chave.saldoCentavos} />
+      <Painel slug={slug} chave={dados.chave.chave} />
     </Moldura>
   );
 }
 
-function Painel({
-  slug,
-  chave,
-  saldo,
-}: {
-  slug: string;
-  chave: string;
-  saldo: number;
-}) {
+function Painel({ slug, chave }: { slug: string; chave: string }) {
   const [copiado, setCopiado] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [falha, setFalha] = useState<string | null>(null);
   const [lancadas, setLancadas] = useState<EntradaLancada[] | null>(null);
-  const [saldoAtual, setSaldoAtual] = useState(saldo);
+
 
   async function copiar() {
     try {
@@ -110,7 +102,7 @@ function Painel({
     try {
       const r = await conferirEntradas(slug);
       setLancadas(r.lancadas);
-      setSaldoAtual(r.saldoCentavos);
+
     } catch (e) {
       setFalha(
         e instanceof Error ? e.message : 'Não conseguimos conferir agora.',
@@ -137,13 +129,7 @@ function Painel({
         </button>
       </div>
 
-      <div className="flex min-h-[64px] items-center justify-between gap-3 rounded-card border border-line bg-surface px-3.5 py-3">
-        <div className="flex flex-col">
-          <span className="t-rotulo text-ink-3">No caixa</span>
-          <span className="t-valor text-ink">{formatBRL(saldoAtual)}</span>
-        </div>
-        <ArrowDown size={19} strokeWidth={1.7} className="text-green" aria-hidden />
-      </div>
+
 
       <p className="t-desc text-pretty text-ink-2">
         Quem quiser pagar a entidade — outra liga, um patrocinador, um associado —
