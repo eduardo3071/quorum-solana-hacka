@@ -60,7 +60,7 @@ export function Aprovacoes() {
   const sessao = useSessao();
   const eu = sessao.membro;
 
-  const { dados, carregando, erro } = useConsulta(async () => {
+  const { dados, carregando, erro, recarregar } = useConsulta(async () => {
     const entidade = await entidadePorSlug(slug);
     if (!entidade) return null;
 
