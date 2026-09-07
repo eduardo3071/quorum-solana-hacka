@@ -10,7 +10,6 @@ import { TileIcone } from '@/componentes/TileIcone';
 import {
   atualizarMeuPerfil,
   entidadePorSlug,
-  lancamentos,
   nomeDoPapel,
   pendentes,
   propostas,
@@ -44,14 +43,12 @@ export function Perfil() {
       const entidade = await entidadePorSlug(slug);
       if (!entidade) return null;
 
-      const [linhas, lista, diretoria] = await Promise.all([
-        lancamentos(entidade.id),
+      const [lista, diretoria] = await Promise.all([
         propostas(entidade.id),
         signatarios(entidade.id),
       ]);
       return {
         entidade,
-        soma: totais(linhas),
         emAberto: pendentes(lista),
         diretoria,
       };
