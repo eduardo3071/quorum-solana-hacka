@@ -3,13 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Copy } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
-import { Botao } from '@/componentes/Botao';
 import { Carregando, Erro, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
-import { chaveDeRecebimento, conferirEntradas, type EntradaLancada } from '@/lib/api';
+import { chaveDeRecebimento } from '@/lib/api';
 import { entidadePorSlug } from '@/lib/dados';
-import { formatBRL } from '@/lib/format';
 import { useConsulta } from '@/lib/useConsulta';
 
 import { NaoEncontrada } from './NaoEncontrada';
@@ -79,12 +77,9 @@ export function Receber() {
   );
 }
 
-function Painel({ slug, chave }: { slug: string; chave: string }) {
+function Painel({ chave }: { slug: string; chave: string }) {
   const [copiado, setCopiado] = useState(false);
-  const [ocupado, setOcupado] = useState(false);
   const [falha, setFalha] = useState<string | null>(null);
-  const [lancadas, setLancadas] = useState<EntradaLancada[] | null>(null);
-
 
   async function copiar() {
     try {
@@ -93,22 +88,6 @@ function Painel({ slug, chave }: { slug: string; chave: string }) {
       setTimeout(() => setCopiado(false), 2000);
     } catch {
       setFalha('Não deu para copiar. Selecione a chave e copie à mão.');
-    }
-  }
-
-  async function conferir() {
-    setOcupado(true);
-    setFalha(null);
-    try {
-      const r = await conferirEntradas(slug);
-      setLancadas(r.lancadas);
-
-    } catch (e) {
-      setFalha(
-        e instanceof Error ? e.message : 'Não conseguimos conferir agora.',
-      );
-    } finally {
-      setOcupado(false);
     }
   }
 
@@ -129,48 +108,13 @@ function Painel({ slug, chave }: { slug: string; chave: string }) {
         </button>
       </div>
 
-
-
       <p className="t-desc text-pretty text-ink-2">
         Quem quiser pagar a entidade — outra liga, um patrocinador, um associado —
         envia para essa chave. O dinheiro cai no caixa do cofre, que continua
         exigindo duas assinaturas para qualquer saída.
       </p>
 
-      <Botao onClick={conferir} variante={ocupado ? 'desabilitado' : 'primario'}>
-        {ocupado ? 'Conferindo…' : 'Conferir entradas'}
-      </Botao>
-
       {falha && <Erro>{falha}</Erro>}
-
-      {lancadas !== null && (
-        <div className="rounded-card border border-line bg-surface px-3.5 py-3">
-          {lancadas.length === 0 ? (
-            <p className="t-desc text-pretty text-ink-2">
-              Nada de novo entrou. Toda entrada já registrada está no livro-caixa.
-            </p>
-          ) : (
-            <div className="flex flex-col gap-1.5">
-              <p className="t-desc text-pretty text-ink">
-                {lancadas.length === 1
-                  ? '1 entrada nova foi para o livro-caixa:'
-                  : `${lancadas.length} entradas novas foram para o livro-caixa:`}
-              </p>
-              {lancadas.map((l) => (
-                <span key={l.assinatura} className="t-desc text-green">
-                  + {formatBRL(l.valorCentavos)}
-                </span>
-              ))}
-              <a
-                href={`/e/${slug}/livro`}
-                className="t-chip whitespace-nowrap text-blue"
-              >
-                Ver no livro-caixa ›
-              </a>
-            </div>
-          )}
-        </div>
-      )}
     </>
   );
 }
