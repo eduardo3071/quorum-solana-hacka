@@ -37,12 +37,21 @@ export function Botao({
   const classe = `block w-full rounded-btn px-4 py-[14px] text-center text-[13px] leading-none font-bold ${ESTILO[variante]} ${className}`;
 
   if (href && !desabilitado) {
-    return (
+    // `mailto:` e endereços externos não são rota do app: `Link` os trataria
+    // como caminho interno e a navegação morreria dentro da página.
+    const externo = /^(mailto:|https?:)/.test(href);
+
+    return externo ? (
+      <a href={href} className={classe}>
+        {children}
+      </a>
+    ) : (
       <Link to={href} className={classe}>
         {children}
       </Link>
     );
   }
+
 
   return (
     <button

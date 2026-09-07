@@ -11,7 +11,13 @@ import { Hero } from '@/componentes/Hero';
 import { IndicadorAssinaturas } from '@/componentes/IndicadorAssinaturas';
 import { CorpoTela, RotuloSecao, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
-import { PainelCofre, type Assento } from '@/vivo/PainelCofre';
+import {
+  ASSENTO_DO_PAPEL,
+  PainelCofre,
+  avisoPorEmail,
+  type Assento,
+} from '@/vivo/PainelCofre';
+
 import {
   QUORUM,
   associados,
@@ -118,6 +124,9 @@ export function Aprovacoes() {
               rubrica: alvo.rubrica,
             }}
             nomes={nomesDosAssentos(diretoria)}
+            contatos={contatosDosAssentos(diretoria)}
+            meuAssento={eu ? (ASSENTO_DO_PAPEL[eu.papel] ?? null) : null}
+
             saldoCentavos={soma.saldo}
             associados={quantos}
             entidadeSlug={slug}
@@ -214,9 +223,37 @@ export function Aprovacoes() {
           </BlocoBloqueio>
         )}
 
-        <Botao className="mt-3" href={`/e/${slug}/aprovacoes?estado=vivo`}>
-          {podeAssinar ? 'Assinar e executar' : 'Cobrar a segunda assinatura'}
-        </Botao>
+        {podeAssinar ? (
+          <Botao className="mt-3" href={`/e/${slug}/aprovacoes?estado=vivo`}>
+            Assinar e executar
+          </Botao>
+        ) : (
+          <div className="mt-3 flex flex-col gap-2">
+            {faltantesDaProposta(diretoria, emFoco, eu?.id ?? null).map((m) => (
+              <Botao
+                key={m.id}
+                variante="secundario"
+                href={
+                  m.email
+                    ? avisoPorEmail(
+                        m.email,
+                        {
+                          destino: emFoco.destino,
+                          chave: emFoco.chave_pix,
+                          valorCentavos: emFoco.valor_centavos,
+                          rubrica: emFoco.rubrica,
+                        },
+                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo`,
+                      )
+                    : undefined
+                }
+              >
+                Avisar {m.nome}
+              </Botao>
+            ))}
+          </div>
+        )}
+
 
         {eu && (
           <p className="t-meta mt-3 text-ink-3">
@@ -279,6 +316,35 @@ function nomesDosAssentos(diretoria: Membro[]): Record<Assento, string> {
     conselho: de('conselho', 'Conselho fiscal'),
   };
 }
+
+/** O e-mail de cada assento, para o aviso de "falta a sua assinatura". */
+function contatosDosAssentos(
+  diretoria: Membro[],
+): Partial<Record<Assento, string | null>> {
+  const de = (papel: Membro['papel']) =>
+    diretoria.find((m) => m.papel === papel)?.email ?? null;
+
+  return {
+    tesoureira: de('tesoureiro'),
+    presidente: de('presidente'),
+    conselho: de('conselho'),
+  };
+}
+
+/** Quem da diretoria ainda não assinou esta proposta, tirando você. */
+function faltantesDaProposta(
+  diretoria: Membro[],
+  proposta: { assinaturas: { membro_id: string }[] },
+  meuId: string | null,
+): Membro[] {
+  return diretoria.filter(
+    (m) =>
+      m.id !== meuId &&
+      m.papel !== 'socio' &&
+      !proposta.assinaturas.some((a) => a.membro_id === m.id),
+  );
+}
+
 
 function Moldura({
   slug,

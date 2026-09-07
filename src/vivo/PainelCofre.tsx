@@ -31,6 +31,38 @@ import { PassoTempo } from './PassoTempo';
  */
 export type Assento = 'tesoureira' | 'presidente' | 'conselho';
 
+export const ASSENTOS: Assento[] = ['tesoureira', 'presidente', 'conselho'];
+
+/** Do papel na diretoria para o lugar que a pessoa ocupa no cofre. */
+export const ASSENTO_DO_PAPEL: Record<string, Assento> = {
+  tesoureiro: 'tesoureira',
+  presidente: 'presidente',
+  conselho: 'conselho',
+};
+
+/**
+ * O aviso para quem falta assinar.
+ *
+ * Abre o e-mail já escrito, com o destino, o valor e o link da tela de
+ * aprovações — a pessoa avisada assina no lugar dela, no aparelho dela.
+ */
+export function avisoPorEmail(
+  email: string,
+  proposta: PropostaDoPainel,
+  link = window.location.href,
+): string {
+  const assunto = 'Falta sua assinatura para liberar uma saída';
+  const corpo = [
+    `Uma saída de ${formatBRL(proposta.valorCentavos)} para ${proposta.destino} está retida no cofre.`,
+    '',
+    'Falta a sua assinatura para o quórum. Abra o link abaixo, entre com a sua conta e assine pelo seu lugar:',
+    link,
+  ].join('\n');
+
+  return `mailto:${email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+}
+
+
 /** A proposta em reais. O valor em SOL é da rede; este é o do livro-caixa. */
 export type PropostaDoPainel = {
   destino: string;
@@ -103,6 +135,8 @@ function mensagemDe(e: unknown, padrao: string): string {
 export function PainelCofre({
   proposta,
   nomes,
+  contatos,
+  meuAssento,
   saldoCentavos,
   associados,
   entidadeSlug,
@@ -110,6 +144,10 @@ export function PainelCofre({
 }: {
   proposta: PropostaDoPainel;
   nomes: Record<Assento, string>;
+  /** O e-mail de cada signatário, para avisar quem falta assinar. */
+  contatos?: Partial<Record<Assento, string | null>>;
+  /** Qual lugar do cofre é de quem está na tela. `null` para associado. */
+  meuAssento: Assento | null;
   saldoCentavos: number;
   associados: number;
   /** De qual entidade é o cofre. Ver `AlvoDoCofre` em `lib/api.ts`. */
@@ -117,6 +155,7 @@ export function PainelCofre({
   /** Qual proposta assinar e executar — a linha do banco, não a da rede. */
   propostaId: string;
 }) {
+
   /*
    * `useMemo` e não um objeto solto: `lerSituacao` depende dele, e objeto novo
    * a cada render faria o efeito disparar sem parar — uma consulta à rede por
@@ -221,11 +260,29 @@ export function PainelCofre({
     const d = await comEspera(`Assinatura de ${nomes[assento]}`, () =>
       assinarNoCofre(assento, alvo),
     );
-    if (!d) return;
+    if (!d) return null;
     setSituacao({ ...d, existe: true });
     setBloqueio(null);
     setFase('pronto');
+    return d;
   }
+
+  /**
+   * Assina pelo próprio lugar e, se o quórum fechar com essa assinatura,
+   * executa em seguida.
+   *
+   * Um toque só para quem está na tela, mas duas etapas de verdade: se ainda
+   * faltar gente, a saída continua retida e o painel passa a mostrar quem falta.
+   */
+  async function assinarEExecutar(assento: Assento) {
+    const d = await assinar(assento);
+    if (!d) return;
+
+    const feitasAgora = d.assinaturasFeitas ?? 0;
+    const necessariasAgora = d.assinaturasNecessarias ?? 2;
+    if (feitasAgora >= necessariasAgora) await executar(assento);
+  }
+
 
   async function executar(assento: Assento) {
     const d = await comEspera('Enviando a saída', () =>
@@ -349,6 +406,12 @@ export function PainelCofre({
   const necessarias = situacao.assinaturasNecessarias ?? 2;
   const assinaram = situacao.assinaram ?? [];
   const completo = feitas >= necessarias;
+  /* Só a própria pessoa assina pelo lugar dela. */
+  const minhaVez = !!meuAssento && !assinaram.includes(meuAssento);
+  const faltantes = ASSENTOS.filter(
+    (a) => !assinaram.includes(a) && a !== meuAssento,
+  );
+
 
   return (
     <article className="rounded-card border border-line bg-surface-2 p-[15px]">
@@ -400,34 +463,52 @@ export function PainelCofre({
         </BlocoBloqueio>
       )}
 
+      {!completo && !minhaVez && (
+        <BlocoBloqueio className="mt-3.5">
+          {meuAssento
+            ? 'Sua assinatura já está registrada. Falta a de outro signatário — só a própria pessoa pode assinar pelo lugar dela.'
+            : 'Seu acesso é de associado. Quem assina é a diretoria.'}
+        </BlocoBloqueio>
+      )}
+
       <div className="mt-3 flex flex-col gap-2">
-        {!completo && (
-          <>
-            <Botao
-              variante={bloqueio ? 'desabilitado' : 'primario'}
-              onClick={() => void executar('tesoureira')}
-            >
-              {bloqueio ? 'Executar saída' : 'Assinar e executar'}
-            </Botao>
-            {feitas === 0 && (
-              <Botao variante="secundario" onClick={() => void assinar('tesoureira')}>
-                Assinar como {primeiroNome(nomes.tesoureira)}
-              </Botao>
-            )}
-            {feitas > 0 && (
-              <Botao variante="secundario" onClick={() => void assinar('presidente')}>
-                Assinar como {primeiroNome(nomes.presidente)}
-              </Botao>
-            )}
-          </>
+        {!completo && minhaVez && (
+          <Botao
+            variante={bloqueio ? 'desabilitado' : 'primario'}
+            onClick={() => void assinarEExecutar(meuAssento as Assento)}
+          >
+            Assinar como {primeiroNome(nomes[meuAssento as Assento])}
+          </Botao>
         )}
 
+        {!completo &&
+          !minhaVez &&
+          faltantes.map((a) => {
+            const email = contatos?.[a] ?? null;
+            return (
+              <Botao
+                key={a}
+                variante={email ? 'secundario' : 'desabilitado'}
+                href={email ? avisoPorEmail(email, proposta) : undefined}
+              >
+                {email
+                  ? `Avisar ${primeiroNome(nomes[a])}`
+                  : `${primeiroNome(nomes[a])} sem e-mail cadastrado`}
+              </Botao>
+            );
+          })}
+
+
         {completo && (
-          <Botao onClick={() => void executar('presidente')}>
+          <Botao
+            variante={meuAssento ? 'primario' : 'desabilitado'}
+            onClick={() => void executar(meuAssento as Assento)}
+          >
             Executar saída · quórum atingido
           </Botao>
         )}
       </div>
+
 
       {bloqueio && (
         <p className="t-meta mt-3 text-pretty text-ink-3">
