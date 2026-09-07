@@ -8,11 +8,19 @@ import { COR_DA_RUBRICA, type Rubrica } from '@/componentes/acentos';
 import { Carregando, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
-import { QUORUM, entidadePorSlug, pendentes, propostas } from '@/lib/dados';
+import {
+  QUORUM,
+  entidadePorSlug,
+  pendentes,
+  propostas,
+  signatarios,
+} from '@/lib/dados';
 import { paraCentavos } from '@/lib/format';
 import { useSessao } from '@/lib/sessao';
 import { supabase } from '@/lib/supabase';
 import { useConsulta } from '@/lib/useConsulta';
+import { useTempoReal } from '@/lib/useTempoReal';
+
 
 import { NaoEncontrada } from './NaoEncontrada';
 
