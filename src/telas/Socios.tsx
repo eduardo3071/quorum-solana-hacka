@@ -102,8 +102,23 @@ export function Socios() {
           </Vazio>
         ) : (
           <>
-            <Secao titulo="Diretoria" pessoas={assinantes} />
-            <Secao titulo="Associados" pessoas={socios} />
+            <Secao
+              titulo="Diretoria"
+              pessoas={assinantes}
+              slug={slug}
+              euId={eu?.id ?? null}
+              podeMudar={eu?.papel === 'presidente' || eu?.papel === 'tesoureiro'}
+              aoMudar={recarregar}
+            />
+            <Secao
+              titulo="Associados"
+              pessoas={socios}
+              slug={slug}
+              euId={eu?.id ?? null}
+              podeMudar={eu?.papel === 'presidente' || eu?.papel === 'tesoureiro'}
+              aoMudar={recarregar}
+            />
+
           </>
         )}
       </CorpoTela>
