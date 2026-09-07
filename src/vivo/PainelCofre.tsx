@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, Check, Wallet, WifiOff } from 'lucide-react';
 
 import { BarraProgresso } from '@/componentes/BarraProgresso';
@@ -16,6 +16,8 @@ import {
   criarCofre as criarCofreNaRede,
   estadoDoCofre,
   executarSaida,
+  levarPropostaAoCofre,
+  type AlvoDoCofre,
 } from '@/lib/api';
 
 import { PassoTempo } from './PassoTempo';
@@ -39,6 +41,8 @@ export type PropostaDoPainel = {
 
 type Situacao = {
   existe: boolean;
+  /** Quando não existe, qual dos vazios é. Ver `Situacao` em `lib/api.ts`. */
+  motivo?: string;
   status?: string;
   assinaturasFeitas?: number;
   assinaturasNecessarias?: number;
@@ -86,14 +90,26 @@ export function PainelCofre({
   saldoCentavos,
   associados,
   entidadeSlug,
+  propostaId,
 }: {
   proposta: PropostaDoPainel;
   nomes: Record<Assento, string>;
   saldoCentavos: number;
   associados: number;
-  /** Em qual cofre mexer. Ver `criarCofre` em `lib/api.ts`. */
-  entidadeSlug?: string;
+  /** De qual entidade é o cofre. Ver `AlvoDoCofre` em `lib/api.ts`. */
+  entidadeSlug: string;
+  /** Qual proposta assinar e executar — a linha do banco, não a da rede. */
+  propostaId: string;
 }) {
+  /*
+   * `useMemo` e não um objeto solto: `lerSituacao` depende dele, e objeto novo
+   * a cada render faria o efeito disparar sem parar — uma consulta à rede por
+   * quadro.
+   */
+  const alvo: AlvoDoCofre = useMemo(
+    () => ({ entidadeSlug, propostaId }),
+    [entidadeSlug, propostaId],
+  );
   const [fase, setFase] = useState<Fase>('lendo');
   const [situacao, setSituacao] = useState<Situacao>({ existe: false });
   const [bloqueio, setBloqueio] = useState<Bloqueio | null>(null);
@@ -118,7 +134,7 @@ export function PainelCofre({
 
   const lerSituacao = useCallback(async () => {
     try {
-      setSituacao(await estadoDoCofre());
+      setSituacao(await estadoDoCofre(alvo));
       setFase('pronto');
     } catch (e) {
       setFase('offline');
@@ -128,7 +144,7 @@ export function PainelCofre({
           : 'Não conseguimos ler o cofre agora.',
       );
     }
-  }, []);
+  }, [alvo]);
 
   useEffect(() => {
     void lerSituacao();
@@ -162,16 +178,33 @@ export function PainelCofre({
     }
   }
 
+  /**
+   * Cria o cofre e já leva esta proposta para dentro dele.
+   *
+   * São dois passos no servidor — o cofre é da entidade, a proposta é da
+   * linha —, mas um só para quem está na tela: cofre recém-criado sem a
+   * proposta dentro deixaria o botão de assinar sem o que assinar, e a pessoa
+   * teria de descobrir sozinha que falta um passo invisível.
+   */
   async function criarCofre() {
-    const d = await comEspera('Criando o cofre 2 de 3', () =>
-      criarCofreNaRede(entidadeSlug),
+    const d = await comEspera('Criando o cofre 2 de 3', async () => {
+      await criarCofreNaRede(entidadeSlug);
+      return levarPropostaAoCofre(alvo);
+    });
+    if (d) await lerSituacao();
+  }
+
+  /** O cofre já existe; falta esta proposta entrar nele. */
+  async function registrarNoCofre() {
+    const d = await comEspera('Registrando a saída no cofre', () =>
+      levarPropostaAoCofre(alvo),
     );
     if (d) await lerSituacao();
   }
 
   async function assinar(assento: Assento) {
     const d = await comEspera(`Assinatura de ${nomes[assento]}`, () =>
-      assinarNoCofre(assento, entidadeSlug),
+      assinarNoCofre(assento, alvo),
     );
     if (!d) return;
     setSituacao({ ...d, existe: true });
@@ -181,7 +214,7 @@ export function PainelCofre({
 
   async function executar(assento: Assento) {
     const d = await comEspera('Enviando a saída', () =>
-      executarSaida(assento, entidadeSlug),
+      executarSaida(assento, alvo),
     );
     if (!d) return;
 
@@ -231,16 +264,34 @@ export function PainelCofre({
     );
   }
 
+  /*
+   * Dois vazios diferentes, dois botões diferentes.
+   *
+   * "Sem cofre" e "a proposta ainda não está no cofre" pareciam a mesma coisa
+   * quando o cofre morava num arquivo — havia um só, e ele existia ou não.
+   * Agora o cofre é da entidade e a proposta tem índice próprio na rede: dá
+   * para ter cofre e uma proposta recém-criada que ainda não chegou nele.
+   * Mostrar "criar cofre" nesse caso criaria um segundo cofre e mudaria de
+   * lugar o dinheiro que já estava no primeiro.
+   */
   if (!situacao.existe) {
+    const foraDaRede = situacao.motivo === 'proposta fora da rede';
+
     return (
       <div className="rounded-card border border-line bg-surface p-4">
-        <div className="t-rotulo text-ink-2">Cofre não criado</div>
+        <div className="t-rotulo text-ink-2">
+          {foraDaRede ? 'Proposta fora do cofre' : 'Cofre não criado'}
+        </div>
         <p className="t-desc mt-2 text-pretty text-ink-2">
-          Nenhum cofre existe ainda na rede. Criar leva alguns segundos e
-          deixa uma proposta esperando assinatura.
+          {foraDaRede
+            ? 'Esta saída existe no livro, mas ainda não foi levada ao cofre. Sem isso ninguém consegue assinar.'
+            : 'Nenhum cofre existe ainda na rede. Criar leva alguns segundos e já deixa esta saída esperando assinatura.'}
         </p>
-        <Botao className="mt-3.5" onClick={() => void criarCofre()}>
-          Criar cofre 2 de 3
+        <Botao
+          className="mt-3.5"
+          onClick={() => void (foraDaRede ? registrarNoCofre() : criarCofre())}
+        >
+          {foraDaRede ? 'Registrar no cofre' : 'Criar cofre 2 de 3'}
         </Botao>
       </div>
     );

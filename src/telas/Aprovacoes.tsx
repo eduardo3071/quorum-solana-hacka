@@ -121,6 +121,7 @@ export function Aprovacoes() {
             saldoCentavos={soma.saldo}
             associados={quantos}
             entidadeSlug={slug}
+            propostaId={alvo.id}
           />
         ) : (
           <Vazio

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import bs58 from 'bs58';
 
 import { exigirMembro, respostaDeAcesso } from '@/lib/autorizacao';
-import { criarCofre, criarProposta, gravarEstado } from '@/lib/cofre/servidor';
+import { gravarCofreDaEntidade } from '@/lib/cofre/entidade';
+import { criarCofre } from '@/lib/cofre/servidor';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
 
@@ -10,28 +10,36 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Cria o cofre 2-de-3, abastece o caixa e já deixa uma proposta pendente.
+ * Cria o cofre 2-de-3 da entidade e abastece o caixa.
  *
- * Faz os dois de uma vez porque a tela de aprovações precisa de algo para
- * mostrar: um cofre recém-criado sem proposta cai no estado vazio (6a), que é
- * outra tela. Para o vídeo, o ponto de partida é a proposta esperando.
+ * Só isso. Antes ele abria uma proposta junto, para a tela de aprovações ter o
+ * que mostrar — e isso deixou de fazer sentido: a proposta agora nasce de uma
+ * linha de `propostas`, com destino e valor de verdade, por `POST /api/proposta`.
+ * Cofre novo sem proposta cai no estado vazio, que é tela desenhada (prancha
+ * 6a) e não buraco.
+ *
+ * O endereço vai para `entidades.multisig_pda` e `vault_pda`, e é dali que todo
+ * o resto passa a ler. O `.cofre-devnet.json` não é mais fonte de verdade:
+ * cofre por arquivo era cofre por servidor, e a Vercel não guarda disco entre
+ * invocações.
+ *
+ * A `createKey` é gerada, usada e DESCARTADA. Ela não é signatária: serve uma
+ * vez para derivar o endereço do multisig, e não aprova, não executa, não move
+ * nada. Guardá-la só criaria mais um segredo para vazar — e já vazou uma vez,
+ * no commit ba90b8b, dentro de um `.cofre-devnet.json` que entrou no git sem
+ * ninguém notar.
  */
 export async function POST(req: Request) {
-  /*
-   * Lê o corpo só para saber de qual entidade se está falando. Sem isto a
-   * autorização cairia na "única entidade de quem chama" — e alguém pedindo o
-   * cofre da entidade B teria o da A mexido, calado. O conferidor `npm run
-   * acesso` pegou exatamente isso.
-   */
   let corpo: Record<string, unknown> = {};
   try {
     corpo = await req.json();
   } catch {
-    // Corpo vazio segue valendo: cai na entidade única.
+    // Corpo vazio segue valendo: cai na entidade única de quem chama.
   }
 
+  let membro;
   try {
-    await exigirMembro(req, {
+    membro = await exigirMembro(req, {
       slug: typeof corpo.entidadeSlug === 'string' ? corpo.entidadeSlug : null,
     });
   } catch (e) {
@@ -41,22 +49,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { multisigPda, vaultPda, createKey, assinatura } = await criarCofre();
-    const { destino, transactionIndex } = await criarProposta(multisigPda, vaultPda);
-
-    gravarEstado(
-      { multisigPda, vaultPda, destino, transactionIndex },
-      {
-        createKey: bs58.encode(createKey.secretKey),
-        criadoEm: new Date().toISOString(),
-      },
-    );
+    const { multisigPda, vaultPda, assinatura } = await criarCofre();
+    await gravarCofreDaEntidade(membro.entidade_id, multisigPda, vaultPda);
 
     return NextResponse.json({
       criado: true,
       multisigPda: multisigPda.toBase58(),
       vaultPda: vaultPda.toBase58(),
-      transactionIndex: transactionIndex.toString(),
       assinatura,
     });
   } catch (e) {

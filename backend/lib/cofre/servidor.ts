@@ -113,6 +113,18 @@ export type Estado = {
   transactionIndex: bigint;
 };
 
+/**
+ * O arquivo `.cofre-devnet.json`.
+ *
+ * NÃO é mais a fonte de verdade — quem manda é `entidades.multisig_pda` e
+ * `vault_pda`, pela `lib/cofre/entidade.ts`. Isto aqui sobrou para os scripts
+ * de linha de comando (`npm run setup`, `ciclo`, `assinar`, `executar`), que
+ * rodam sem banco e sem sessão, na bancada.
+ *
+ * Um cofre por ARQUIVO era um cofre por servidor: duas entidades apontavam
+ * para o mesmo dinheiro, e a Vercel, que não guarda disco entre invocações,
+ * perdia o estado a cada deploy. Nenhum endpoint lê daqui.
+ */
 export function lerEstado(): Estado | null {
   if (!existsSync(ARQUIVO_ESTADO)) return null;
   const b = JSON.parse(readFileSync(ARQUIVO_ESTADO, 'utf8')) as EstadoBruto;
@@ -235,9 +247,13 @@ export type Situacao = {
   saldoDestino: number;
 };
 
-export async function situacao(): Promise<Situacao> {
+export async function situacao({
+  multisigPda,
+  vaultPda,
+  destino,
+  transactionIndex,
+}: Estado): Promise<Situacao> {
   const conn = conexao();
-  const { multisigPda, vaultPda, destino, transactionIndex } = exigirEstado();
 
   const [proposalPda] = multisig.getProposalPda({ multisigPda, transactionIndex });
   const [info, proposta] = await Promise.all([
@@ -277,7 +293,6 @@ export async function situacao(): Promise<Situacao> {
 /* ── Escrita ────────────────────────────────────────────────────────────── */
 
 const ABASTECER = 0.2 * LAMPORTS_PER_SOL;
-const SAIDA = 0.05 * LAMPORTS_PER_SOL;
 
 /** Cria o cofre 2-de-3 e abastece o caixa. */
 export async function criarCofre() {
@@ -326,7 +341,23 @@ export async function criarCofre() {
 }
 
 /** Cria a transação do vault e a proposta. */
-export async function criarProposta(multisigPda: PublicKey, vaultPda: PublicKey) {
+/**
+ * Cria a saída na rede: a transação do cofre e a proposta que a governa.
+ *
+ * O valor e o memo vêm de fora agora, da linha de `propostas`. Antes eram fixos
+ * — `SAIDA` e "Som Beira-Mar ME" cravados no código —, o que servia para uma
+ * demonstração e para nada além dela: toda proposta da tela viraria a mesma
+ * saída na rede.
+ *
+ * O destino continua sendo uma chave nova a cada proposta. Na devnet ele
+ * precisa existir para a transferência ter para onde ir; quem o guarda é a
+ * coluna `destino_devnet`, e o comentário da migração 0009 diz o que ele NÃO é.
+ */
+export async function criarProposta(
+  multisigPda: PublicKey,
+  vaultPda: PublicKey,
+  { lamports, memo }: { lamports: number; memo: string },
+) {
   const conn = conexao();
   const tesoureira = signatario('tesoureira');
   const destino = Keypair.generate().publicKey;
@@ -341,7 +372,7 @@ export async function criarProposta(multisigPda: PublicKey, vaultPda: PublicKey)
       SystemProgram.transfer({
         fromPubkey: vaultPda,
         toPubkey: destino,
-        lamports: SAIDA,
+        lamports,
       }),
     ],
   });
@@ -355,7 +386,7 @@ export async function criarProposta(multisigPda: PublicKey, vaultPda: PublicKey)
     vaultIndex: 0,
     ephemeralSigners: 0,
     transactionMessage: mensagem,
-    memo: 'Som Beira-Mar ME · Eventos',
+    memo,
   });
   // A proposta só existe para um índice que a rede já conhece.
   await confirmar(conn, transacao);
@@ -373,9 +404,11 @@ export async function criarProposta(multisigPda: PublicKey, vaultPda: PublicKey)
 }
 
 /** Aprova a proposta pendente com o signatário indicado. */
-export async function assinar(papel: Papel) {
+export async function assinar(
+  papel: Papel,
+  { multisigPda, transactionIndex }: Pick<Estado, 'multisigPda' | 'transactionIndex'>,
+) {
   const conn = conexao();
-  const { multisigPda, transactionIndex } = exigirEstado();
   const membro = signatario(papel);
 
   const assinatura = await multisig.rpc.proposalApprove({
@@ -410,9 +443,11 @@ export type ResultadoExecucao =
  * exatamente como na prancha 5b. Esse estado é a funcionalidade mais
  * importante do produto, tratada com o mesmo cuidado do caminho feliz.
  */
-export async function executar(papel: Papel): Promise<ResultadoExecucao> {
+export async function executar(
+  papel: Papel,
+  { multisigPda, vaultPda, destino, transactionIndex }: Estado,
+): Promise<ResultadoExecucao> {
   const conn = conexao();
-  const { multisigPda, vaultPda, destino, transactionIndex } = exigirEstado();
   const membro = signatario(papel);
 
   let assinatura: string | undefined;

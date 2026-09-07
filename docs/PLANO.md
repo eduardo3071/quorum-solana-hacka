@@ -220,7 +220,7 @@ guardar a própria chave, e isso é outra fase. Até lá, um signatário pode as
 usando o assento de outro. Está trancado contra estranhos, não contra a própria
 diretoria.
 
-### 1.2 · Um cofre por entidade
+### 1.2 · Um cofre por entidade — **feita**
 
 - Migração `0009`: `propostas.tx_index` já existe; adicionar
   `entidades.vault_pda text unique` para não recalcular a derivação a cada
@@ -234,7 +234,7 @@ diretoria.
 - `backend/.cofre-devnet.json` deixa de ser fonte de verdade. Vira só a saída
   dos scripts de linha de comando.
 
-### 1.3 · A proposta existe na rede e no banco
+### 1.3 · A proposta existe na rede e no banco — **feita**
 
 Os quatro endpoints passam a receber `propostaId` e a derivar a entidade dele.
 
@@ -248,6 +248,31 @@ Os quatro endpoints passam a receber `propostaId` e a derivar a entidade dele.
 **A ordem de escrita importa**, e é a mesma lição da conciliação de ingresso
 (`lib/ingresso.ts`): primeiro vira o status condicionado ao valor anterior,
 depois grava o lançamento. Quem perder a corrida não duplica o lançamento.
+
+Provado contra o banco real, em comandos separados — em CTE não vale, porque
+todas enxergam o mesmo instantâneo e as duas "perdem":
+
+```
+1ª  update … where status='pendente' returning id  →  1 linha
+2ª  update … where status='pendente' returning id  →  0 linhas
+```
+
+Também conferidos ali: o `upsert` da assinatura (a mesma pessoa duas vezes
+continua sendo uma linha) e o lançamento da saída. As linhas de teste foram
+apagadas; o saldo voltou aos R$ 43.180,25.
+
+**O que mudou além do previsto:**
+
+- `assinar` e `executar` deixaram de aceitar o assento de qualquer um. O padrão
+  agora é assinar pelo **próprio** lugar, derivado de quem chama —
+  `DEMO_ASSINA_POR_TODOS=1` libera a exceção enquanto as três chaves morarem no
+  servidor, e some no dia em que cada signatário guardar a sua.
+- A tela ganhou um segundo estado vazio. "Sem cofre" e "a proposta ainda não
+  está no cofre" pareciam a mesma coisa quando havia um cofre só; agora não
+  são, e mostrar "criar cofre" no segundo criaria um segundo cofre, mudando de
+  lugar o dinheiro que já estava no primeiro.
+- `POST /api/cofre` **não abre mais proposta junto**. Cofre novo sem proposta é
+  o estado vazio da prancha 6a, não um buraco.
 
 **Falta de quórum continua 200 com `bloqueado: true`.** Não é erro, é a regra
 funcionando, e é a coisa que o produto inteiro existe para mostrar. Um `catch`
@@ -263,7 +288,8 @@ genérico ali destrói a demonstração.
 
 ## Fase 2 · A última escrita sai do navegador
 
-Resolve o achado 4.
+Resolve o achado 4. **Ainda aberta** — a 1.3 fez a proposta existir na rede,
+mas quem cria a LINHA continua sendo o navegador.
 
 - `src/telas/Propor.tsx` deixa de fazer `supabase.from('propostas').insert(...)`
   e passa a chamar `POST /api/proposta`.

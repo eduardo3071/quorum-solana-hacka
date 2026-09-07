@@ -137,6 +137,12 @@ export type Assento = 'tesoureira' | 'presidente' | 'conselho';
 
 export type Situacao = {
   existe: boolean;
+  /**
+   * Por que não existe, quando não existe. `cofre` = a entidade ainda não tem
+   * um; `proposta fora da rede` = a linha existe no banco mas nunca foi levada
+   * ao cofre. São dois estados vazios diferentes e pedem botões diferentes.
+   */
+  motivo?: 'cofre' | 'entidade' | 'proposta' | 'proposta fora da rede' | string;
   status?: string;
   assinaturasFeitas?: number;
   assinaturasNecessarias?: number;
@@ -146,23 +152,34 @@ export type Situacao = {
   transactionIndex?: string;
 };
 
-export const estadoDoCofre = () => chamar<Situacao>('/api/estado');
-
 /**
- * `entidadeSlug` diz em qual cofre mexer.
+ * Toda chamada do cofre diz DE QUAL entidade e DE QUAL proposta se trata.
  *
- * Sem ele o servidor cai na única entidade de quem chama — o que funciona hoje,
- * com uma entidade por pessoa, e vira roleta no dia em que alguém estiver em
- * duas. Mandar sempre que a tela souber é barato e fecha essa porta antes de
- * ela existir.
+ * Antes nenhuma dizia: o servidor guardava um cofre só, num arquivo, e agia
+ * sempre sobre ele. Com o cofre morando na entidade e a proposta tendo índice
+ * próprio na rede, o alvo passa a ser explícito — e sem ele o servidor recusa,
+ * em vez de escolher no chute qual dinheiro mexer.
  */
-export const criarCofre = (entidadeSlug?: string) =>
-  chamar<{ criado: true }>('/api/cofre', { entidadeSlug });
+export type AlvoDoCofre = { entidadeSlug: string; propostaId: string };
 
-export const assinarNoCofre = (papel: Assento, entidadeSlug?: string) =>
+export const estadoDoCofre = ({ entidadeSlug, propostaId }: AlvoDoCofre) =>
+  chamar<Situacao>(
+    `/api/estado?entidade=${encodeURIComponent(entidadeSlug)}` +
+      `&proposta=${encodeURIComponent(propostaId)}`,
+  );
+
+/** Cria o cofre da entidade. Não abre proposta: isso é `levarPropostaAoCofre`. */
+export const criarCofre = (entidadeSlug?: string) =>
+  chamar<{ criado: true; multisigPda: string }>('/api/cofre', { entidadeSlug });
+
+/** Leva uma proposta que já existe no banco para a rede. */
+export const levarPropostaAoCofre = (alvo: AlvoDoCofre) =>
+  chamar<{ criada: true; transactionIndex: string }>('/api/proposta', alvo);
+
+export const assinarNoCofre = (papel: Assento, alvo: AlvoDoCofre) =>
   chamar<Situacao & { assinado: true; assinatura: string; explorador: string }>(
     '/api/assinar',
-    { papel, entidadeSlug },
+    { papel, ...alvo },
   );
 
 export type ResultadoExecucao =
@@ -172,6 +189,8 @@ export type ResultadoExecucao =
       explorador: string;
       saldoCaixa: number;
       saldoDestino: number;
+      /** Falso quando outra execução lançou primeiro. Não é erro. */
+      lancado: boolean;
     }
   | {
       bloqueado: true;
@@ -190,8 +209,8 @@ export type ResultadoExecucao =
  * produto inteiro existe para mostrar. Erro de verdade — rede, RPC fora do ar —
  * vem como 503 e cai no `catch`.
  */
-export const executarSaida = (papel: Assento, entidadeSlug?: string) =>
-  chamar<ResultadoExecucao>('/api/executar', { papel, entidadeSlug });
+export const executarSaida = (papel: Assento, alvo: AlvoDoCofre) =>
+  chamar<ResultadoExecucao>('/api/executar', { papel, ...alvo });
 
 /* ── A festa ────────────────────────────────────────────────────────────── */
 

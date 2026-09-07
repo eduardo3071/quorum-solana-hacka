@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { exigirMembro, respostaDeAcesso } from '@/lib/autorizacao';
-import { criarProposta, exigirEstado, gravarEstado } from '@/lib/cofre/servidor';
+import { respostaDeAcesso } from '@/lib/autorizacao';
+import { contextoDaProposta } from '@/lib/cofre/contexto';
+import { gravarPropostaNaRede } from '@/lib/cofre/entidade';
+import { criarProposta } from '@/lib/cofre/servidor';
+import { centavosParaLamports } from '@/lib/pagamento';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
 
@@ -9,43 +12,58 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Cria uma nova proposta de saída no cofre existente.
+ * Leva uma proposta do banco para a rede.
  *
- * Reaproveita o cofre já criado — só o índice da transação avança. Serve para
- * repetir a demonstração sem refazer o cofre, que custa taxa e rent.
+ * A linha de `propostas` já existe — quem a criou foi a tela de propor. O que
+ * falta é ela existir no cofre: uma transação com o valor certo e uma proposta
+ * que a governa. O índice que a rede devolve volta para `propostas.tx_index`, e
+ * é ele que amarra as duas metades. Sem esse passo a proposta é um papel: a
+ * tela mostra, ninguém consegue assinar.
+ *
+ * Idempotente de propósito. Tocar duas vezes no botão criaria duas saídas na
+ * rede para a mesma linha, e a segunda ficaria órfã — proposta pendente que
+ * ninguém vê e que continua podendo ser executada.
  */
 export async function POST(req: Request) {
-  /*
-   * Lê o corpo só para saber de qual entidade se está falando. Sem isto a
-   * autorização cairia na "única entidade de quem chama" — e alguém pedindo o
-   * cofre da entidade B teria o da A mexido, calado. O conferidor `npm run
-   * acesso` pegou exatamente isso.
-   */
   let corpo: Record<string, unknown> = {};
   try {
     corpo = await req.json();
   } catch {
-    // Corpo vazio segue valendo: cai na entidade única.
+    // Sem corpo não há proposta a levar; o erro sai logo abaixo.
   }
 
+  let ctx;
   try {
-    await exigirMembro(req, {
-      slug: typeof corpo.entidadeSlug === 'string' ? corpo.entidadeSlug : null,
-    });
+    ctx = await contextoDaProposta(req, corpo);
   } catch (e) {
     const recusa = respostaDeAcesso(e);
     if (recusa) return recusa;
-    throw e;
+    return erro((e as Error).message, e, 400);
+  }
+
+  const { proposta, cofre } = ctx;
+
+  if (proposta.txIndex !== null) {
+    return NextResponse.json({
+      criada: true,
+      jaExistia: true,
+      transactionIndex: proposta.txIndex.toString(),
+    });
   }
 
   try {
-    const { multisigPda, vaultPda } = exigirEstado();
     const { destino, transactionIndex, assinatura } = await criarProposta(
-      multisigPda,
-      vaultPda,
+      cofre.multisigPda,
+      cofre.vaultPda,
+      {
+        lamports: centavosParaLamports(proposta.valorCentavos),
+        // O memo fica na rede para sempre. Nome do fornecedor e rubrica bastam
+        // para alguém auditando entender a saída sem abrir o app.
+        memo: `${proposta.destino} · ${proposta.rubrica}`,
+      },
     );
 
-    gravarEstado({ multisigPda, vaultPda, destino, transactionIndex });
+    await gravarPropostaNaRede(proposta.id, transactionIndex, destino);
 
     return NextResponse.json({
       criada: true,
