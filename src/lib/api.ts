@@ -368,3 +368,31 @@ export const conciliarCompra = (referencia: string) =>
 
 export const pagarPelaDemonstracao = (referencia: string) =>
   chamar<{ pagou: true; assinatura: string }>('/api/pagar-demo', { referencia });
+
+/* ── Receber ────────────────────────────────────────────────────────────── */
+
+export type Recebimento = {
+  /** A chave que a entidade divulga para receber. É o caixa do próprio cofre. */
+  chave: string;
+  url: string;
+  saldoCentavos: number;
+};
+
+export type EntradaLancada = { assinatura: string; valorCentavos: number };
+
+/**
+ * A chave da entidade para receber dinheiro.
+ *
+ * Não é uma chave nova nem uma conta pessoal: é o caixa do cofre, o mesmo que
+ * só se abre com duas assinaturas. Por isso o que entra por ela nasce já dentro
+ * do quórum, igual ao dinheiro dos ingressos.
+ */
+export const chaveDeRecebimento = (entidadeSlug: string) =>
+  chamar<Recebimento>('/api/receber', { entidadeSlug });
+
+/** Lê a rede e registra no livro-caixa as entradas que ainda não estavam lá. */
+export const conferirEntradas = (entidadeSlug: string) =>
+  chamar<Recebimento & { lancadas: EntradaLancada[]; conferidas: number }>(
+    '/api/receber',
+    { entidadeSlug, conferir: true },
+  );
