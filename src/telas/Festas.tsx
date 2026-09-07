@@ -77,12 +77,15 @@ export function Festas() {
       />
 
       <CorpoTela respiroAbas className="pt-3">
+        <Botao href={`/e/${slug}/festas/nova`}>Criar nova festa</Botao>
+
         {eventos.length === 0 ? (
           <Vazio titulo="Nenhuma festa na agenda">
-            Quando a diretoria criar um evento, o cartaz aparece aqui — e a
-            página dele abre sem conta nenhuma, para vender ingresso no link.
+            Crie um evento com dia, hora, preço e quantos ingressos existem — o
+            cartaz dele abre sem conta nenhuma, para vender no link.
           </Vazio>
         ) : (
+
           <div className="flex flex-col gap-2.5">
             {eventos.map((e) => {
               const passou = new Date(e.data).getTime() < agora;
