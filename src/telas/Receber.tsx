@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Copy } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
-import { Botao } from '@/componentes/Botao';
 import { Carregando, Erro, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
