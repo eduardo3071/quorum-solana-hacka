@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { nomeDoEmail } from '@/lib/nomes';
 import { criarClienteServiceRole } from '@/lib/supabase/server';
 
 import { erro } from '../_resposta';
@@ -183,13 +184,3 @@ async function slugLivre(
   return `${base}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-/** "marina.salgado@grad.ufsc.br" → "Marina Salgado". */
-function nomeDoEmail(email: string): string {
-  const local = email.split('@')[0] ?? '';
-  const partes = local
-    .split(/[._-]+/)
-    .filter(Boolean)
-    .map((p) => p.charAt(0).toUpperCase() + p.slice(1));
-
-  return partes.join(' ') || 'Signatário';
-}

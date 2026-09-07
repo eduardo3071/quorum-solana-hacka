@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { User } from 'lucide-react';
+import { Check, User, X } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
 import { Chip } from '@/componentes/Chip';
 import { Carregando, Erro, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
+import { decidirSolicitacao, ErroDaApi } from '@/lib/api';
 import {
   entidadePorSlug,
   eventosDaEntidade,
@@ -13,6 +15,7 @@ import {
   nomeDoPapel,
   pendentes,
   propostas,
+  solicitacoes,
   type Membro,
 } from '@/lib/dados';
 import { iniciais } from '@/lib/format';
@@ -29,16 +32,17 @@ import { NaoEncontrada } from './NaoEncontrada';
 export function Socios() {
   const { slug = '' } = useParams();
 
-  const { dados, carregando, erro } = useConsulta(async () => {
+  const { dados, carregando, erro, recarregar } = useConsulta(async () => {
     const entidade = await entidadePorSlug(slug);
     if (!entidade) return null;
 
-    const [lista, todas, festas] = await Promise.all([
+    const [lista, todas, festas, esperando] = await Promise.all([
       membros(entidade.id),
       propostas(entidade.id),
       eventosDaEntidade(entidade.id),
+      solicitacoes(entidade.id),
     ]);
-    return { entidade, lista, emAberto: pendentes(todas), festas };
+    return { entidade, lista, emAberto: pendentes(todas), festas, esperando };
   }, [slug]);
 
   if (erro) {
@@ -69,7 +73,7 @@ export function Socios() {
 
   if (!dados) return <NaoEncontrada />;
 
-  const { entidade, lista, emAberto, festas } = dados;
+  const { entidade, lista, emAberto, festas, esperando } = dados;
   const assinantes = lista.filter((m) => m.papel !== 'socio');
   const socios = lista.filter((m) => m.papel === 'socio');
 
@@ -83,6 +87,10 @@ export function Socios() {
       />
 
       <CorpoTela respiroAbas className="pt-3">
+        {esperando.length > 0 && (
+          <Solicitacoes slug={slug} pedidos={esperando} aoDecidir={recarregar} />
+        )}
+
         {lista.length === 0 ? (
           <Vazio titulo="Nenhum associado ainda">
             Quando a diretoria cadastrar as pessoas, elas aparecem aqui.
@@ -135,6 +143,99 @@ function Secao({ titulo, pessoas }: { titulo: string; pessoas: Membro[] }) {
             {m.papel !== 'socio' && (
               <User size={16} strokeWidth={1.7} className="flex-none text-ink-3" aria-hidden />
             )}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/**
+ * Os pedidos de entrada, para a diretoria decidir.
+ *
+ * Vem antes da lista de gente porque é a única parte da tela que pede uma ação.
+ * O resto é consulta, e consulta pode esperar.
+ *
+ * Aprovar liga a linha; recusar apaga. Apagar, e não marcar como recusado, por
+ * duas razões: a chave única `(entidade_id, user_id)` ficaria ocupada por uma
+ * recusa e a pessoa nunca mais poderia pedir; e guardar uma lista de recusados
+ * é manter registro sobre gente que não faz parte, feito por quem não deveria
+ * mantê-lo.
+ */
+function Solicitacoes({
+  slug,
+  pedidos,
+  aoDecidir,
+}: {
+  slug: string;
+  pedidos: Membro[];
+  aoDecidir: () => void;
+}) {
+  const [ocupado, setOcupado] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+
+  async function decidir(membroId: string, aprovar: boolean) {
+    setOcupado(membroId);
+    setErro(null);
+    try {
+      await decidirSolicitacao({ entidadeSlug: slug, membroId, aprovar });
+      aoDecidir();
+    } catch (e) {
+      setErro(
+        e instanceof ErroDaApi ? e.message : 'Não conseguimos registrar agora.',
+      );
+    } finally {
+      setOcupado(null);
+    }
+  }
+
+  return (
+    <>
+      <div className="t-rotulo text-amber">
+        {pedidos.length} {pedidos.length === 1 ? 'pedido' : 'pedidos'} para entrar
+      </div>
+
+      {erro && <p className="t-desc text-pretty text-red">{erro}</p>}
+
+      <div className="flex flex-col gap-2">
+        {pedidos.map((m) => (
+          <div
+            key={m.id}
+            className="flex min-h-[58px] items-center gap-[11px] rounded-card border border-amber/30 bg-amber-tint px-3.5 py-2.5"
+          >
+            <div className="flex size-9 flex-none items-center justify-center rounded-avatar bg-purple-tint text-[12.5px] leading-none font-bold text-purple">
+              {iniciais(m.nome)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="t-item-sm truncate text-ink">{m.nome}</div>
+              <div className="mt-[5px] truncate text-[11.5px] leading-none text-ink-2">
+                {m.email ?? 'sem e-mail'}
+              </div>
+            </div>
+            {/*
+              Recusar é contorno, aprovar é sólido: a ação provável fica mais
+              pesada que a rara, e nenhuma das duas usa vermelho — recusar um
+              pedido não é bloqueio nem erro, e vermelho aqui assustaria quem
+              está só organizando a lista.
+            */}
+            <button
+              type="button"
+              aria-label={`Recusar ${m.nome}`}
+              disabled={ocupado !== null}
+              onClick={() => void decidir(m.id, false)}
+              className="flex size-9 flex-none items-center justify-center rounded-btn border border-line bg-surface disabled:opacity-50"
+            >
+              <X size={15} strokeWidth={2.2} className="text-ink-2" aria-hidden />
+            </button>
+            <button
+              type="button"
+              aria-label={`Aprovar ${m.nome}`}
+              disabled={ocupado !== null}
+              onClick={() => void decidir(m.id, true)}
+              className="flex size-9 flex-none items-center justify-center rounded-btn bg-green disabled:opacity-50"
+            >
+              <Check size={16} strokeWidth={2.4} className="text-ground" aria-hidden />
+            </button>
           </div>
         ))}
       </div>

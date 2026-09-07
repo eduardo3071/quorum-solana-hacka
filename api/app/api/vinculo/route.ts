@@ -68,12 +68,35 @@ export async function POST(req: Request) {
 
     const linhas = (data ?? []) as unknown as { id: string; entidades: { slug: string } }[];
 
+    /*
+     * O pedido pendente só pode ser lido daqui.
+     *
+     * A política de `membros` mostra os colegas das entidades DE QUE VOCÊ FAZ
+     * PARTE, e `entidades_do_usuario()` filtra por `ativo`. Quem tem um pedido
+     * em aberto não faz parte de nada ainda — então não enxerga nem a própria
+     * linha. É a regra certa, e o efeito colateral é que a tela não tem como
+     * saber sozinha que o pedido existe. O servidor conta.
+     */
+    const { data: espera } = await supabase
+      .from('membros')
+      .select('entidades!inner(nome, slug)')
+      .eq('user_id', usuario.id)
+      .eq('ativo', false)
+      .limit(1)
+      .maybeSingle();
+
+    const pendente = espera
+      ? ((espera as unknown as { entidades: { nome: string; slug: string } }).entidades ??
+        null)
+      : null;
+
     return NextResponse.json({
       vinculadas: linhas.length,
       // Uma só entidade é o caso comum, e devolver o slug poupa a tela de uma
       // segunda consulta para saber para onde ir. Em mais de uma, quem escolhe
       // é a pessoa, e a tela já sabe listar.
       entidadeSlug: linhas.length === 1 ? linhas[0].entidades.slug : null,
+      pendente,
     });
   } catch (e) {
     return erro('Não conseguimos confirmar seu acesso agora.', e, 503);

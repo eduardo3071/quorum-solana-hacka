@@ -131,6 +131,26 @@ export async function membros(entidadeId: string) {
   );
 }
 
+/**
+ * Quem pediu para entrar e ainda espera.
+ *
+ * `ativo = false` é o pedido pendente — não precisou de tabela nem de coluna
+ * nova. A política de `membros` mostra os colegas das entidades de que você faz
+ * parte, e não filtra por `ativo` na linha lida: por isso a diretoria enxerga
+ * os pedidos, e quem pediu, que ainda não faz parte de nada, não enxerga nem o
+ * próprio.
+ */
+export async function solicitacoes(entidadeId: string) {
+  return conferir<Membro[]>(
+    await supabase
+      .from('membros')
+      .select('id, nome, papel, email, ativo')
+      .eq('entidade_id', entidadeId)
+      .eq('ativo', false)
+      .order('nome'),
+  );
+}
+
 export async function signatarios(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase

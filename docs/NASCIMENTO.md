@@ -142,26 +142,26 @@ mais quem já entrou; o e-mail vem fixo da sessão, sem campo para digitar; e
 
 ---
 
-## Fase 1b · Pedir para entrar — a porta que faltou
+## Fase 1b · Pedir para entrar — **feita** (`main`)
 
 **O problema:** vinte pessoas pedem para entrar numa entidade para cada uma que
 funda. A Fase 1 entregou a porta da minoria em primeiro lugar, porque era a
 única que existia.
 
-- [ ] Na tela de "sem entidade", **"Entrar numa entidade"** passa a ser o cartão
+- [x] Na tela de "sem entidade", **"Entrar numa entidade"** passa a ser o cartão
       principal, com busca por nome. "Criar uma entidade" vira link discreto no
       fim — quem funda sabe que veio fundar.
-- [ ] `GET /api/entidades?busca=` — lista pública de nome, tipo e universidade.
+- [x] `GET /api/entidades?busca=` — lista pública de nome, tipo e universidade.
       Nada de saldo: é a lista telefônica, não o cofre.
-- [ ] `POST /api/solicitacao` — insere `membros` com `papel='socio'` e
+- [x] `POST /api/solicitacao` — insere `membros` com `papel='socio'` e
       `ativo=false`, ligado ao `user_id` da sessão. **Sem migração:** o enum e a
       coluna já existem.
-- [ ] Recusar solicitação repetida para a mesma entidade — a chave única
+- [x] Recusar solicitação repetida para a mesma entidade — a chave única
       `(entidade_id, user_id)` da 0001 já garante isso; o endpoint só precisa
       traduzir o erro para uma frase.
-- [ ] `Socios.tsx` mostra os pendentes para a diretoria, com aprovar e recusar.
+- [x] `Socios.tsx` mostra os pendentes para a diretoria, com aprovar e recusar.
       Aprovar é `ativo = true`.
-- [ ] Enquanto pendente, a capa diz "pedido enviado a X" em vez de "sem
+- [x] Enquanto pendente, a capa diz "pedido enviado a X" em vez de "sem
       entidade" — hoje as duas situações são a mesma tela, e não são a mesma
       coisa.
 
@@ -169,9 +169,22 @@ funda. A Fase 1 entregou a porta da minoria em primeiro lugar, porque era a
 solicitação pendente não enxerga cofre, proposta nem associado — sem que
 ninguém escreva uma política nova.
 
+**Um sexto item apareceu:** quem pede não consegue ler o próprio pedido. A
+política de `membros` mostra os colegas das entidades DE QUE VOCÊ FAZ PARTE, e
+`entidades_do_usuario()` filtra por `ativo` — então um pedido pendente não
+enxerga nem a própria linha. É a regra certa, e deixa a tela cega. `POST
+/api/vinculo`, que a sessão já chama quando não acha membro, passou a responder
+`pendente` junto.
+
 **Como conferir:** de uma conta nova, peça para entrar na A.A.A. Engenharia.
 De outra, como diretoria, aprove. A primeira passa a ver o livro-caixa e o
 saldo, e continua sem conseguir assinar nada.
+
+**Conferido:** o fluxo inteiro no Chromium com um Supabase forjado — busca
+filtra, o pedido sai com o slug certo, a tela vira "Pedido enviado" e o estado
+**sobrevive ao recarregamento**, agora vindo do servidor; do lado da diretoria,
+o pedido aparece em âmbar com aprovar e recusar, e some ao decidir. `conferir`
+em `/` e `/e/aaaeng/socios` sem violação; `acesso` passa nos sete crachás.
 
 ---
 

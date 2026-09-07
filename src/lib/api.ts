@@ -147,8 +147,54 @@ export const criarEntidade = (dados: {
  * se pede: mandar o e-mail na chamada seria deixar o navegador escolher de quem
  * ele é.
  */
+export type EntidadePendente = { nome: string; slug: string };
+
 export const vincularSessao = () =>
-  chamar<{ vinculadas: number; entidadeSlug: string | null }>('/api/vinculo', {});
+  chamar<{
+    vinculadas: number;
+    entidadeSlug: string | null;
+    /** O pedido em aberto, quando há um. Só o servidor consegue lê-lo. */
+    pendente: EntidadePendente | null;
+  }>('/api/vinculo', {});
+
+/* ── Pedir para entrar ──────────────────────────────────────────────────── */
+
+export type EntidadeDaBusca = {
+  slug: string;
+  nome: string;
+  tipo: TipoEntidade;
+  universidade: string | null;
+};
+
+/**
+ * A lista telefônica das entidades.
+ *
+ * Aberta e magra de propósito: nome, tipo e universidade, o que já está em
+ * qualquer cartaz de corredor. Quem procura a própria atlética para pedir
+ * entrada ainda não é de dentro — e não precisa ser para achar o nome dela.
+ */
+export const buscarEntidades = (busca: string) =>
+  chamar<{ entidades: EntidadeDaBusca[] }>(
+    `/api/entidades?busca=${encodeURIComponent(busca)}`,
+  );
+
+/** Pede entrada. Vira uma linha inativa, que a diretoria aprova ou recusa. */
+export const pedirEntrada = (entidadeSlug: string) =>
+  chamar<{ pedido: true; jaExistia: boolean; entidade: EntidadePendente }>(
+    '/api/solicitacao',
+    { entidadeSlug },
+  );
+
+/** A diretoria decide. Aprovar ativa a linha; recusar apaga. */
+export const decidirSolicitacao = (dados: {
+  entidadeSlug: string;
+  membroId: string;
+  aprovar: boolean;
+}) =>
+  chamar<{ decidido: true; aprovado: boolean; nome: string }>(
+    '/api/solicitacao/decidir',
+    dados,
+  );
 
 /* ── O cofre ────────────────────────────────────────────────────────────── */
 
