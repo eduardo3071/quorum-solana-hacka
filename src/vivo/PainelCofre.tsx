@@ -349,6 +349,12 @@ export function PainelCofre({
   const necessarias = situacao.assinaturasNecessarias ?? 2;
   const assinaram = situacao.assinaram ?? [];
   const completo = feitas >= necessarias;
+  /* Só a própria pessoa assina pelo lugar dela. */
+  const minhaVez = !!meuAssento && !assinaram.includes(meuAssento);
+  const faltantes = ASSENTOS.filter(
+    (a) => !assinaram.includes(a) && a !== meuAssento,
+  );
+
 
   return (
     <article className="rounded-card border border-line bg-surface-2 p-[15px]">
