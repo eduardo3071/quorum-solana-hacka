@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Mail } from 'lucide-react';
 
 import { CampoEmail } from '@/componentes/CampoEmail';
+import { CampoSenha } from '@/componentes/CampoSenha';
 import { TileIcone } from '@/componentes/TileIcone';
 import {
   criarEntidade,
@@ -11,6 +12,7 @@ import {
 } from '@/lib/api';
 import { useSessao } from '@/lib/sessao';
 import { supabase } from '@/lib/supabase';
+
 
 /** A ordem é a da prancha, não a do banco. */
 const TIPOS: { valor: TipoEntidade; rotulo: string }[] = [
