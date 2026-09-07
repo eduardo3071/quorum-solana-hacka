@@ -50,10 +50,11 @@ export function Cofre() {
 
     // O saldo é somado sobre as MESMAS linhas que a tela mostra: um resumo que
     // não bate com a lista logo abaixo é o pior erro num livro-caixa.
-    const [todas, lista, socios] = await Promise.all([
+    const [todas, lista, socios, esperando] = await Promise.all([
       lancamentos(entidade.id),
       propostas(entidade.id),
       associados(entidade.id),
+      solicitacoes(entidade.id),
     ]);
 
     return {
@@ -63,6 +64,7 @@ export function Cofre() {
       emAberto: pendentes(lista),
       valorRetido: retido(lista),
       socios,
+      esperando: esperando.length,
     };
   }, [slug]);
 
@@ -95,15 +97,14 @@ export function Cofre() {
 
   if (!dados) return <NaoEncontrada />;
 
-  const { entidade, linhas, soma, emAberto, valorRetido, socios } = dados;
-  const cofreVazio = linhas.length === 0 && soma.saldo === 0;
+  const { entidade, linhas, soma, emAberto, valorRetido, socios, esperando } = dados;
 
   return (
     <Tela>
       <Hero
         rotulo={`${entidade.tipo === 'atletica' ? 'Atlética' : entidade.tipo} · ${entidade.universidade ?? ''}`}
         titulo={entidade.nome}
-        subtitulo={`${socios} associados`}
+        subtitulo={`${socios} ${socios === 1 ? 'associado' : 'associados'}`}
         pilula={`${QUORUM.de} de ${QUORUM.entre}`}
       />
 
@@ -115,110 +116,138 @@ export function Cofre() {
           subtitulo={`Nenhuma saída sem ${QUORUM.de} assinaturas`}
         />
 
-        {cofreVazio ? (
-          <Vazio
-            titulo="Cofre recém-criado"
-            acao={{ texto: 'Criar o cofre na rede', href: `/e/${slug}/aprovacoes?estado=vivo` }}
+        {/*
+          Liga nova não perde a tela inteira por não ter movimentação: os quatro
+          cartões aparecem zerados, as ações continuam ao alcance e o convite
+          para criar o cofre na rede vira uma faixa, não uma parede.
+        */}
+        {!entidade.multisig_pda && (
+          <a
+            href={`/e/${slug}/aprovacoes?estado=vivo`}
+            className="flex min-h-[52px] items-center justify-between gap-3 rounded-card border border-blue/30 bg-blue-tint px-3.5 py-3"
           >
-            Ainda não há movimentação. Crie o cofre na rede e proponha a
-            primeira saída — a atlética deixa de usar a conta pessoal do
-            tesoureiro.
-          </Vazio>
+            <span className="t-desc text-pretty text-ink">
+              O cofre ainda não existe na rede. Criar leva alguns segundos.
+            </span>
+            <span className="t-chip whitespace-nowrap text-blue">Criar ›</span>
+          </a>
+        )}
+
+        {esperando > 0 && (
+          <a
+            href={`/e/${slug}/socios`}
+            className="flex min-h-[52px] items-center justify-between gap-3 rounded-card border border-amber/30 bg-amber-tint px-3.5 py-3"
+          >
+            <span className="t-desc text-pretty text-ink">
+              {esperando === 1
+                ? '1 pessoa pediu para entrar'
+                : `${esperando} pessoas pediram para entrar`}
+            </span>
+            <span className="t-chip whitespace-nowrap text-amber">Ver ›</span>
+          </a>
+        )}
+
+        <div className="grid grid-cols-2 gap-2.5">
+          <CartaoStat
+            rotulo="Saldo"
+            valor={formatCompacto(soma.saldo)}
+            rodape="disponível"
+            icone={Wallet}
+            acento="blue"
+          />
+          <CartaoStat
+            rotulo="Retido"
+            valor={formatCompacto(valorRetido)}
+            rodape={`${emAberto.length} ${emAberto.length === 1 ? 'proposta' : 'propostas'}`}
+            icone={Lock}
+            acento="red"
+            corDoNumero={valorRetido > 0 ? 'red' : undefined}
+          />
+          <CartaoStat
+            rotulo="Entrou"
+            valor={formatCompacto(soma.entrou)}
+            rodape="no período"
+            icone={ArrowUp}
+            acento="green"
+            corDoNumero={soma.entrou > 0 ? 'green' : undefined}
+          />
+          <CartaoStat
+            rotulo="Saiu"
+            valor={formatCompacto(soma.saiu)}
+            rodape="no período"
+            icone={ArrowDown}
+            acento="amber"
+          />
+        </div>
+
+        <AcoesRapidas
+          acoes={[
+            {
+              icone: Plus,
+              rotulo: ['Propor', 'saída'],
+              acento: 'blue',
+              href: `/e/${slug}/propor`,
+            },
+            {
+              icone: CalendarDays,
+              rotulo: ['Ver', 'festas'],
+              acento: 'green',
+              href: `/e/${slug}/festas`,
+            },
+            {
+              icone: BookOpen,
+              rotulo: ['Livro-', 'caixa'],
+              acento: 'amber',
+              href: `/e/${slug}/livro`,
+            },
+            {
+              icone: Users,
+              rotulo: ['Sócios', 'ativos'],
+              acento: 'purple',
+              href: `/e/${slug}/socios`,
+            },
+          ]}
+        />
+
+        <div className="mt-0.5 flex items-baseline justify-between">
+          <h2 className="t-secao text-ink">Movimentações</h2>
+          <a href={`/e/${slug}/livro`} className="t-chip whitespace-nowrap text-blue">
+            Ver todas ›
+          </a>
+        </div>
+
+        {linhas.length === 0 ? (
+          <div className="rounded-card border border-line bg-surface px-3.5 py-4">
+            <p className="t-desc text-pretty text-ink-2">
+              Nenhuma movimentação ainda. A primeira venda de ingresso ou saída
+              aprovada aparece aqui — e no livro-caixa, aberto a qualquer
+              associado.
+            </p>
+          </div>
         ) : (
-          <>
-            <div className="grid grid-cols-2 gap-2.5">
-              <CartaoStat
-                rotulo="Saldo"
-                valor={formatCompacto(soma.saldo)}
-                rodape="disponível"
-                icone={Wallet}
-                acento="blue"
+          <div className="flex flex-col gap-2.5">
+            {linhas.map((l) => (
+              <LinhaLista
+                key={l.id}
+                icone={l.tipo === 'entrada' ? ArrowUp : ArrowDown}
+                acento={COR_DA_RUBRICA[l.rubrica]}
+                titulo={l.descricao}
+                meta={
+                  <>
+                    <Chip acento={COR_DA_RUBRICA[l.rubrica]}>{l.rubrica}</Chip>
+                    <span className="t-meta text-ink-3">
+                      {formatDataCurta(l.criado_em)}
+                    </span>
+                  </>
+                }
+                valor={formatComSinal(l.valor_centavos, l.tipo, {
+                  compacto: true,
+                  simbolo: false,
+                })}
+                corDoValor={l.tipo === 'entrada' ? 'green' : undefined}
               />
-              <CartaoStat
-                rotulo="Retido"
-                valor={formatCompacto(valorRetido)}
-                rodape={`${emAberto.length} ${emAberto.length === 1 ? 'proposta' : 'propostas'}`}
-                icone={Lock}
-                acento="red"
-                corDoNumero={valorRetido > 0 ? 'red' : undefined}
-              />
-              <CartaoStat
-                rotulo="Entrou"
-                valor={formatCompacto(soma.entrou)}
-                rodape="no período"
-                icone={ArrowUp}
-                acento="green"
-                corDoNumero="green"
-              />
-              <CartaoStat
-                rotulo="Saiu"
-                valor={formatCompacto(soma.saiu)}
-                rodape="no período"
-                icone={ArrowDown}
-                acento="amber"
-              />
-            </div>
-
-            <AcoesRapidas
-              acoes={[
-                {
-                  icone: Plus,
-                  rotulo: ['Propor', 'saída'],
-                  acento: 'blue',
-                  href: `/e/${slug}/propor`,
-                },
-                {
-                  icone: CalendarDays,
-                  rotulo: ['Ver', 'festas'],
-                  acento: 'green',
-                  href: `/e/${slug}/festas`,
-                },
-                {
-                  icone: BookOpen,
-                  rotulo: ['Livro-', 'caixa'],
-                  acento: 'amber',
-                  href: `/e/${slug}/livro`,
-                },
-                {
-                  icone: Users,
-                  rotulo: ['Sócios', 'ativos'],
-                  acento: 'purple',
-                  href: `/e/${slug}/socios`,
-                },
-              ]}
-            />
-
-            <div className="mt-0.5 flex items-baseline justify-between">
-              <h2 className="t-secao text-ink">Movimentações</h2>
-              <a href={`/e/${slug}/livro`} className="t-chip whitespace-nowrap text-blue">
-                Ver todas ›
-              </a>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-              {linhas.map((l) => (
-                <LinhaLista
-                  key={l.id}
-                  icone={l.tipo === 'entrada' ? ArrowUp : ArrowDown}
-                  acento={COR_DA_RUBRICA[l.rubrica]}
-                  titulo={l.descricao}
-                  meta={
-                    <>
-                      <Chip acento={COR_DA_RUBRICA[l.rubrica]}>{l.rubrica}</Chip>
-                      <span className="t-meta text-ink-3">
-                        {formatDataCurta(l.criado_em)}
-                      </span>
-                    </>
-                  }
-                  valor={formatComSinal(l.valor_centavos, l.tipo, {
-                    compacto: true,
-                    simbolo: false,
-                  })}
-                  corDoValor={l.tipo === 'entrada' ? 'green' : undefined}
-                />
-              ))}
-            </div>
-          </>
+            ))}
+          </div>
         )}
       </CorpoTela>
 
@@ -226,3 +255,4 @@ export function Cofre() {
     </Tela>
   );
 }
+
