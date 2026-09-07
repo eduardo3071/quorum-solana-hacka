@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { exigirMembro, respostaDeAcesso } from '@/lib/autorizacao';
 import { criarProposta, exigirEstado, gravarEstado } from '@/lib/cofre/servidor';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
@@ -13,7 +14,15 @@ export const dynamic = 'force-dynamic';
  * Reaproveita o cofre já criado — só o índice da transação avança. Serve para
  * repetir a demonstração sem refazer o cofre, que custa taxa e rent.
  */
-export async function POST() {
+export async function POST(req: Request) {
+  try {
+    await exigirMembro(req);
+  } catch (e) {
+    const recusa = respostaDeAcesso(e);
+    if (recusa) return recusa;
+    throw e;
+  }
+
   try {
     const { multisigPda, vaultPda } = exigirEstado();
     const { destino, transactionIndex, assinatura } = await criarProposta(

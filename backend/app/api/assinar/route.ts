@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { exigirMembro, respostaDeAcesso } from '@/lib/autorizacao';
 import { assinar, ehPapel, explorador, situacao } from '@/lib/cofre/servidor';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
@@ -9,11 +10,23 @@ export const dynamic = 'force-dynamic';
 
 /** Aprova a proposta pendente com o signatário indicado. */
 export async function POST(req: Request) {
-  let papel: unknown;
+  let corpo: Record<string, unknown> = {};
   try {
-    ({ papel } = await req.json());
+    corpo = await req.json();
   } catch {
-    papel = 'tesoureira';
+    // Corpo vazio é aceitável: o assento cai no padrão logo abaixo.
+  }
+
+  const papel = corpo.papel ?? 'tesoureira';
+
+  try {
+    await exigirMembro(req, {
+      slug: typeof corpo.entidadeSlug === 'string' ? corpo.entidadeSlug : null,
+    });
+  } catch (e) {
+    const recusa = respostaDeAcesso(e);
+    if (recusa) return recusa;
+    throw e;
   }
 
   if (!ehPapel(papel)) {

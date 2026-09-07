@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import bs58 from 'bs58';
 
+import { exigirMembro, respostaDeAcesso } from '@/lib/autorizacao';
 import { criarCofre, criarProposta, gravarEstado } from '@/lib/cofre/servidor';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
@@ -15,7 +16,15 @@ export const dynamic = 'force-dynamic';
  * mostrar: um cofre recém-criado sem proposta cai no estado vazio (6a), que é
  * outra tela. Para o vídeo, o ponto de partida é a proposta esperando.
  */
-export async function POST() {
+export async function POST(req: Request) {
+  try {
+    await exigirMembro(req);
+  } catch (e) {
+    const recusa = respostaDeAcesso(e);
+    if (recusa) return recusa;
+    throw e;
+  }
+
   try {
     const { multisigPda, vaultPda, createKey, assinatura } = await criarCofre();
     const { destino, transactionIndex } = await criarProposta(multisigPda, vaultPda);

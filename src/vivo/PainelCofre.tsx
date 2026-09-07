@@ -85,11 +85,14 @@ export function PainelCofre({
   nomes,
   saldoCentavos,
   associados,
+  entidadeSlug,
 }: {
   proposta: PropostaDoPainel;
   nomes: Record<Assento, string>;
   saldoCentavos: number;
   associados: number;
+  /** Em qual cofre mexer. Ver `criarCofre` em `lib/api.ts`. */
+  entidadeSlug?: string;
 }) {
   const [fase, setFase] = useState<Fase>('lendo');
   const [situacao, setSituacao] = useState<Situacao>({ existe: false });
@@ -160,13 +163,15 @@ export function PainelCofre({
   }
 
   async function criarCofre() {
-    const d = await comEspera('Criando o cofre 2 de 3', criarCofreNaRede);
+    const d = await comEspera('Criando o cofre 2 de 3', () =>
+      criarCofreNaRede(entidadeSlug),
+    );
     if (d) await lerSituacao();
   }
 
   async function assinar(assento: Assento) {
     const d = await comEspera(`Assinatura de ${nomes[assento]}`, () =>
-      assinarNoCofre(assento),
+      assinarNoCofre(assento, entidadeSlug),
     );
     if (!d) return;
     setSituacao({ ...d, existe: true });
@@ -175,7 +180,9 @@ export function PainelCofre({
   }
 
   async function executar(assento: Assento) {
-    const d = await comEspera('Enviando a saída', () => executarSaida(assento));
+    const d = await comEspera('Enviando a saída', () =>
+      executarSaida(assento, entidadeSlug),
+    );
     if (!d) return;
 
     // Falta de quórum NÃO é erro: é a regra do cofre funcionando, e tem tela

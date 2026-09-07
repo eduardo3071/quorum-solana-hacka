@@ -163,22 +163,47 @@ aprovações. Nenhum erro com as palavras *CORS policy*.
 O coração do plano. Resolve os achados 1, 2 e 3 juntos, porque eles são o mesmo
 problema visto de três ângulos.
 
-### 1.1 · Autenticação na API
+### 1.1 · Autenticação na API — **feita**
 
-O SPA já tem o `access_token` da sessão. Passa a mandá-lo.
+- `src/lib/api.ts` manda `Authorization: Bearer <access_token>` em toda chamada,
+  lido de `supabase.auth.getSession()`. Sem sessão, sai sem cabeçalho: token
+  vazio faria o servidor responder "sessão expirou" a quem nunca entrou.
+- `backend/lib/autorizacao.ts` valida o token com a **chave anônima** (validar
+  assinatura de JWT não precisa de poder nenhum) e consulta `membros` com a
+  service role — aqui se está *decidindo* o acesso, e sob RLS "não é membro"
+  ficaria indistinguível de "entidade não existe".
+- Aplicada em `/api/proposta`, `/api/assinar`, `/api/executar` e `/api/cofre`.
+  `/api/estado` ficou aberta de propósito, com o motivo escrito no arquivo:
+  tudo que ela devolve está na devnet, legível por qualquer um.
+- As três chamadas do cofre passaram a mandar `entidadeSlug`. Sem ele o servidor
+  cai na única entidade da pessoa, e recusa com 400 se houver mais de uma —
+  adivinhar em qual cofre mexer é o erro que ninguém percebe até o dinheiro sair
+  do lugar errado.
 
-- `src/lib/api.ts`: incluir `Authorization: Bearer <access_token>` em toda
-  chamada, lido de `supabase.auth.getSession()`.
-- `backend/lib/autorizacao.ts` (novo): `exigirMembro(request, entidadeId, papeis?)`
-  — valida o token com `supabase.auth.getUser(token)`, acha a linha de `membros`
-  daquele usuário naquela entidade, e recusa com **401** (sem sessão) ou **403**
-  (sem papel) usando o vocabulário do produto, nunca a mensagem crua.
-- Aplicar em `/api/proposta`, `/api/assinar`, `/api/executar`, `/api/cofre`.
-- **Não** aplicar em `/api/entidade` (quem cria ainda não é membro de nada) nem
-  nos endpoints de ingresso (a compra é pública, é a tese do produto).
+Verificado com um GoTrue de mentira, porque a saída do contêiner bloqueia o
+Supabase real e todo token pareceria inválido — o teste passaria pelo motivo
+errado:
 
-> O CORS continua, mas deixa de ser a única defesa. Ele protege o navegador de
+| quem chama | resposta |
+| --- | --- |
+| sem cabeçalho | **401** · "Entre para continuar." |
+| esquema errado (`Basic`) | **401** |
+| token inválido | **401** · "Sua sessão expirou." |
+| sócio | **403** · "Só a diretoria pode fazer isso." |
+| sem entidade | **403** · "Você não faz parte desta entidade." |
+| slug de outra entidade | **403** |
+| signatária, slug certo | **passa** — chega na lógica do cofre |
+
+> O CORS continua, mas deixou de ser a única defesa. Ele protege o navegador de
 > terceiros; a autorização protege o endpoint.
+
+**O que 1.1 deliberadamente NÃO resolve:** o assento (`tesoureira`, `presidente`,
+`conselho`) ainda vem no corpo, não da conta de quem chama. As três chaves
+privadas moram no ambiente do servidor, então hoje elas não pertencem a
+ninguém — amarrar assento à conta só faz sentido quando cada signatário
+guardar a própria chave, e isso é outra fase. Até lá, um signatário pode assinar
+usando o assento de outro. Está trancado contra estranhos, não contra a própria
+diretoria.
 
 ### 1.2 · Um cofre por entidade
 

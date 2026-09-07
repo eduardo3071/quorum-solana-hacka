@@ -120,6 +120,7 @@ export function Aprovacoes() {
             nomes={nomesDosAssentos(diretoria)}
             saldoCentavos={soma.saldo}
             associados={quantos}
+            entidadeSlug={slug}
           />
         ) : (
           <Vazio

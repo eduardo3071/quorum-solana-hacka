@@ -9,6 +9,8 @@
  * Contrato completo em `docs/API.md` do repositório da API.
  */
 
+import { supabase } from '@/lib/supabase';
+
 /**
  * Onde a API mora.
  *
@@ -43,12 +45,42 @@ export class ErroDaApi extends Error {
   }
 }
 
+/**
+ * O crachá da sessão.
+ *
+ * Vai em toda chamada, inclusive nas públicas — comprar ingresso e criar
+ * entidade não exigem sessão, e mandar o cabeçalho quando ela existe não muda
+ * nada para elas. Já os endpoints do cofre recusam sem ele.
+ *
+ * `getSession()` lê do armazenamento local e renova sozinho se estiver perto de
+ * vencer. Sem sessão devolve nulo, e a chamada sai sem cabeçalho — que é o
+ * certo: token vazio seria pior que token nenhum, porque o servidor tentaria
+ * validá-lo e responderia "sessão expirou" a quem nunca entrou.
+ */
+async function cabecalhoDeSessao(): Promise<Record<string, string>> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    return token ? { authorization: `Bearer ${token}` } : {};
+  } catch {
+    // Armazenamento bloqueado (janela anônima, cookies negados). Segue sem
+    // crachá: o endpoint público continua funcionando, o privado recusa com
+    // uma mensagem que a pessoa entende.
+    return {};
+  }
+}
+
 async function chamar<T>(rota: string, corpo?: unknown): Promise<T> {
+  const autorizacao = await cabecalhoDeSessao();
+
   let resposta: Response;
   try {
     resposta = await fetch(BASE + rota, {
       method: corpo === undefined ? 'GET' : 'POST',
-      headers: corpo === undefined ? undefined : { 'content-type': 'application/json' },
+      headers:
+        corpo === undefined
+          ? autorizacao
+          : { 'content-type': 'application/json', ...autorizacao },
       body: corpo === undefined ? undefined : JSON.stringify(corpo),
     });
   } catch {
@@ -116,12 +148,21 @@ export type Situacao = {
 
 export const estadoDoCofre = () => chamar<Situacao>('/api/estado');
 
-export const criarCofre = () => chamar<{ criado: true }>('/api/cofre', {});
+/**
+ * `entidadeSlug` diz em qual cofre mexer.
+ *
+ * Sem ele o servidor cai na única entidade de quem chama — o que funciona hoje,
+ * com uma entidade por pessoa, e vira roleta no dia em que alguém estiver em
+ * duas. Mandar sempre que a tela souber é barato e fecha essa porta antes de
+ * ela existir.
+ */
+export const criarCofre = (entidadeSlug?: string) =>
+  chamar<{ criado: true }>('/api/cofre', { entidadeSlug });
 
-export const assinarNoCofre = (papel: Assento) =>
+export const assinarNoCofre = (papel: Assento, entidadeSlug?: string) =>
   chamar<Situacao & { assinado: true; assinatura: string; explorador: string }>(
     '/api/assinar',
-    { papel },
+    { papel, entidadeSlug },
   );
 
 export type ResultadoExecucao =
@@ -149,8 +190,8 @@ export type ResultadoExecucao =
  * produto inteiro existe para mostrar. Erro de verdade — rede, RPC fora do ar —
  * vem como 503 e cai no `catch`.
  */
-export const executarSaida = (papel: Assento) =>
-  chamar<ResultadoExecucao>('/api/executar', { papel });
+export const executarSaida = (papel: Assento, entidadeSlug?: string) =>
+  chamar<ResultadoExecucao>('/api/executar', { papel, entidadeSlug });
 
 /* ── A festa ────────────────────────────────────────────────────────────── */
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { exigirMembro, respostaDeAcesso } from '@/lib/autorizacao';
 import { ehPapel, executar } from '@/lib/cofre/servidor';
 
 import { ehErroDeConfiguracao, erro } from '../_resposta';
@@ -18,11 +19,21 @@ export const dynamic = 'force-dynamic';
  * onde deveria mostrar a regra do cofre funcionando.
  */
 export async function POST(req: Request) {
-  let papel: unknown;
+  let corpo: Record<string, unknown> = {};
   try {
-    ({ papel } = await req.json());
+    corpo = await req.json();
   } catch {
-    papel = 'tesoureira';
+    // Corpo vazio é aceitável: o assento cai no padrão logo abaixo.
+  }
+
+  const papel = corpo.papel ?? 'tesoureira';
+
+  try {
+    await exigirMembro(req, { slug: slugDe(corpo) });
+  } catch (e) {
+    const recusa = respostaDeAcesso(e);
+    if (recusa) return recusa;
+    throw e;
   }
 
   if (!ehPapel(papel)) {
@@ -42,4 +53,9 @@ export async function POST(req: Request) {
     // bloqueio. É rede, RPC ou saldo. A tela mostra o estado offline.
     return erro('Não conseguimos falar com o cofre agora.', e, 503);
   }
+}
+
+/** `entidadeSlug` quando o cliente sabe qual é; nulo cai na única da pessoa. */
+function slugDe(corpo: Record<string, unknown>): string | null {
+  return typeof corpo.entidadeSlug === 'string' ? corpo.entidadeSlug : null;
 }
