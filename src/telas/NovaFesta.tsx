@@ -7,7 +7,8 @@ import { Carregando, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
 import { criarFesta } from '@/lib/api';
-import { entidadePorSlug, paraCentavos, pendentes, propostas } from '@/lib/dados';
+import { entidadePorSlug, pendentes, propostas } from '@/lib/dados';
+import { paraCentavos } from '@/lib/format';
 import { useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
 
