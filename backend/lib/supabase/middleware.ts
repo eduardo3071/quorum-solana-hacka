@@ -73,14 +73,21 @@ export async function atualizarSessao(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-
-  if (!user && !ehPublica(pathname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/entrar';
-    url.searchParams.set('proxima', pathname);
-    return NextResponse.redirect(url);
-  }
+  /*
+   * O portão de redirecionamento saiu junto com as telas.
+   *
+   * Este projeto não tem mais página privada nenhuma: sobraram `/`, `/estilo`,
+   * `/auth/confirmar` e os endpoints. Mandar visitante para `/entrar` apontaria
+   * para uma tela que não existe mais — 404 no lugar de uma explicação, que é
+   * pior que o problema original.
+   *
+   * O que continua valendo é a renovação da sessão acima: o link do e-mail volta
+   * em `/auth/confirmar`, e é ela que grava o cookie. Quem protege o cofre agora
+   * é `exigirMembro`, no endpoint, e não um redirecionamento de HTML — `curl`
+   * ignora redirecionamento, e sempre ignorou.
+   */
+  void user;
+  void ehPublica;
 
   return response;
 }

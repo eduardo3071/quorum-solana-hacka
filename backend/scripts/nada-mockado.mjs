@@ -26,18 +26,16 @@ const EXECUTAVEL =
   '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 /** Rotas visitadas na varredura. O slug da semente. */
+/*
+ * O que sobrou de página nesta porta.
+ *
+ * As dez telas de produto saíram: elas eram uma cópia de antes da separação,
+ * liam o banco pela versão antiga e faziam localhost:3000 parecer o app. Quem
+ * confere a interface é o `nada-mockado` da RAIZ, contra o Vite.
+ */
 const ROTAS = (process.env.ROTAS ?? [
   '/',
-  '/entrar',
   '/estilo',
-  '/e/aaaeng',
-  '/e/aaaeng/aprovacoes',
-  '/e/aaaeng/livro',
-  '/e/aaaeng/festas',
-  '/e/aaaeng/socios',
-  '/e/aaaeng/propor',
-  '/f/aaaeng-baile32',
-  '/perfil',
 ].join(',')).split(',');
 
 const problemas = [];
