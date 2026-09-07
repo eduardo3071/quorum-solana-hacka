@@ -47,12 +47,19 @@ export function Propor() {
   const sessao = useSessao();
   const eu = sessao.membro;
 
-  const { dados, carregando } = useConsulta(async () => {
+  const { dados, carregando, recarregar } = useConsulta(async () => {
     const entidade = await entidadePorSlug(slug);
     if (!entidade) return null;
-    const lista = await propostas(entidade.id);
-    return { entidade, emAberto: pendentes(lista) };
+    const [lista, diretoria] = await Promise.all([
+      propostas(entidade.id),
+      signatarios(entidade.id),
+    ]);
+    return { entidade, emAberto: pendentes(lista), diretoria };
   }, [slug]);
+
+  // Promover alguém na aba Sócios libera esta tela na hora, sem recarregar.
+  useTempoReal(['membros', 'propostas'], recarregar);
+
 
   if (carregando) {
     return (
