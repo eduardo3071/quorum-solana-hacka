@@ -375,6 +375,18 @@ function faltantesDaProposta(
   );
 }
 
+/** Os lugares do cofre que têm alguém de verdade na diretoria. */
+function assentosOcupados(diretoria: Membro[]): Assento[] {
+  const ordem: Assento[] = ['tesoureira', 'presidente', 'conselho'];
+  const tem = new Set(
+    diretoria
+      .map((m) => ASSENTO_DO_PAPEL[m.papel])
+      .filter((a): a is Assento => !!a),
+  );
+  return ordem.filter((a) => tem.has(a));
+}
+
+
 
 function Moldura({
   slug,
