@@ -29,15 +29,9 @@ const ASSENTO_DO_PAPEL: Record<string, Papel> = {
 /**
  * Qual chave assina.
  *
- * O certo é o assento sair de quem chama, e é esse o padrão: cada signatário
- * assina pelo próprio lugar. O caminho de exceção existe por um motivo honesto
- * e temporário — as três chaves privadas moram no ambiente do servidor, não com
- * as pessoas, então ninguém é "dono" de um assento ainda. Enquanto for assim,
- * uma demonstração com um aparelho só precisa produzir duas assinaturas.
- *
- * `DEMO_ASSINA_POR_TODOS=1` libera isso, e nada mais. Fora dele, pedir o
- * assento de outra pessoa é recusado. No dia em que cada signatário guardar a
- * própria chave, a variável some e este parágrafo com ela.
+ * O assento sai de quem chama, sempre: cada signatário assina pelo próprio
+ * lugar. Pedir o assento de outra pessoa é recusado — uma assinatura que não é
+ * de quem consta na tela não vale nada num produto feito para ser conferível.
  */
 export function assentoPara(membro: Membro, pedido: unknown): Papel {
   const meu = ASSENTO_DO_PAPEL[membro.papel];
@@ -48,17 +42,11 @@ export function assentoPara(membro: Membro, pedido: unknown): Papel {
 
   if (typeof pedido !== 'string' || pedido === meu) return meu;
 
-  if (process.env.DEMO_ASSINA_POR_TODOS === '1') {
-    if (pedido in { tesoureira: 1, presidente: 1, conselho: 1 }) {
-      return pedido as Papel;
-    }
-    throw new Error('Assento inválido. Use tesoureira, presidente ou conselho.');
-  }
-
   throw new Error(
     `Você assina como ${meu}. Cada signatário assina pelo próprio lugar.`,
   );
 }
+
 
 export type ContextoDaProposta = {
   membro: Membro;
