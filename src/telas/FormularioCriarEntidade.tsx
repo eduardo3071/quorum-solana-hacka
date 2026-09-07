@@ -45,6 +45,7 @@ export function FormularioCriarEntidade() {
   const [tipo, setTipo] = useState<TipoEntidade>('atletica');
   const [universidade, setUniversidade] = useState('');
   const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
   const [pronto, setPronto] = useState<{ nome: string; email: string } | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -62,6 +63,11 @@ export function FormularioCriarEntidade() {
       setErro('Confira o e-mail — parece incompleto.');
       return;
     }
+    if (!emailDaSessao && senha.length < 8) {
+      setErro('A senha precisa ter pelo menos 8 caracteres.');
+      return;
+    }
+
 
     setPendente(true);
     setErro(null);
