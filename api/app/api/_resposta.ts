@@ -13,11 +13,19 @@ export function erro(mensagem: string, causa: unknown, status = 500) {
   return NextResponse.json({ erro: mensagem }, { status });
 }
 
-/** Falta de configuração é 400: o servidor está certo, o ambiente é que não. */
+/**
+ * Falta de configuração é 400: o servidor está certo, o ambiente é que não.
+ *
+ * A lista precisa acompanhar quem escreve as mensagens, e por um tempo não
+ * acompanhou: `lib/env.ts` diz "Variável de ambiente ausente: X" e nenhum
+ * padrão daqui casava com isso. Dava no pior tipo de erro — um 503 opaco para
+ * a única falha cuja causa o servidor sabia nomear, e que se resolve
+ * preenchendo um campo no painel da Vercel.
+ */
 export function ehErroDeConfiguracao(e: unknown): boolean {
   return (
     e instanceof Error &&
-    /não está no \.env\.local|não está no ambiente|Nenhum cofre criado|ainda não tem cofre|aponta para mainnet/.test(
+    /Variável de ambiente ausente|não está no \.env\.local|não está no ambiente|Nenhum cofre criado|ainda não tem cofre|aponta para mainnet/.test(
       e.message,
     )
   );

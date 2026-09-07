@@ -4,7 +4,7 @@ import { cofreDaEntidade, propostaDaEntidade, SemCofre, SemProposta } from '@/li
 import { situacao } from '@/lib/cofre/servidor';
 import { criarClienteServiceRole } from '@/lib/supabase/server';
 
-import { erro } from '../_resposta';
+import { ehErroDeConfiguracao, erro } from '../_resposta';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -62,6 +62,14 @@ export async function GET(req: Request) {
   } catch (e) {
     if (e instanceof SemCofre) return NextResponse.json({ existe: false, motivo: 'cofre' });
     if (e instanceof SemProposta) return NextResponse.json({ existe: false, motivo: 'proposta' });
+
+    // Variável faltando no ambiente não é "a rede caiu": é 400, e a mensagem
+    // diz o nome dela. Este é o primeiro endpoint que qualquer tela chama, e
+    // portanto o primeiro a topar com um ambiente pela metade — devolver 503
+    // aqui manda procurar problema na devnet quando o problema é um campo em
+    // branco no painel.
+    if (ehErroDeConfiguracao(e)) return erro((e as Error).message, e, 400);
+
     return erro('Não conseguimos ler o cofre agora.', e, 503);
   }
 }
