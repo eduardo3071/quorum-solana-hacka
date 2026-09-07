@@ -230,16 +230,6 @@ export function Perfil() {
             titulo="Assinatura digital"
             detalhe={eu.papel === 'socio' ? 'Sócio não assina' : 'Ativa neste dispositivo'}
           />
-          <LinhaPerfil
-            icone={User}
-            acento="blue"
-            titulo="Dados pessoais"
-            detalhe={
-              linhaCurso
-                ? `${linhaCurso} · ${eu.email ?? sessao.user?.email ?? ''}`
-                : (eu.email ?? sessao.user?.email ?? 'Curso e período em branco')
-            }
-          />
         </div>
 
         <div className="flex-none">
