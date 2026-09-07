@@ -69,6 +69,22 @@ type Comprovante = {
 type Fase = 'lendo' | 'pronto' | 'trabalhando' | 'bloqueado' | 'executado' | 'offline';
 
 /**
+ * A frase que a pessoa lê quando algo falha.
+ *
+ * Sem rede é outra coisa que servidor recusando, e as duas pedem reações
+ * diferentes: uma é esperar o sinal voltar, a outra é alguém arrumar alguma
+ * coisa. Quando o servidor respondeu, quem escreve a frase é ele — os endpoints
+ * já dizem "Entre para continuar", "Só a diretoria pode fazer isso" ou o nome
+ * exato da variável que falta.
+ */
+function mensagemDe(e: unknown, padrao: string): string {
+  if (e instanceof ErroDaApi) {
+    return e.status === 0 ? 'O celular está sem internet' : e.message || padrao;
+  }
+  return padrao;
+}
+
+/**
  * O cofre de verdade, na tela.
  *
  * Fala com os Route Handlers e renderiza os mesmos componentes das pranchas:
@@ -117,6 +133,8 @@ export function PainelCofre({
   const [rotulo, setRotulo] = useState('');
   const [segundos, setSegundos] = useState(0);
   const [mensagemErro, setMensagemErro] = useState('');
+  /** O status HTTP da recusa, quando houve resposta. Ver `DetalheTecnico`. */
+  const [codigo, setCodigo] = useState<number | null>(null);
 
   // Contador de segundos decorridos — real, não spinner. A prancha 6d pede
   // exatamente isso: o estudante precisa ver o tempo passar.
@@ -138,11 +156,13 @@ export function PainelCofre({
       setFase('pronto');
     } catch (e) {
       setFase('offline');
-      setMensagemErro(
-        e instanceof ErroDaApi && e.status === 0
-          ? 'O celular está sem internet'
-          : 'Não conseguimos ler o cofre agora.',
-      );
+      // O servidor escreve mensagens específicas — "Entre para continuar",
+      // "Você não faz parte desta entidade", "Falta configurar SIGNER_…". Trocar
+      // todas por uma frase genérica escondia justamente o que resolveria o
+      // problema, e obrigava a abrir o inspetor do navegador para descobrir se
+      // era sessão, permissão ou configuração.
+      setMensagemErro(mensagemDe(e, 'Não conseguimos ler o cofre agora.'));
+      setCodigo(e instanceof ErroDaApi && e.status > 0 ? e.status : null);
     }
   }, [alvo]);
 
@@ -167,13 +187,8 @@ export function PainelCofre({
       return await executa();
     } catch (e) {
       setFase('offline');
-      setMensagemErro(
-        e instanceof ErroDaApi && e.status === 0
-          ? 'O celular está sem internet'
-          : e instanceof ErroDaApi
-            ? e.message
-            : 'Não conseguimos falar com o cofre agora.',
-      );
+      setMensagemErro(mensagemDe(e, 'Não conseguimos falar com o cofre agora.'));
+      setCodigo(e instanceof ErroDaApi && e.status > 0 ? e.status : null);
       return null;
     }
   }
@@ -250,11 +265,20 @@ export function PainelCofre({
             <WifiOff size={18} strokeWidth={1.8} className="text-red" aria-hidden />
           </div>
           <div className="min-w-0">
-            <h2 className="t-item text-ink">{mensagemErro}</h2>
+            <h2 className="t-item text-pretty text-ink">{mensagemErro}</h2>
             <p className="t-desc mt-[7px] text-pretty text-red-ink">
-              Não conseguimos falar com o cofre agora. Nada foi perdido: nenhum
-              valor saiu e sua assinatura pode ser enviada de novo.
+              Nada foi perdido: nenhum valor saiu e sua assinatura pode ser
+              enviada de novo.
             </p>
+            {/*
+              O código da resposta, discreto. Não é para o associado — é para
+              quem está com o telefone na mão às onze da noite e precisa saber
+              se o problema é sessão (401), permissão (403), configuração (400)
+              ou a rede do servidor (503). Sem ele, os quatro parecem o mesmo.
+            */}
+            {codigo !== null && (
+              <p className="num t-meta mt-2 text-ink-3">resposta {codigo}</p>
+            )}
           </div>
         </div>
         <Botao className="mt-3.5" onClick={() => void lerSituacao()}>
