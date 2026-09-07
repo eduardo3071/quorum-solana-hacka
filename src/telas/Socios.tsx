@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Check, User, X } from 'lucide-react';
+import { Check, ChevronDown, User, X } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
 import { Chip } from '@/componentes/Chip';
 import { Carregando, Erro, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
-import { decidirSolicitacao, ErroDaApi } from '@/lib/api';
+import { decidirSolicitacao, ErroDaApi, mudarPapel } from '@/lib/api';
 import {
   entidadePorSlug,
   eventosDaEntidade,
@@ -17,11 +17,14 @@ import {
   propostas,
   solicitacoes,
   type Membro,
+  type Papel,
 } from '@/lib/dados';
 import { iniciais } from '@/lib/format';
+import { useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
 
 import { NaoEncontrada } from './NaoEncontrada';
+
 
 /**
  * Quem é da entidade.
