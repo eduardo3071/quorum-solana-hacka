@@ -483,16 +483,21 @@ export function PainelCofre({
 
         {!completo &&
           !minhaVez &&
-          faltantes.map((a) => (
-            <Botao
-              key={a}
-              variante="secundario"
-              href={contatos?.[a] ? avisoPorEmail(contatos[a] as string, proposta) : undefined}
-              onClick={contatos?.[a] ? undefined : () => undefined}
-            >
-              Avisar {primeiroNome(nomes[a])}
-            </Botao>
-          ))}
+          faltantes.map((a) => {
+            const email = contatos?.[a] ?? null;
+            return (
+              <Botao
+                key={a}
+                variante={email ? 'secundario' : 'desabilitado'}
+                href={email ? avisoPorEmail(email, proposta) : undefined}
+              >
+                {email
+                  ? `Avisar ${primeiroNome(nomes[a])}`
+                  : `${primeiroNome(nomes[a])} sem e-mail cadastrado`}
+              </Botao>
+            );
+          })}
+
 
         {completo && (
           <Botao
