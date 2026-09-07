@@ -92,6 +92,28 @@ export function Propor() {
     );
   }
 
+  // Duas pessoas na diretoria, no mínimo: sem a segunda, a saída ficaria retida
+  // para sempre e a proposta viraria uma promessa que ninguém pode cumprir.
+  if (dados.diretoria.length < QUORUM.de) {
+    return (
+      <Moldura
+        slug={slug}
+        entidade={dados.entidade.nome}
+        pendencias={dados.emAberto.length}
+      >
+        <Vazio
+          titulo="Falta um segundo assinante"
+          acao={{ texto: 'Abrir sócios ativos', href: `/e/${slug}/socios` }}
+        >
+          Uma saída precisa de {QUORUM.de} assinaturas de pessoas da diretoria.
+          Promova outra pessoa a presidência, tesouraria ou conselho fiscal em
+          Sócios ativos — esta tela libera na hora.
+        </Vazio>
+      </Moldura>
+    );
+  }
+
+
   return (
     <Moldura
       slug={slug}
