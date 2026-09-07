@@ -55,7 +55,7 @@ export function ProvedorDeSessao({ children }: { children: React.ReactNode }) {
     async function lerMembro(userId: string) {
       const { data } = await supabase
         .from('membros')
-        .select('id, nome, papel, email, ativo, entidade_id, entidades(slug)')
+        .select('id, nome, papel, email, ativo, curso, periodo, foto_url, entidade_id, entidades(slug)')
         .eq('user_id', userId)
         .eq('ativo', true)
         .maybeSingle();

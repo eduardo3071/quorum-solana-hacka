@@ -30,7 +30,36 @@ export type Membro = {
   papel: Papel;
   email: string | null;
   ativo: boolean;
+  /** Curso de graduação, como a pessoa escreve. */
+  curso?: string | null;
+  /** Período/semestre — texto livre: "5º", "2º ano". */
+  periodo?: string | null;
+  /** Retrato em data URL, já reduzido no navegador antes de subir. */
+  foto_url?: string | null;
 };
+
+/**
+ * Atualiza os dados pessoais de quem está logado.
+ *
+ * Passa por função no banco de propósito: a política de `membros` não deixa o
+ * próprio usuário escrever na linha, e não deve — papel e vínculo não são
+ * campo de perfil. A função troca apenas nome, curso, período e retrato, e
+ * sempre na linha de `auth.uid()`.
+ */
+export async function atualizarMeuPerfil(dados: {
+  nome: string;
+  curso: string;
+  periodo: string;
+  foto_url: string;
+}) {
+  const { error } = await supabase.rpc('atualizar_meu_perfil', {
+    p_nome: dados.nome,
+    p_curso: dados.curso,
+    p_periodo: dados.periodo,
+    p_foto_url: dados.foto_url,
+  });
+  if (error) throw error;
+}
 
 export type Lancamento = {
   id: string;
@@ -123,7 +152,7 @@ export async function membros(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase
       .from('membros')
-      .select('id, nome, papel, email, ativo')
+      .select('id, nome, papel, email, ativo, curso, periodo, foto_url')
       .eq('entidade_id', entidadeId)
       .eq('ativo', true)
       .order('papel')
@@ -144,7 +173,7 @@ export async function solicitacoes(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase
       .from('membros')
-      .select('id, nome, papel, email, ativo')
+      .select('id, nome, papel, email, ativo, curso, periodo, foto_url')
       .eq('entidade_id', entidadeId)
       .eq('ativo', false)
       .order('nome'),
@@ -155,7 +184,7 @@ export async function signatarios(entidadeId: string) {
   return conferir<Membro[]>(
     await supabase
       .from('membros')
-      .select('id, nome, papel, email, ativo')
+      .select('id, nome, papel, email, ativo, curso, periodo, foto_url')
       .eq('entidade_id', entidadeId)
       .eq('ativo', true)
       .neq('papel', 'socio')

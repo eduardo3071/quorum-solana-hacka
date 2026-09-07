@@ -282,31 +282,40 @@ export type Database = {
       membros: {
         Row: {
           ativo: boolean
+          curso: string | null
           email: string | null
           entidade_id: string
+          foto_url: string | null
           id: string
           nome: string
           papel: Database["public"]["Enums"]["papel_membro"]
+          periodo: string | null
           pubkey: string | null
           user_id: string | null
         }
         Insert: {
           ativo?: boolean
+          curso?: string | null
           email?: string | null
           entidade_id: string
+          foto_url?: string | null
           id?: string
           nome: string
           papel: Database["public"]["Enums"]["papel_membro"]
+          periodo?: string | null
           pubkey?: string | null
           user_id?: string | null
         }
         Update: {
           ativo?: boolean
+          curso?: string | null
           email?: string | null
           entidade_id?: string
+          foto_url?: string | null
           id?: string
           nome?: string
           papel?: Database["public"]["Enums"]["papel_membro"]
+          periodo?: string | null
           pubkey?: string | null
           user_id?: string | null
         }
@@ -382,6 +391,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      atualizar_meu_perfil: {
+        Args: {
+          p_curso: string
+          p_foto_url: string
+          p_nome: string
+          p_periodo: string
+        }
+        Returns: undefined
+      }
       vender_lote: { Args: { p_lote: string }; Returns: number }
     }
     Enums: {
