@@ -338,7 +338,7 @@ function SemEntidade({ email }: { email: string }) {
         */}
         <div className="mt-auto pt-3">
           <a
-            href="/entrar?aba=criar"
+            href="/criar-entidade"
             className="flex min-h-[44px] items-center justify-center gap-1.5 text-[13px] font-semibold text-blue"
           >
             <Plus size={15} strokeWidth={2.2} aria-hidden />

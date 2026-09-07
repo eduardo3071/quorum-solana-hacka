@@ -8,6 +8,7 @@ import { FaltaConfigurar } from '@/telas/FaltaConfigurar';
 import { Privada } from '@/telas/Privada';
 import { Aprovacoes } from '@/telas/Aprovacoes';
 import { Capa } from '@/telas/Capa';
+import { CriarEntidade } from '@/telas/CriarEntidade';
 import { Cofre } from '@/telas/Cofre';
 import { Entrar } from '@/telas/Entrar';
 import { Festa } from '@/telas/Festa';
@@ -58,6 +59,10 @@ if (faltaConfigurar) {
         <Routes>
           <Route path="/" element={<Capa />} />
           <Route path="/entrar" element={<Entrar />} />
+
+          {/* Fundar exige conta, mas não exige entidade — por isso fica
+              fora de `Privada`, que pede as duas. A própria tela decide. */}
+          <Route path="/criar-entidade" element={<CriarEntidade />} />
 
           {/* Pública de propósito: quem chega pelo link de nova senha ainda
               não tem como entrar. */}

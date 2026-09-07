@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import { Mail } from 'lucide-react';
 
-import { CampoEmail } from '@/componentes/CampoEmail';
-import { CampoSenha } from '@/componentes/CampoSenha';
-import { TileIcone } from '@/componentes/TileIcone';
 import {
   criarEntidade,
   ErroDaApi,
@@ -11,7 +7,6 @@ import {
   type TipoEntidade,
 } from '@/lib/api';
 import { useSessao } from '@/lib/sessao';
-import { supabase } from '@/lib/supabase';
 
 
 /** A ordem é a da prancha, não a do banco. */
@@ -23,51 +18,41 @@ const TIPOS: { valor: TipoEntidade; rotulo: string }[] = [
 ];
 
 /**
- * Nasce uma entidade.
+ * Nasce uma entidade — e só isso.
  *
- * Dois passos numa tela só: o servidor cria a entidade com quem preencheu como
- * primeiro signatário, e em seguida sai o link de acesso para o mesmo e-mail.
- * Se o segundo falhar, o primeiro já aconteceu — por isso a tela de sucesso
- * diz o que fazer nesse caso em vez de fingir que nada foi criado.
+ * Este formulário já criou conta também: pedia e-mail e senha, e fundava a
+ * entidade no mesmo envio. Duas coisas diferentes num botão só, e o preço
+ * apareceu rápido: o e-mail digitado aqui vira o do primeiro signatário, então
+ * uma letra trocada deixa a pessoa de fora da própria entidade. Aconteceu com
+ * `…cardoso520@` contra `…cardosi520@`, e o fundador teve de PEDIR ENTRADA na
+ * entidade que ele mesmo tinha criado.
+ *
+ * Agora exige sessão e usa o e-mail dela. Não há campo de e-mail porque não há
+ * escolha a fazer: quem funda é quem está logado. Conta se faz em `/entrar`.
  */
 export function FormularioCriarEntidade() {
   const sessao = useSessao();
-  /*
-   * Quem já entrou funda com o próprio e-mail, e não com um digitado.
-   *
-   * Não é conveniência: é a diferença entre criar a SUA entidade e criar uma
-   * entidade para outra pessoa. O servidor cadastra como primeiro signatário
-   * exatamente o endereço que chega aqui, e só o e-mail da sessão é comprovado.
-   */
+  /** Quem funda é quem está logado. Não se digita, então não se erra. */
   const emailDaSessao = sessao.user?.email?.trim().toLowerCase() ?? null;
 
   const [nome, setNome] = useState('');
   const [tipo, setTipo] = useState<TipoEntidade>('atletica');
   const [universidade, setUniversidade] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
 
-  const [pronto, setPronto] = useState<{ nome: string; email: string } | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [pendente, setPendente] = useState(false);
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
 
-    const endereco = emailDaSessao ?? email.trim().toLowerCase();
+    if (!emailDaSessao) {
+      setErro('Entre na sua conta antes de criar uma entidade.');
+      return;
+    }
     if (nome.trim().length < 2) {
       setErro('Diga o nome da entidade.');
       return;
     }
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(endereco)) {
-      setErro('Confira o e-mail — parece incompleto.');
-      return;
-    }
-    if (!emailDaSessao && senha.length < 8) {
-      setErro('A senha precisa ter pelo menos 8 caracteres.');
-      return;
-    }
-
 
     setPendente(true);
     setErro(null);
@@ -77,58 +62,27 @@ export function FormularioCriarEntidade() {
         nome: nome.trim(),
         tipo,
         universidade: universidade.trim(),
-        email: endereco,
+        email: emailDaSessao,
       });
 
       /*
-       * Com sessão aberta, não há link de e-mail a pedir: a pessoa já está
-       * dentro. O que falta é casar a linha recém-criada — que nasce com
-       * `user_id` nulo — com a sessão, e mostrar a entidade.
+       * A linha do primeiro signatário nasce com `user_id` nulo — o servidor
+       * não conhece a sessão de quem chamou. `vincularSessao` casa as duas pelo
+       * e-mail do token, e sem isso a pessoa acabava de fundar uma entidade e
+       * caía em "você ainda não tem entidade".
        *
        * A ida é por `location.assign`, não pelo roteador, e de propósito: o
-       * papel vem do contexto de sessão, que já foi carregado e não sabe do
-       * vínculo feito agora. Navegar por dentro entregaria a pessoa numa rota
-       * privada com o contexto de antes — ou seja, de volta para "sem
-       * entidade", que é o beco de onde ela veio. Fundar uma entidade acontece
-       * uma vez na vida; um recarregamento é preço justo por acertar sempre.
+       * papel vem do contexto de sessão, já carregado e sem saber do vínculo
+       * feito no instante anterior. Navegar por dentro entregaria a pessoa numa
+       * rota privada com o contexto de antes. Fundar acontece uma vez; um
+       * recarregamento é preço justo por acertar sempre.
        */
-      if (emailDaSessao) {
-        try {
-          await vincularSessao();
-        } catch (falha) {
-          // O vínculo tenta de novo sozinho no próximo carregamento da sessão.
-          console.error('[entidade] criada, vínculo adiado', falha);
-        }
-        window.location.assign(`/e/${criada.slug}`);
-        return;
+      try {
+        await vincularSessao();
+      } catch (falha) {
+        console.error('[entidade] criada, vínculo adiado', falha);
       }
-
-      // O link de confirmação volta para esta origem; o domínio precisa estar
-      // nos Redirect URLs do painel do Supabase.
-      const destino = new URL('/auth/confirmar', window.location.origin);
-      destino.searchParams.set('proxima', `/e/${criada.slug}`);
-
-      const { data, error } = await supabase.auth.signUp({
-        email: endereco,
-        password: senha,
-        options: { emailRedirectTo: destino.toString() },
-      });
-
-      if (error) console.error('[auth] entidade criada, conta não nasceu', error);
-
-      // Sessão aberta na hora significa confirmação desligada: entra direto.
-      if (data?.session) {
-        try {
-          await vincularSessao();
-        } catch (falha) {
-          console.error('[entidade] criada, vínculo adiado', falha);
-        }
-        window.location.assign(`/e/${criada.slug}`);
-        return;
-      }
-
-      setPronto({ nome: criada.nome, email: endereco });
-
+      window.location.assign(`/e/${criada.slug}`);
     } catch (e) {
       console.error('[entidade] falha ao criar', e);
       setErro(
@@ -136,26 +90,8 @@ export function FormularioCriarEntidade() {
           ? e.message
           : 'Não conseguimos criar a entidade agora. Tente de novo.',
       );
-    } finally {
       setPendente(false);
     }
-  }
-
-  if (pronto) {
-    return (
-      <div className="flex items-start gap-3 rounded-card border border-green/30 bg-green-tint p-4">
-        <TileIcone icone={Mail} acento="green" tamanho="md" />
-        <div className="min-w-0">
-          <div className="t-item text-ink">{pronto.nome} está criada</div>
-          <p className="t-desc mt-1.5 text-pretty text-green-ink">
-            Confirme o e-mail em <strong>{pronto.email}</strong> e depois entre
-            com sua senha para assumir como primeiro signatário. A entidade já
-            existe e espera por você.
-          </p>
-        </div>
-
-      </div>
-    );
   }
 
   return (
@@ -215,33 +151,18 @@ export function FormularioCriarEntidade() {
         />
       </Campo>
 
-      {emailDaSessao ? (
-        <div className="min-w-0">
-          <div className="t-item-sm mb-2 text-ink">Seu e-mail</div>
-          {/*
-            Texto, não campo desabilitado: campo cinza convida a tentar digitar
-            e a descobrir que não dá. Aqui não há escolha a oferecer — a
-            entidade nasce de quem está logado — então a tela informa em vez de
-            simular uma decisão.
-          */}
-          <p className="num rounded-[14px] border border-white/12 bg-[#0A1526] px-3.5 py-3 text-[13px] leading-[1.4] break-all text-ink-2">
-            {emailDaSessao}
-          </p>
-        </div>
-      ) : (
-        <>
-          <CampoEmail id="email-criar" rotulo="Seu e-mail" valor={email} aoMudar={setEmail} />
-          <CampoSenha
-            id="senha-criar"
-            rotulo="Crie uma senha"
-            valor={senha}
-            aoMudar={setSenha}
-            autoComplete="new-password"
-            dica="Pelo menos 8 caracteres."
-          />
-        </>
-      )}
-
+      <div className="min-w-0">
+        <div className="t-item-sm mb-2 text-ink">Seu e-mail</div>
+        {/*
+          Texto, não campo — nem sequer desabilitado. Campo cinza convida a
+          tentar digitar e a descobrir que não dá. Aqui não há escolha a
+          oferecer: a entidade nasce de quem está logado, e é justamente por
+          não haver campo que a letra trocada deixa de ser possível.
+        */}
+        <p className="num rounded-[14px] border border-white/12 bg-[#0A1526] px-3.5 py-3 text-[13px] leading-[1.4] break-all text-ink-2">
+          {emailDaSessao ?? 'entre na sua conta primeiro'}
+        </p>
+      </div>
 
       {erro && <p className="t-desc text-pretty text-red">{erro}</p>}
 

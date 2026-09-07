@@ -1,14 +1,11 @@
-import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 
-import criarTopo from '@/assets/criar-topo.webp';
 import entrarRodape from '@/assets/entrar-rodape.webp';
 import entrarTopo from '@/assets/entrar-topo.webp';
 import { BotaoGoogle } from '@/componentes/BotaoGoogle';
 import { useSessao } from '@/lib/sessao';
 
-import { FormularioCriarEntidade } from './FormularioCriarEntidade';
 import { FormularioEntrada } from './FormularioEntrada';
 
 const AVISOS: Record<string, string> = {
@@ -18,7 +15,6 @@ const AVISOS: Record<string, string> = {
 };
 
 
-type Aba = 'entrar' | 'criar';
 
 /**
  * O que é arte e o que é interface, nesta tela.
@@ -55,27 +51,11 @@ export function Entrar() {
   const [busca] = useSearchParams();
   const sessao = useSessao();
 
-  // Quem chega por link vencido quer entrar, não criar. `?aba=criar` abre na
-  // outra, para a capa poder mandar direto.
-  const querCriar = busca.get('aba') === 'criar';
-  const [aba, setAba] = useState<Aba>(querCriar ? 'criar' : 'entrar');
-
   const erro = busca.get('erro') ?? undefined;
   const proxima = busca.get('proxima') ?? undefined;
 
-  /*
-   * Quem já entrou não precisa entrar de novo — mas pode muito bem estar
-   * fundando uma entidade.
-   *
-   * O desvio abaixo mandava toda sessão válida de volta para a capa, e isso
-   * fechava um ciclo: a capa de quem não tem entidade oferece "criar uma", o
-   * link vem para cá, e daqui a pessoa era devolvida à mesma tela que a
-   * mandou. O botão parecia quebrado, e o formulário — que existe e funciona —
-   * continuava inalcançável para exatamente quem mais precisava dele.
-   */
-  if (sessao.user && !querCriar) return <Navigate to={proxima ?? '/'} replace />;
-
-  const entrando = aba === 'entrar';
+  // Esta tela cuida só de CONTA. Quem já tem sessão não tem o que fazer aqui.
+  if (sessao.user) return <Navigate to={proxima ?? '/'} replace />;
 
   return (
     <main
@@ -88,10 +68,10 @@ export function Entrar() {
         não existiriam para quem usa.
       */}
       <img
-        src={entrando ? entrarTopo : criarTopo}
+        src={entrarTopo}
         alt=""
         width={780}
-        height={entrando ? 642 : 478}
+        height={642}
         className="block w-full select-none"
         draggable={false}
       />
@@ -103,32 +83,23 @@ export function Entrar() {
 
       <div className={`flex flex-1 flex-col ${LATERAL} pb-5`}>
         <section className="rounded-[20px] border border-white/10 bg-[#0C1B33]/85 p-4 backdrop-blur-md">
-          <div
-            role="tablist"
-            aria-label="Entrar ou criar entidade"
-            className="mb-4 grid grid-cols-2 gap-2"
-          >
-            <BotaoAba atual={aba} valor="entrar" ao={setAba}>
-              Entrar
-            </BotaoAba>
-            <BotaoAba atual={aba} valor="criar" ao={setAba}>
-              Criar entidade
-            </BotaoAba>
-          </div>
+          {/*
+            Aqui havia uma aba "Criar entidade", e ela juntava duas coisas que
+            não são a mesma: fazer uma CONTA e fundar uma ENTIDADE. O formulário
+            pedia e-mail — e pedir e-mail a quem vai virar o primeiro signatário
+            é convidar o erro de digitação que ninguém percebe. Aconteceu:
+            alguém fundou uma entidade com `…cardoso520@` e entrou com
+            `…cardosi520@`, uma letra de diferença, e teve de pedir entrada na
+            própria entidade.
 
-          {entrando ? (
-            <div id="painel-entrar" role="tabpanel" aria-labelledby="aba-entrar">
-              <FormularioEntrada
-                aviso={erro ? AVISOS[erro] : undefined}
-                rotulo="E-mail institucional"
-                proxima={proxima}
-              />
-            </div>
-          ) : (
-            <div id="painel-criar" role="tabpanel" aria-labelledby="aba-criar">
-              <FormularioCriarEntidade />
-            </div>
-          )}
+            Agora esta tela cuida só de conta. Fundar é `/criar-entidade`, exige
+            sessão, e usa o e-mail dela — que não se digita e não se erra.
+          */}
+          <FormularioEntrada
+            aviso={erro ? AVISOS[erro] : undefined}
+            rotulo="E-mail institucional"
+            proxima={proxima}
+          />
 
           <div className="my-4 flex items-center gap-3">
             <span className="h-px flex-1 bg-white/10" />
@@ -166,37 +137,5 @@ export function Entrar() {
         draggable={false}
       />
     </main>
-  );
-}
-
-function BotaoAba({
-  atual,
-  valor,
-  ao,
-  children,
-}: {
-  atual: Aba;
-  valor: Aba;
-  ao: (a: Aba) => void;
-  children: React.ReactNode;
-}) {
-  const ativo = atual === valor;
-
-  return (
-    <button
-      id={`aba-${valor}`}
-      type="button"
-      role="tab"
-      aria-selected={ativo}
-      aria-controls={`painel-${valor}`}
-      onClick={() => ao(valor)}
-      className={`min-h-[48px] rounded-[14px] border px-3 py-3 text-[14px] font-bold whitespace-nowrap ${
-        ativo
-          ? 'border-blue bg-[#0E2A48] text-ink'
-          : 'border-transparent bg-transparent text-ink-2'
-      }`}
-    >
-      {children}
-    </button>
   );
 }
