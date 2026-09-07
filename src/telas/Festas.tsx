@@ -3,6 +3,7 @@ import { CalendarDays, ChevronRight } from 'lucide-react';
 
 import { BarraAbas } from '@/componentes/BarraAbas';
 import { Chip } from '@/componentes/Chip';
+import { Botao } from '@/componentes/Botao';
 import { Carregando, Erro, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
