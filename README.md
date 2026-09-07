@@ -109,6 +109,32 @@ O endereço da interface vai em dois lugares, esses sim obrigatórios:
 O livro-caixa e a página da festa abrem sem conta nenhuma. É a tese do produto —
 não coloque login na frente delas.
 
+## O que roda na rede, e onde
+
+Nada aqui é simulado. Os dois pedaços que tocam a Solana usam protocolo de
+verdade, em devnet, e dá para conferir cada um no explorador.
+
+**Squads v4 — o cofre.** O multisig 2-de-3 é criado por `multisigCreateV2`, a
+saída vira `vaultTransactionCreate` + `proposalCreate`, cada assinatura é um
+`proposalApprove` e a execução é `vaultTransactionExecute`. Quando falta quórum,
+quem recusa é o programa on-chain: erro **6008**, `InvalidProposalStatus` —
+proposta em `Active` onde se exigia `Approved`. A interface não finge a recusa,
+ela mostra a que veio da rede.
+
+> `npm run ciclo`, em `api/`, faz esse trajeto inteiro no terminal em sete
+> passos e imprime o comprovante. O quinto passo **tem** que falhar: é o
+> quórum funcionando.
+
+**Solana Pay — a venda de ingresso.** O QR carrega uma Transfer Request de
+verdade, `solana:<cofre>?amount=…&reference=…&label=…&message=…`, e o destino é
+o **vault PDA da entidade** — o dinheiro do ingresso cai direto no cofre 2-de-3,
+sem passar por conta de ninguém. A conciliação é a canônica do protocolo: a
+referência viaja na transação como conta somente-leitura, e
+`getSignaturesForAddress(referência)` a encontra depois. Ninguém digita "paguei".
+
+O vocabulário desses dois parágrafos vive **aqui e no pitch**, nunca na
+interface: para o associado da atlética, é cofre, assinatura e livro-caixa.
+
 ## As regras que o código não quebra
 
 Estão em [`CLAUDE.md`](CLAUDE.md), e valem para as duas partes. As que mais

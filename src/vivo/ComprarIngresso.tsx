@@ -425,9 +425,16 @@ function Moldura({
         <p
           className={`text-center text-[12.5px] leading-[1.4] text-ink-3 ${rodape ? 'mt-3' : ''}`}
         >
+          {/*
+            O rótulo é o endereço de verdade, não um domínio bonito.
+            Aqui dizia `quorum.app/<slug>`, que não existe e nunca existiu: o
+            link levava ao lugar certo e o texto anunciava outro. Endereço
+            inventado numa tela que promete transparência é a única mentira que
+            este produto não pode contar.
+          */}
           Livro-caixa da entidade aberto em{' '}
-          <a href={`/e/${entidadeSlug}/livro`} className="text-blue">
-            quorum.app/{entidadeSlug}
+          <a href={`/e/${entidadeSlug}/livro`} className="num text-blue">
+            /e/{entidadeSlug}/livro
           </a>
         </p>
       </div>
