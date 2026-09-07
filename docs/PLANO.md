@@ -51,14 +51,78 @@ convidar signatário nem trocar diretoria.
 
 ---
 
+## O caminho do dinheiro, e por que ele decide o escopo
+
+Esta seção existe porque a pergunta aparece na primeira rodada de avaliação, e
+porque a resposta certa **encolhe** o trabalho em vez de aumentá-lo.
+
+### Pix precisa de autorização — mas não a nossa
+
+O Pix é operado pelo Banco Central, e só participa dele instituição autorizada:
+banco ou instituição de pagamento. Um app de atlética nunca vai ser
+participante, e não precisa ser. O caminho é integrar um PSP já autorizado e
+emitir a cobrança **em nome da entidade**, numa conta que é dela.
+
+A linha que decide tudo:
+
+| o dinheiro… | o que o Quórum é |
+| --- | --- |
+| vai do aluno **direto** para a conta da entidade, no PSP dela | **software.** Não guarda, não repassa, não custodia |
+| passa por uma conta **nossa** e depois é repassado | **arranjo de pagamento** — custódia de recurso de terceiro, e a regulação passa a valer para nós |
+
+O produto tem que ficar na primeira linha, e é natural que fique: ele não quer
+ser a tesouraria de ninguém. Quer ser a **regra de quem pode tirar** e o
+**livro aberto** de tudo que entrou e saiu. Isso é software.
+
+> Isto é desenho técnico, não parecer jurídico. Antes de qualquer piloto com
+> dinheiro real, confirme com quem seja advogado.
+
+### O contrato inteligente já existe
+
+Vale dizer alto, porque é o ponto menos óbvio do próprio projeto: **o cofre não
+é simulado.** O `backend/package.json` depende de `@sqds/multisig`, e o código
+chama o **Squads v4**, um programa publicado na rede. Criar cofre, propor
+saída, aprovar e executar são instruções dele. Quando falta a segunda
+assinatura, quem recusa é o contrato — o `6008` que a tela mostra vem de lá,
+não de um `if` nosso.
+
+Reescrever isso à mão seria trocar código auditado, com dinheiro real rodando
+nele, por código nosso guardando dinheiro de estudante. Seria pior, não melhor.
+
+### O que contrato nenhum resolve
+
+Nenhum contrato transforma **R$ 60 na conta de um aluno** em algo que ele possa
+guardar. Essa travessia precisa de instituição regulada, e ela acontece **duas
+vezes**:
+
+```
+aluno paga R$ 60 → [travessia] → cofre 2-de-3 → [travessia] → fornecedor recebe
+      Pix           PSP / VASP     contrato        PSP / VASP     na conta dele
+```
+
+Guardar o caixa em stablecoin deixaria o miolo mais honesto — o dinheiro de
+verdade sob a regra do quórum. Mas as duas pontas continuariam precisando de
+instituição autorizada (no Brasil, prestadora de serviço de ativos virtuais,
+regulada pelo Banco Central desde a Lei 14.478/2022). E tem o detalhe que mata
+a ideia para uma atlética: **o fornecedor quer real na conta dele.** A segunda
+travessia é obrigatória.
+
+**Consequência para este plano:** a integração com PSP não entra em nenhuma
+fase. Ela é trabalho de contrato comercial e conta bancária, não de código — e
+o código que a receberia é o mesmo `lib/pagamento.ts` de hoje, com outra
+implementação de `montarCobranca` e `procurarPagamento`. Fica registrado como
+premissa, não como tarefa.
+
+---
+
 ## A conta do tempo
 
-A entrega é **7 set 2026, 23h59**. As fases 1 a 3 são a espinha e não cabem
-todas até lá com folga. Então o plano é lido em duas alturas:
+A entrega é **hoje, 7 set 2026, 23h59**. As fases 1 a 3 são a espinha e não
+cabem todas até lá. Então o plano é lido em duas alturas:
 
 - **Faixa A — até a entrega.** Fases 0, 1 e 2. É o mínimo para a demonstração
   ser verdadeira do começo ao fim e o app não ser derrubado por um `curl`.
-- **Faixa B — depois.** Fases 3 a 7. É o que transforma a demonstração em
+- **Faixa B — depois.** Fases 3 a 8. É o que transforma a demonstração em
   produto.
 
 Se o tempo apertar, corte da Faixa B, nunca da Faixa A. E dentro da Faixa A,
@@ -195,7 +259,28 @@ real: cofre vazio, proposta recusada, saída executada, executando, erro de
 rede, troca de diretoria. Cada uma precisa de um caminho que a produza de
 verdade — estado que só aparece com `?estado=` é estado que ninguém vê.
 
-## Fase 5 · Endurecimento
+## Fase 5 · A regra que o Squads não sabe
+
+Só aqui um programa próprio se justifica — e só depois de auditado. Antes disso,
+o Squads faz melhor do que faríamos.
+
+O que ele não sabe, e um programa em Anchor por cima do vault saberia:
+
+- **Limite por rubrica.** "Marketing não passa de R$ 2.000 no mês, mesmo com
+  quórum." O contrato não conhece o conceito de rubrica; hoje isso só existe no
+  banco, e o banco não segura ninguém.
+- **Trava de tempo.** Saída acima de um valor só executa 24h depois de aprovada,
+  dando janela para o conselho barrar antes de o dinheiro sair.
+- **Mandato com validade.** A diretoria de 2026 perde a assinatura em 31/12
+  sozinha, sem depender de alguém lembrar de trocar — que é exatamente o
+  momento em que atlética perde dinheiro.
+
+Isso é trabalho de semanas mais auditoria. **A auditoria não é opcional**: é o
+que separa "escrevemos um contrato" de "confie seu dinheiro a ele". Enquanto
+ela não existir, este item não sai do papel — colocar dinheiro de estudante sob
+código nosso não auditado seria pior que o problema que o produto resolve.
+
+## Fase 6 · Endurecimento
 
 - **Limite de chamadas** em `/api/entidade` e nos endpoints de ingresso. Hoje o
   `/api/entidade` tem só uma espera de cinco minutos por e-mail, o suficiente
@@ -206,14 +291,14 @@ verdade — estado que só aparece com `?estado=` é estado que ninguém vê.
   não se aplica — o produto não tem senha).
 - **Revisão de RLS tabela por tabela**, agora que a API é a dona das escritas.
 
-## Fase 6 · Testes que não dependem de mim rodando à mão
+## Fase 7 · Testes que não dependem de mim rodando à mão
 
 - `conferir.mjs` e `nada-mockado.mjs` já existem e reprovam com código 1.
   Falta rodá-los no CI, em cada push.
 - Um teste de ponta a ponta do caminho do dinheiro: propor → assinar → assinar
   → executar → conferir o lançamento no livro público.
 
-## Fase 7 · Fora do código, mas parte de terminar
+## Fase 8 · Fora do código, mas parte de terminar
 
 - Páginas de **Termos** e **Política de Privacidade**. Hoje a frase na tela de
   entrada é texto e não link, de propósito, porque link para o vazio é pior que
@@ -230,10 +315,17 @@ verdade — estado que só aparece com `?estado=` é estado que ninguém vê.
 nome, e isso não é para ser afrouxado. Dinheiro real exige custódia, contrato
 auditado e responsabilidade jurídica que um hackathon não tem.
 
-**Pix de verdade.** Em produção a compra do ingresso seria Pix por parceiro
-autorizado. Está escrito em caixa alta no cabeçalho de `lib/pagamento.ts`, e a
-interface nunca diz "Pix" nos componentes de execução — dizer que já é seria
-mentir para quem avalia.
+**Ser participante do Pix.** Não é escopo e não deveria ser: exigiria
+autorização do Banco Central, e o produto não quer custodiar dinheiro de
+ninguém. A cobrança sai por PSP autorizado, direto na conta da entidade — ver
+"O caminho do dinheiro". Enquanto isso, o demo roda em devnet, e a interface
+**nunca diz "Pix" nos componentes de execução**: dizer que já é seria mentir
+para quem avalia.
+
+**Programa próprio guardando dinheiro real.** A Fase 5 desenha um, e ele fica
+onde está até passar por auditoria. Contrato escrito num hackathon segurando o
+caixa de uma atlética é um risco maior que o tesoureiro que o produto veio
+substituir.
 
 **A capa deixar de ser imagem.** O `2 de 3` e o `R$ 8.400,00` da capa vêm da
 arte, não do banco. É custo aceito e documentado: se o quórum mudar, a capa
