@@ -7,9 +7,8 @@ import { Botao } from '@/componentes/Botao';
 import { Carregando, Erro, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
-import { chaveDeRecebimento, conferirEntradas, type EntradaLancada } from '@/lib/api';
+import { chaveDeRecebimento } from '@/lib/api';
 import { entidadePorSlug } from '@/lib/dados';
-import { formatBRL } from '@/lib/format';
 import { useConsulta } from '@/lib/useConsulta';
 
 import { NaoEncontrada } from './NaoEncontrada';
