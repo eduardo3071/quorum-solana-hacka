@@ -15,6 +15,7 @@ import { Festa } from '@/telas/Festa';
 import { Festas } from '@/telas/Festas';
 import { Livro } from '@/telas/Livro';
 import { NaoEncontrada } from '@/telas/NaoEncontrada';
+import { NovaFesta } from '@/telas/NovaFesta';
 import { Perfil } from '@/telas/Perfil';
 import { Propor } from '@/telas/Propor';
 import { RedefinirSenha } from '@/telas/RedefinirSenha';
@@ -81,6 +82,7 @@ if (faltaConfigurar) {
             <Route path="/e/:slug/aprovacoes" element={<Aprovacoes />} />
             <Route path="/e/:slug/propor" element={<Propor />} />
             <Route path="/e/:slug/festas" element={<Festas />} />
+            <Route path="/e/:slug/festas/nova" element={<NovaFesta />} />
             <Route path="/e/:slug/socios" element={<Socios />} />
             <Route path="/perfil" element={<Perfil />} />
           </Route>

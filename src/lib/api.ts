@@ -279,6 +279,38 @@ export const executarSaida = (papel: Assento, alvo: AlvoDoCofre) =>
 
 /* ── A festa ────────────────────────────────────────────────────────────── */
 
+/**
+ * A diretoria cria uma festa.
+ *
+ * Vai por uma função do próprio banco, e não pelo domínio da API: `eventos` e
+ * `lotes` não aceitam escrita do navegador — quem confere o papel de quem pede é
+ * o servidor, com a chave de serviço, depois de validar o crachá da sessão.
+ */
+export async function criarFesta(dados: {
+  entidadeSlug: string;
+  nome: string;
+  /** Instante da festa em ISO, já com o fuso de quem preencheu. */
+  data: string;
+  local: string;
+  precoCentavos: number;
+  total: number;
+}): Promise<{ criada: true; slug: string; nome: string }> {
+  const { data, error } = await supabase.functions.invoke('festa', { body: dados });
+
+  if (error) {
+    // A função devolve `{ erro }` escrito em português; a mensagem dela é
+    // melhor que qualquer frase genérica daqui.
+    const corpo = (await (error as { context?: Response }).context
+      ?.json()
+      .catch(() => null)) as { erro?: string } | null;
+    throw new ErroDaApi(corpo?.erro ?? 'Não conseguimos criar a festa agora.', 0);
+  }
+
+  return data as { criada: true; slug: string; nome: string };
+}
+
+
+
 export type Cobranca = {
   referencia: string;
   lote: string;

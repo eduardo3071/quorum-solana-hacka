@@ -9,6 +9,7 @@ import { Carregando, Vazio } from '@/componentes/Estados';
 import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
 import { QUORUM, entidadePorSlug, pendentes, propostas } from '@/lib/dados';
+import { paraCentavos } from '@/lib/format';
 import { useSessao } from '@/lib/sessao';
 import { supabase } from '@/lib/supabase';
 import { useConsulta } from '@/lib/useConsulta';
@@ -168,27 +169,6 @@ function Formulario({
       </p>
     </form>
   );
-}
-
-/**
- * `"1.234,56"`, `"1234,56"`, `"1234.56"` ou `"1234"` → centavos.
- *
- * Feito com string e não com `parseFloat * 100` de propósito: float perde
- * centavo — `19.99 * 100` dá 1998.9999999999998 —, e centavo perdido em
- * livro-caixa é erro que ninguém consegue explicar depois.
- */
-function paraCentavos(texto: string): number | null {
-  const limpo = texto.replace(/[R$\s ]/g, '');
-  if (!/^\d{1,3}(\.\d{3})*(,\d{1,2})?$|^\d+([.,]\d{1,2})?$/.test(limpo)) return null;
-
-  // Com milhar e decimal juntos, a vírgula é o decimal. Sozinha, também.
-  const semMilhar = limpo.includes(',')
-    ? limpo.replace(/\./g, '').replace(',', '.')
-    : limpo;
-
-  const [inteiros, decimais = ''] = semMilhar.split('.');
-  const centavos = Number(inteiros) * 100 + Number(decimais.padEnd(2, '0').slice(0, 2));
-  return Number.isSafeInteger(centavos) ? centavos : null;
 }
 
 function Campo({

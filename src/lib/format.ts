@@ -220,3 +220,23 @@ export function iniciais(nome: string): string {
 export function primeiroNome(nome: string): string {
   return nome.trim().split(/\s+/)[0] ?? '';
 }
+
+/**
+ * `"1.234,56"`, `"1234,56"`, `"1234.56"` ou `"1234"` → centavos.
+ *
+ * Feito com string e não com `parseFloat * 100` de propósito: float perde
+ * centavo — `19.99 * 100` dá 1998.9999999999998 —, e centavo perdido em
+ * livro-caixa é erro que ninguém consegue explicar depois.
+ */
+export function paraCentavos(texto: string): number | null {
+  const limpo = texto.replace(/[R$\s ]/g, '');
+  if (!/^\d{1,3}(\.\d{3})*(,\d{1,2})?$|^\d+([.,]\d{1,2})?$/.test(limpo)) return null;
+
+  const semMilhar = limpo.includes(',')
+    ? limpo.replace(/\./g, '').replace(',', '.')
+    : limpo;
+
+  const [inteiros, decimais = ''] = semMilhar.split('.');
+  const centavos = Number(inteiros) * 100 + Number(decimais.padEnd(2, '0').slice(0, 2));
+  return Number.isSafeInteger(centavos) ? centavos : null;
+}
