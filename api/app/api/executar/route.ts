@@ -86,7 +86,18 @@ export async function POST(req: Request) {
         txSignature: resultado.assinatura,
       });
 
+      // O destino pode ser o caixa de outra entidade daqui: nesse caso a saída
+      // de uma é a entrada da outra, e o livro dela registra na hora.
+      await registrarEntradaNoDestino({
+        chave: proposta.destinoDevnet.toBase58(),
+        valorCentavos: proposta.valorCentavos,
+        rubrica: proposta.rubrica,
+        origem: membro.entidade_nome ?? 'outra entidade',
+        txSignature: resultado.assinatura,
+      });
+
       return NextResponse.json({ ...resultado, lancado: lancou });
+
     }
 
     return NextResponse.json(resultado);
