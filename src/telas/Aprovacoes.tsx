@@ -196,14 +196,15 @@ export function Aprovacoes() {
     );
   }
 
-  // A que precisa de ação vem expandida; as outras, colapsadas em uma linha.
-  const emFoco = abertas[0];
-  const outras = abertas.slice(1);
+  // A que precisa da MINHA ação vem expandida; as outras, colapsadas.
+  const emFoco = alvo ?? abertas[0];
+  const outras = abertas.filter((p) => p.id !== emFoco.id);
   const autor = diretoria.find((m) => m.id === emFoco.criado_por);
   const feitas = emFoco.assinaturas.length;
   const jaAssinei = eu ? emFoco.assinaturas.some((a) => a.membro_id === eu.id) : false;
   const podeAssinar = eu ? eu.papel !== 'socio' && !jaAssinei : false;
   const faltam = QUORUM.de - feitas;
+
 
   return (
     <Moldura
