@@ -59,6 +59,8 @@ export function Aprovacoes() {
   const { slug = '' } = useParams();
   const [busca] = useSearchParams();
   const aoVivo = busca.get('estado') === 'vivo';
+  const propostaPedida = busca.get('proposta');
+
   const sessao = useSessao();
   const eu = sessao.membro;
 
