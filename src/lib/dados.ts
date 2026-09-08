@@ -260,20 +260,30 @@ export const pendentes = (lista: Proposta[]) =>
 export const retido = (lista: Proposta[]) =>
   pendentes(lista).reduce((t, p) => t + p.valor_centavos, 0);
 
-/** Já assinada por quem está logado, mas ainda sem quórum — a do vídeo. */
+/**
+ * A saída que esta pessoa precisa levar ao cofre agora.
+ *
+ * Primeiro a que já tem assinatura e espera a dela — é a que fecha o quórum.
+ * Depois qualquer pendente que ela ainda não assinou. Só então a primeira da
+ * fila, para a tela nunca ficar vazia.
+ */
 export function propostaRetida(lista: Proposta[], membroId: string | null) {
   const abertas = pendentes(lista);
+  const semQuorum = abertas.filter((p) => p.assinaturas.length < QUORUM.de);
+  const naoAssinei = (p: Proposta) =>
+    !membroId || !p.assinaturas.some((a) => a.membro_id === membroId);
+
   return (
-    abertas.find(
-      (p) =>
-        p.assinaturas.length > 0 &&
-        p.assinaturas.length < QUORUM.de &&
-        (!membroId || p.assinaturas.some((a) => a.membro_id === membroId)),
+    semQuorum.find((p) => p.assinaturas.length > 0 && naoAssinei(p)) ??
+    semQuorum.find(naoAssinei) ??
+    semQuorum.find(
+      (p) => p.assinaturas.length > 0 && !!membroId && !naoAssinei(p),
     ) ??
     abertas[0] ??
     null
   );
 }
+
 
 /* ── Eventos ────────────────────────────────────────────────────────────── */
 
