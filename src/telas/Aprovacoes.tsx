@@ -80,11 +80,14 @@ export function Aprovacoes() {
       abertas: pendentes(lista),
       valorRetido: retido(lista),
       diretoria,
-      alvo: propostaRetida(lista, eu?.id ?? null),
+      alvo:
+        lista.find((p) => p.id === propostaPedida && p.status === 'pendente') ??
+        propostaRetida(lista, eu?.id ?? null),
       soma: totais(linhas),
       quantos,
     };
-  }, [slug, eu?.id]);
+  }, [slug, eu?.id, propostaPedida]);
+
 
   // Em tempo real: assinatura feita no aparelho de outra pessoa, proposta nova
   // ou promoção na diretoria aparecem aqui sem ninguém recarregar a página.
