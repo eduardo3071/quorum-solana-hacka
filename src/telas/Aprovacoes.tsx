@@ -285,7 +285,7 @@ export function Aprovacoes() {
                           valorCentavos: emFoco.valor_centavos,
                           rubrica: emFoco.rubrica,
                         },
-                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo`,
+                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`,
                       )
                     : undefined
                 }
