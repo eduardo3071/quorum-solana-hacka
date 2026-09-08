@@ -262,7 +262,11 @@ export function Aprovacoes() {
         )}
 
         {podeAssinar ? (
-          <Botao className="mt-3" href={`/e/${slug}/aprovacoes?estado=vivo`}>
+          <Botao
+            className="mt-3"
+            href={`/e/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`}
+          >
+
             Assinar e executar
           </Botao>
         ) : (
