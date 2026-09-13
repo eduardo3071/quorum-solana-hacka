@@ -59,6 +59,8 @@ export function Aprovacoes() {
   const { slug = '' } = useParams();
   const [busca] = useSearchParams();
   const aoVivo = busca.get('estado') === 'vivo';
+  const propostaPedida = busca.get('proposta');
+
   const sessao = useSessao();
   const eu = sessao.membro;
 
@@ -78,11 +80,14 @@ export function Aprovacoes() {
       abertas: pendentes(lista),
       valorRetido: retido(lista),
       diretoria,
-      alvo: propostaRetida(lista, eu?.id ?? null),
+      alvo:
+        lista.find((p) => p.id === propostaPedida && p.status === 'pendente') ??
+        propostaRetida(lista, eu?.id ?? null),
       soma: totais(linhas),
       quantos,
     };
-  }, [slug, eu?.id]);
+  }, [slug, eu?.id, propostaPedida]);
+
 
   // Em tempo real: assinatura feita no aparelho de outra pessoa, proposta nova
   // ou promoção na diretoria aparecem aqui sem ninguém recarregar a página.
@@ -196,14 +201,15 @@ export function Aprovacoes() {
     );
   }
 
-  // A que precisa de ação vem expandida; as outras, colapsadas em uma linha.
-  const emFoco = abertas[0];
-  const outras = abertas.slice(1);
+  // A que precisa da MINHA ação vem expandida; as outras, colapsadas.
+  const emFoco = alvo ?? abertas[0];
+  const outras = abertas.filter((p) => p.id !== emFoco.id);
   const autor = diretoria.find((m) => m.id === emFoco.criado_por);
   const feitas = emFoco.assinaturas.length;
   const jaAssinei = eu ? emFoco.assinaturas.some((a) => a.membro_id === eu.id) : false;
   const podeAssinar = eu ? eu.papel !== 'socio' && !jaAssinei : false;
   const faltam = QUORUM.de - feitas;
+
 
   return (
     <Moldura
@@ -256,7 +262,11 @@ export function Aprovacoes() {
         )}
 
         {podeAssinar ? (
-          <Botao className="mt-3" href={`/e/${slug}/aprovacoes?estado=vivo`}>
+          <Botao
+            className="mt-3"
+            href={`/e/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`}
+          >
+
             Assinar e executar
           </Botao>
         ) : (
@@ -275,7 +285,7 @@ export function Aprovacoes() {
                           valorCentavos: emFoco.valor_centavos,
                           rubrica: emFoco.rubrica,
                         },
-                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo`,
+                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`,
                       )
                     : undefined
                 }
