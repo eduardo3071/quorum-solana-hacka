@@ -121,7 +121,7 @@ export function useIdioma() {
   return i;
 }
 
-/** Alternador PT/EN, fixo no canto da tela, em todas as páginas. */
+/** Alternador PT/EN, dentro da coluna do app (canto direito), em todas as páginas. */
 export function AlternadorIdioma() {
   const idioma = useIdioma();
   useEffect(() => {
