@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { faltaConfigurar } from '@/lib/supabase';
 import { ProvedorDeSessao } from '@/lib/sessao';
+import { AlternadorIdioma } from '@/lib/idioma';
 import { FaltaConfigurar } from '@/telas/FaltaConfigurar';
 import { Privada } from '@/telas/Privada';
 import { Aprovacoes } from '@/telas/Aprovacoes';
@@ -58,6 +59,7 @@ if (faltaConfigurar) {
   <StrictMode>
     <BrowserRouter>
       <ProvedorDeSessao>
+        <AlternadorIdioma />
         <Routes>
           <Route path="/" element={<Capa />} />
           <Route path="/entrar" element={<Entrar />} />
