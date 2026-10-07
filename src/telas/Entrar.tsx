@@ -68,6 +68,8 @@ const LATERAL = 'px-[25px]';
 export function Entrar() {
   const [busca] = useSearchParams();
   const sessao = useSessao();
+  const { idioma } = useIdioma();
+  const arte = ARTE[idioma];
 
   const erro = busca.get('erro') ?? undefined;
   const proxima = busca.get('proxima') ?? undefined;
