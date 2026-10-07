@@ -466,6 +466,8 @@ export const PADROES: [RegExp, (...m: string[]) => string][] = [
   [/^(Dom|Seg|Ter|Qua|Qui|Sex|Sáb), (\d{1,2}) (jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez) · (\d{1,2})h(\d{2})?$/i, (_, w, d, m, h, mi) => `${SEMANA[w.toLowerCase()]}, ${MESES[m.toLowerCase()]} ${d} · ${fmtHora(+h, mi)}`],
   [/^(\d+)º lote · (.+)$/, (_, n, t) => `${ordinal(+n)} batch · ${t.replace(/^não sócios?$/i, 'non-member').replace(/^sócios?$/i, 'member').replace(/^geral$/i, 'general').replace(/^estudante$/i, 'student')}`],
   [/^(\d+)º lote$/, (_, n) => `${ordinal(+n)} batch`],
+  [/^Entrada recebida na chave da entidade$/, () => 'Payment received on the organization key'],
+  [/^Entrada recebida de (.+)$/, (_, n) => `Payment received from ${n}`],
   [/^Lote (.+)$/, (_, n) => `Batch ${n}`],
   [/^(\d{1,2}) (jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\.?$/i, (_, d, m) => `${MESES[m.toLowerCase()]} ${d}`],
 ];
