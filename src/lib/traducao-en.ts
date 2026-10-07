@@ -363,7 +363,6 @@ export const FRASES: Record<string, string> = {
   'Onde': 'Where',
   'Lotes': 'Batches',
   'apresenta': 'presents',
-  'Lotes': 'Batches',
   'Acompanhe a entidade para saber do próximo lote.': 'Follow the organization to hear about the next batch.',
   'O dinheiro dos ingressos cai direto no cofre da entidade, e cada compra vira uma entrada no livro-caixa sem ninguém digitar nada.':
     "Ticket money goes straight into the organization's vault, and each purchase becomes ledger income with nobody typing anything.",
