@@ -299,6 +299,8 @@ export const FRASES: Record<string, string> = {
   'Papel': 'Role',
   'Diretoria': 'Board',
 
+  'Todas': 'All',
+  'Todos': 'All',
   // ── Livro
   'Aberto a qualquer associado, sem login': 'Open to any member, no login',
   'Buscar lançamento': 'Search entry',
