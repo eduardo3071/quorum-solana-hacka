@@ -83,7 +83,7 @@ export function Propor() {
       >
         <Vazio
           titulo="Só a diretoria propõe saída"
-          acao={{ texto: 'Ver o livro-caixa', href: `/e/${slug}/livro` }}
+          acao={{ texto: 'Ver o livro-caixa', href: `/${slug}/livro-caixa` }}
         >
           Propor uma saída é da presidência, da tesouraria e do conselho fiscal.
           O livro-caixa continua aberto a você, como a qualquer associado.
@@ -103,7 +103,7 @@ export function Propor() {
       >
         <Vazio
           titulo="Falta um segundo assinante"
-          acao={{ texto: 'Abrir sócios ativos', href: `/e/${slug}/socios` }}
+          acao={{ texto: 'Abrir sócios ativos', href: `/${slug}/socios` }}
         >
           Uma saída precisa de {QUORUM.de} assinaturas de pessoas da diretoria.
           Promova outra pessoa a presidência, tesouraria ou conselho fiscal em
@@ -176,7 +176,7 @@ function Formulario({
       setErro('Não conseguimos registrar a proposta agora.');
       return;
     }
-    navegar(`/e/${slug}/aprovacoes`);
+    navegar(`/${slug}/aprovacoes`);
   }
 
   return (

@@ -71,10 +71,10 @@ status nascem no servidor, depois que a rede confirmou. O front pode inserir
 `criado_por` / `membro_id` seja o registro do próprio usuário e que o papel não
 seja `socio`. Sócio não assina.
 
-**Dados que já estão lá:** A.A.A. Engenharia (`aaaeng`), 62 associados sendo 3
+**Dados que já estão lá:** A.A.A. Engenharia (`atletica-engenharia`), 62 associados sendo 3
 signatários, 7 lançamentos fechando em R$ 43.180,25 de saldo, 3 propostas
 retidas somando R$ 12.400,00 — uma delas com 1 de 2 assinaturas —, o Baile de
-Aniversário 32 anos (`aaaeng-baile32`) com 3 lotes e 8 ingressos vendidos.
+Aniversário 32 anos (`atletica-engenharia-baile32`) com 3 lotes e 8 ingressos vendidos.
 
 ## As telas
 
@@ -82,17 +82,17 @@ Aniversário 32 anos (`aaaeng-baile32`) com 3 lotes e 8 ingressos vendidos.
 | --- | --- | --- |
 | Capa | `/` | pública |
 | Entrar | `/entrar` | pública |
-| Cofre | `/e/:slug` | privada, com abas |
-| Aprovações | `/e/:slug/aprovacoes` | privada, com abas |
-| Propor saída | `/e/:slug/propor` | privada, só diretoria |
-| Festas | `/e/:slug/festas` | privada, com abas |
-| Sócios | `/e/:slug/socios` | privada, com abas |
-| Livro-caixa | `/e/:slug/livro` | **pública, sem login, sem abas** |
-| Página da festa | `/f/:slug` | pública, sem abas |
+| Cofre | `/:slug` | privada, com abas |
+| Aprovações | `/:slug/aprovacoes` | privada, com abas |
+| Propor saída | `/:slug/propor` | privada, só diretoria |
+| Festas | `/:slug/festas` | privada, com abas |
+| Sócios | `/:slug/socios` | privada, com abas |
+| Livro-caixa | `/:slug/livro-caixa` | **pública, sem login, sem abas** |
+| Página da festa | `/festa/:slug` | pública, sem abas |
 | Perfil | `/perfil` | privada, com abas |
 
 Barra de abas: **Cofre · Aprovar · (botão flutuante +) · Festas · Perfil**. O
-botão central leva a `/e/:slug/propor`. O livro-caixa e a página da festa **não
+botão central leva a `/:slug/propor`. O livro-caixa e a página da festa **não
 têm abas** — circulam em grupo de WhatsApp, para gente que não tem conta.
 
 ### Capa

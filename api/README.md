@@ -93,16 +93,16 @@ diz o que fazer, em vez de virar 429 intermitente.
 | Rota | Prancha | Acesso |
 | --- | --- | --- |
 | `/estilo` | folha de estilo | conferência |
-| `/e/[slug]` | 5a-cofre | privada, com abas |
-| `/e/[slug]/aprovacoes` | 5b-aprovações | privada, com abas |
-| `/e/[slug]/propor` | — | privada, só diretoria |
-| `/e/[slug]/festas` | — | privada, com abas |
-| `/e/[slug]/socios` | — | privada, com abas |
-| `/e/[slug]/livro` | 5c-livro-caixa | **pública, sem login** |
-| `/f/[slug]` | 5d-página da festa | pública |
+| `/[slug]` | 5a-cofre | privada, com abas |
+| `/[slug]/aprovacoes` | 5b-aprovações | privada, com abas |
+| `/[slug]/propor` | — | privada, só diretoria |
+| `/[slug]/festas` | — | privada, com abas |
+| `/[slug]/socios` | — | privada, com abas |
+| `/[slug]/livro-caixa` | 5c-livro-caixa | **pública, sem login** |
+| `/festa/[slug]` | 5d-página da festa | pública |
 | `/perfil` | 5e-perfil | privada, com abas |
 
-`?estado=vivo` em `/e/[slug]/aprovacoes` troca o painel pelo que fala com a
+`?estado=vivo` em `/[slug]/aprovacoes` troca o painel pelo que fala com a
 devnet de verdade.
 
 ## Scripts
@@ -123,7 +123,7 @@ então serve em CI:
 
 ```bash
 npm run dev &
-npm run conferir /e/aaaeng/livro
+npm run conferir /atletica-engenharia/livro-caixa
 ```
 
 ## Interface em outro domínio

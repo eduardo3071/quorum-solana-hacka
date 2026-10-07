@@ -193,7 +193,7 @@ export async function conciliar(referencia: string): Promise<SituacaoDaCompra> {
     comprovante: assinatura
       ? `https://explorer.solana.com/tx/${assinatura}?cluster=devnet`
       : '',
-    livro: `/e/${entidade.slug}/livro`,
+    livro: `/${entidade.slug}/livro-caixa`,
   });
 
   if (ingresso.status !== 'reservado') return pronto(ingresso.tx_signature);

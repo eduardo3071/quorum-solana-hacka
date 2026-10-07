@@ -34,14 +34,14 @@ const MEMBROS = {
     nome: 'Marina Salgado',
     papel: 'tesoureiro',
     entidade_id: 'ent-1',
-    entidades: { slug: 'aaaeng' },
+    entidades: { slug: 'atletica-engenharia' },
   },
   'token-socio': {
     id: 'm-9',
     nome: 'João Sócio',
     papel: 'socio',
     entidade_id: 'ent-1',
-    entidades: { slug: 'aaaeng' },
+    entidades: { slug: 'atletica-engenharia' },
   },
   'token-sem-entidade': null,
 };
@@ -279,7 +279,7 @@ const COM_USUARIO = [
      */
     nome: 'signatária no cofre dela → passa',
     cabecalhos: { authorization: 'Bearer token-signataria' },
-    corpo: { entidadeSlug: 'aaaeng' },
+    corpo: { entidadeSlug: 'atletica-engenharia' },
     recusar: [401, 403],
   },
 ];

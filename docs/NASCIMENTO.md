@@ -110,7 +110,7 @@ hoje inteira e dizer o resto com honestidade.
       produto.
 - [x] `Entrar.tsx` passa a ler `?aba=criar` para já abrir na aba certa. Sem
       isso o link entrega a pessoa na aba de login, que é de onde ela veio.
-- [x] Depois de criar, redirecionar para `/e/<slug>` em vez de voltar para a
+- [x] Depois de criar, redirecionar para `/<slug>` em vez de voltar para a
       capa. A entidade existe: mostre-a.
 
 Um quinto item apareceu ao implementar, e sem ele os outros quatro seriam um
@@ -184,7 +184,7 @@ saldo, e continua sem conseguir assinar nada.
 filtra, o pedido sai com o slug certo, a tela vira "Pedido enviado" e o estado
 **sobrevive ao recarregamento**, agora vindo do servidor; do lado da diretoria,
 o pedido aparece em âmbar com aprovar e recusar, e some ao decidir. `conferir`
-em `/` e `/e/aaaeng/socios` sem violação; `acesso` passa nos sete crachás.
+em `/` e `/atletica-engenharia/socios` sem violação; `acesso` passa nos sete crachás.
 
 ---
 
@@ -193,7 +193,7 @@ em `/` e `/e/aaaeng/socios` sem violação; `acesso` passa nos sete crachás.
 Hoje o `socio` entra e vê a tela da diretoria com botões que não pode usar. São
 sessenta e dois deles por entidade, e nenhuma tela é deles.
 
-- [ ] `/e/:slug` do associado é outra tela: mensalidade em dia ou não, próximo
+- [ ] `/:slug` do associado é outra tela: mensalidade em dia ou não, próximo
       evento, ingressos comprados, saldo da entidade, livro-caixa.
 - [ ] Sem "Propor saída", sem "Aprovar", sem "Sócios". A barra de abas do
       associado tem menos abas, e isso é a interface dizendo a verdade.
@@ -210,7 +210,7 @@ outra pessoa.
 **O problema:** o botão de criar cofre está escondido atrás de uma proposta que
 ainda não existe.
 
-- [ ] Mover a criação do cofre para a tela `/e/:slug` (Cofre), como estado
+- [ ] Mover a criação do cofre para a tela `/:slug` (Cofre), como estado
       vazio próprio: "Esta entidade ainda não tem cofre" + botão.
 - [ ] `POST /api/cofre` já aceita `entidadeSlug` e já grava em
       `entidades.multisig_pda`/`vault_pda`. **Nenhuma mudança de servidor.**
@@ -270,11 +270,11 @@ Sem isto, a metade Solana Pay do produto só existe na entidade semeada.
 
 - [ ] `POST /api/evento` — nome, data, local, capacidade, rubrica.
 - [ ] `POST /api/lote` — nome, preço em **centavos**, total.
-- [ ] Tela de criar evento a partir de `/e/:slug/festas`, que hoje só lista.
+- [ ] Tela de criar evento a partir de `/:slug/festas`, que hoje só lista.
 - [ ] O slug do evento segue a mesma regra do slug da entidade
-      (`slugLivre`, em `api/app/api/entidade/route.ts`).
+      (`slugLivre`, em `api/app/api/route.ts`).
 
-**Como conferir:** crie um evento com um lote, abra `/f/<slug-do-evento>`,
+**Como conferir:** crie um evento com um lote, abra `/festa/<slug-do-evento>`,
 gere o QR e pague pela carteira de demonstração. A entrada aparece no seu
 livro-caixa, não no da A.A.A. Engenharia.
 

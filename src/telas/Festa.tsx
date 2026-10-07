@@ -113,7 +113,7 @@ export function Festa() {
           vendidos: l.vendidos,
         }))}
         entidadeSlug={entidade?.slug ?? ''}
-        livroHref={`/e/${entidade?.slug}/livro`}
+        livroHref={`/${entidade?.slug}/livro-caixa`}
       />
     </Tela>
   );

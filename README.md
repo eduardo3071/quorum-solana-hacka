@@ -97,13 +97,13 @@ O endereço da interface vai em dois lugares, esses sim obrigatórios:
 | --- | --- |
 | `/` | pública — capa, com o formulário de entrada |
 | `/entrar` | pública |
-| `/e/:slug` | privada · cofre |
-| `/e/:slug/aprovacoes` | privada · a tela do vídeo |
-| `/e/:slug/aprovacoes?estado=vivo` | privada · o cofre na rede, de verdade |
-| `/e/:slug/propor` | privada · só diretoria |
-| `/e/:slug/festas` · `/socios` | privada |
-| `/e/:slug/livro` | **pública, sem login** |
-| `/f/:slug` | **pública, sem login** |
+| `/:slug` | privada · cofre |
+| `/:slug/aprovacoes` | privada · a tela do vídeo |
+| `/:slug/aprovacoes?estado=vivo` | privada · o cofre na rede, de verdade |
+| `/:slug/propor` | privada · só diretoria |
+| `/:slug/festas` · `/socios` | privada |
+| `/:slug/livro-caixa` | **pública, sem login** |
+| `/festa/:slug` | **pública, sem login** |
 | `/perfil` | privada |
 
 O livro-caixa e a página da festa abrem sem conta nenhuma. É a tese do produto —
@@ -158,7 +158,7 @@ Cada parte tem os seus, e os dois saem com código 1 se algo falhar:
 ```bash
 # interface
 npm run build && npx vite preview --port 8080 &
-npm run conferir /e/aaaeng/livro    # layout e acessibilidade
+npm run conferir /atletica-engenharia/livro-caixa    # layout e acessibilidade
 npm run nada-mockado                # link morto, controle decorativo, dado falso
 
 # API

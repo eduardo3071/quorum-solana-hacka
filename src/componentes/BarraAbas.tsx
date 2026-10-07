@@ -15,7 +15,7 @@ export type AbaAtiva = 'cofre' | 'aprovar' | 'festas' | 'perfil' | null;
  * `position: absolute` — a única exceção ao absoluto neste projeto é o selo de
  * contagem, que é decoração colada no ícone.
  *
- * Não aparece em `/e/[slug]/livro` nem em `/f/[slug]`: são páginas públicas.
+ * Não aparece em `/[slug]/livro-caixa` nem em `/festa/[slug]`: são páginas públicas.
  */
 export function BarraAbas({
   ativa,
@@ -35,13 +35,13 @@ export function BarraAbas({
       aria-label="Navegação principal"
     >
       <Aba
-        href={`/e/${slug}`}
+        href={`/${slug}`}
         icone={Wallet}
         rotulo="Cofre"
         ativa={ativa === 'cofre'}
       />
       <Aba
-        href={`/e/${slug}/aprovacoes`}
+        href={`/${slug}/aprovacoes`}
         icone={Check}
         rotulo="Aprovar"
         ativa={ativa === 'aprovar'}
@@ -50,7 +50,7 @@ export function BarraAbas({
 
       <div className="flex justify-center">
         <Link
-          to={`/e/${slug}/propor`}
+          to={`/${slug}/propor`}
           aria-label="Propor saída"
           className="-mt-[30px] flex size-[58px] items-center justify-center rounded-full border-4 border-tabbar bg-blue shadow-[0_8px_22px_rgba(31,165,255,.4)]"
         >
@@ -59,13 +59,13 @@ export function BarraAbas({
       </div>
 
       {/*
-        `festaHref` e não `/f/${slug}`: aquele endereço montava a página de um
+        `festaHref` e não `/festa/${slug}`: aquele endereço montava a página de um
         EVENTO com o slug da ENTIDADE, e caía sempre em "evento não
         encontrado". Uma entidade tem várias festas; o destino da aba é a
         lista, e quem sabe qual é a próxima passa o atalho direto.
       */}
       <Aba
-        href={festaHref ?? `/e/${slug}/festas`}
+        href={festaHref ?? `/${slug}/festas`}
         icone={Calendar}
         rotulo="Festas"
         ativa={ativa === 'festas'}

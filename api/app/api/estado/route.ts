@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 /**
  * Situação do cofre e de uma proposta, lidas da rede.
  *
- *   GET /api/estado?entidade=aaaeng&proposta=<id>
+ *   GET /api/estado?entidade=atletica-engenharia&proposta=<id>
  *
  * Aberto de propósito, ao contrário de assinar, executar, propor e criar. Tudo
  * que ele devolve — saldo do cofre, quantas assinaturas já entraram — está na

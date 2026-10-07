@@ -125,7 +125,7 @@ export function Cofre() {
         */}
         {!entidade.multisig_pda && (
           <a
-            href={`/e/${slug}/aprovacoes?estado=vivo`}
+            href={`/${slug}/aprovacoes?estado=vivo`}
             className="flex min-h-[52px] items-center justify-between gap-3 rounded-card border border-blue/30 bg-blue-tint px-3.5 py-3"
           >
             <span className="t-desc text-pretty text-ink">
@@ -141,7 +141,7 @@ export function Cofre() {
         */}
         {entidade.multisig_pda && (
           <a
-            href={`/e/${slug}/receber`}
+            href={`/${slug}/receber`}
             className="flex min-h-[52px] items-center justify-between gap-3 rounded-card border border-green/30 bg-green-tint px-3.5 py-3"
           >
             <span className="t-desc text-pretty text-ink">
@@ -153,7 +153,7 @@ export function Cofre() {
 
         {esperando > 0 && (
           <a
-            href={`/e/${slug}/socios`}
+            href={`/${slug}/socios`}
             className="flex min-h-[52px] items-center justify-between gap-3 rounded-card border border-amber/30 bg-amber-tint px-3.5 py-3"
           >
             <span className="t-desc text-pretty text-ink">
@@ -204,32 +204,32 @@ export function Cofre() {
               icone: Plus,
               rotulo: ['Propor', 'saída'],
               acento: 'blue',
-              href: `/e/${slug}/propor`,
+              href: `/${slug}/propor`,
             },
             {
               icone: CalendarDays,
               rotulo: ['Ver', 'festas'],
               acento: 'green',
-              href: `/e/${slug}/festas`,
+              href: `/${slug}/festas`,
             },
             {
               icone: BookOpen,
               rotulo: ['Livro-', 'caixa'],
               acento: 'amber',
-              href: `/e/${slug}/livro`,
+              href: `/${slug}/livro-caixa`,
             },
             {
               icone: Users,
               rotulo: ['Sócios', 'ativos'],
               acento: 'purple',
-              href: `/e/${slug}/socios`,
+              href: `/${slug}/socios`,
             },
           ]}
         />
 
         <div className="mt-0.5 flex items-baseline justify-between">
           <h2 className="t-secao text-ink">Movimentações</h2>
-          <a href={`/e/${slug}/livro`} className="t-chip whitespace-nowrap text-blue">
+          <a href={`/${slug}/livro-caixa`} className="t-chip whitespace-nowrap text-blue">
             Ver todas ›
           </a>
         </div>

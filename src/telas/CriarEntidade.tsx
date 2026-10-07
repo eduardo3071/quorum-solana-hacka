@@ -47,7 +47,7 @@ export function CriarEntidade() {
 
   // Quem já tem entidade não funda outra por engano — vai para a que tem.
   if (sessao.entidadeSlug) {
-    return <Navigate to={`/e/${sessao.entidadeSlug}`} replace />;
+    return <Navigate to={`/${sessao.entidadeSlug}`} replace />;
   }
 
   return (

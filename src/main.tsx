@@ -77,17 +77,17 @@ if (faltaConfigurar) {
               sozinho e a tela só espera. */}
           <Route path="/auth/confirmar" element={<Navigate to="/" replace />} />
 
-          <Route path="/e/:slug/livro" element={<Livro />} />
-          <Route path="/f/:slug" element={<Festa />} />
+          <Route path="/:slug/livro-caixa" element={<Livro />} />
+          <Route path="/festa/:slug" element={<Festa />} />
 
           <Route element={<Privada />}>
-            <Route path="/e/:slug" element={<Cofre />} />
-            <Route path="/e/:slug/aprovacoes" element={<Aprovacoes />} />
-            <Route path="/e/:slug/propor" element={<Propor />} />
-            <Route path="/e/:slug/receber" element={<Receber />} />
-            <Route path="/e/:slug/festas" element={<Festas />} />
-            <Route path="/e/:slug/festas/nova" element={<NovaFesta />} />
-            <Route path="/e/:slug/socios" element={<Socios />} />
+            <Route path="/:slug" element={<Cofre />} />
+            <Route path="/:slug/aprovacoes" element={<Aprovacoes />} />
+            <Route path="/:slug/propor" element={<Propor />} />
+            <Route path="/:slug/receber" element={<Receber />} />
+            <Route path="/:slug/festas" element={<Festas />} />
+            <Route path="/:slug/festas/nova" element={<NovaFesta />} />
+            <Route path="/:slug/socios" element={<Socios />} />
             <Route path="/perfil" element={<Perfil />} />
           </Route>
 

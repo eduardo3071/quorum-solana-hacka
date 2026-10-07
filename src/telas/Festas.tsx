@@ -78,7 +78,7 @@ export function Festas() {
       />
 
       <CorpoTela respiroAbas className="pt-3">
-        <Botao href={`/e/${slug}/festas/nova`}>Criar nova festa</Botao>
+        <Botao href={`/${slug}/festas/nova`}>Criar nova festa</Botao>
 
         {eventos.length === 0 ? (
           <Vazio titulo="Nenhuma festa na agenda">
@@ -93,7 +93,7 @@ export function Festas() {
               return (
                 <a
                   key={e.id}
-                  href={`/f/${e.slug}`}
+                  href={`/festa/${e.slug}`}
                   className="flex min-h-[68px] items-center gap-[13px] rounded-card border border-line bg-surface px-3.5 py-3"
                 >
                   <TileIcone icone={CalendarDays} acento="blue" tamanho="lg" />
@@ -123,7 +123,7 @@ export function Festas() {
         ativa="festas"
         slug={slug}
         pendencias={emAberto.length}
-        festaHref={`/e/${slug}/festas`}
+        festaHref={`/${slug}/festas`}
       />
     </Tela>
   );

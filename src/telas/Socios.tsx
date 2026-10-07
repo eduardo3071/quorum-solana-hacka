@@ -127,7 +127,7 @@ export function Socios() {
         ativa="cofre"
         slug={slug}
         pendencias={emAberto.length}
-        festaHref={festas[0] ? `/f/${festas[0].slug}` : `/e/${slug}/festas`}
+        festaHref={festas[0] ? `/festa/${festas[0].slug}` : `/${slug}/festas`}
       />
     </Tela>
   );

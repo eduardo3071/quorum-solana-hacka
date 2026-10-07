@@ -130,7 +130,7 @@ export function Aprovacoes() {
       >
         <Vazio
           titulo="A diretoria precisa de duas pessoas"
-          acao={{ texto: 'Abrir sócios ativos', href: `/e/${slug}/socios` }}
+          acao={{ texto: 'Abrir sócios ativos', href: `/${slug}/socios` }}
         >
           Hoje só {diretoria[0]?.nome ?? 'uma pessoa'} pode assinar. Promova
           outra pessoa a presidência, tesouraria ou conselho fiscal em Sócios
@@ -172,7 +172,7 @@ export function Aprovacoes() {
         ) : (
           <Vazio
             titulo="Nenhuma proposta para levar ao cofre"
-            acao={{ texto: 'Propor uma saída', href: `/e/${slug}/propor` }}
+            acao={{ texto: 'Propor uma saída', href: `/${slug}/propor` }}
           >
             Cadastre uma saída em propostas para acompanhar a execução com as
             duas assinaturas.
@@ -192,7 +192,7 @@ export function Aprovacoes() {
       >
         <Vazio
           titulo="Nada aguardando assinatura"
-          acao={{ texto: 'Propor uma saída', href: `/e/${slug}/propor` }}
+          acao={{ texto: 'Propor uma saída', href: `/${slug}/propor` }}
         >
           Quando alguém da diretoria propuser uma saída, ela aparece aqui e fica
           retida até juntar {QUORUM.de} assinaturas.
@@ -264,7 +264,7 @@ export function Aprovacoes() {
         {podeAssinar ? (
           <Botao
             className="mt-3"
-            href={`/e/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`}
+            href={`/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`}
           >
 
             Assinar e executar
@@ -285,7 +285,7 @@ export function Aprovacoes() {
                           valorCentavos: emFoco.valor_centavos,
                           rubrica: emFoco.rubrica,
                         },
-                        `${window.location.origin}/e/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`,
+                        `${window.location.origin}/${slug}/aprovacoes?estado=vivo&proposta=${emFoco.id}`,
                       )
                     : undefined
                 }

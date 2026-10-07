@@ -29,13 +29,13 @@ const EXECUTAVEL =
 const ROTAS = (process.env.ROTAS ?? [
   '/',
   '/entrar',
-  '/e/aaaeng',
-  '/e/aaaeng/aprovacoes',
-  '/e/aaaeng/livro',
-  '/e/aaaeng/festas',
-  '/e/aaaeng/socios',
-  '/e/aaaeng/propor',
-  '/f/aaaeng-baile32',
+  '/atletica-engenharia',
+  '/atletica-engenharia/aprovacoes',
+  '/atletica-engenharia/livro-caixa',
+  '/atletica-engenharia/festas',
+  '/atletica-engenharia/socios',
+  '/atletica-engenharia/propor',
+  '/festa/atletica-engenharia-baile32',
   '/perfil',
 ].join(',')).split(',');
 

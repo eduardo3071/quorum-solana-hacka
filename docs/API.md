@@ -193,7 +193,7 @@ Pagou:
   "lote": "2º lote · sócio",
   "evento": "Baile de Aniversário 32 anos",
   "comprovante": "https://explorer.solana.com/tx/…?cluster=devnet",
-  "livro": "/e/aaaeng/livro"
+  "livro": "/atletica-engenharia/livro-caixa"
 }
 ```
 

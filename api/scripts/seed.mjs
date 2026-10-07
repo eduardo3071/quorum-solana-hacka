@@ -52,7 +52,7 @@ const db = createClient(URL, CHAVE, { auth: { persistSession: false } });
 
 const ENTIDADE = {
   nome: 'A.A.A. Engenharia',
-  slug: 'aaaeng',
+  slug: 'atletica-engenharia',
   tipo: 'atletica',
   universidade: 'UFSC',
   publico: true,
@@ -119,7 +119,7 @@ const socios = Array.from({ length: 59 }, (_, i) => ({
 
 const EVENTO = {
   nome: 'Baile de Aniversário 32 anos',
-  slug: 'aaaeng-baile32',
+  slug: 'atletica-engenharia-baile32',
   data: '2026-09-26T23:00:00-03:00',
   local: 'Galpão Beira-Mar',
   capacidade: 1000,
@@ -333,11 +333,11 @@ async function principal() {
   );
 
   console.log('');
-  console.log(`✓ ${ENTIDADE.nome} · /e/${ENTIDADE.slug}`);
+  console.log(`✓ ${ENTIDADE.nome} · /${ENTIDADE.slug}`);
   console.log(`  ${DIRETORIA.length} signatários · ${socios.length + DIRETORIA.length} associados`);
   console.log(`  ${LANCAMENTOS.length} lançamentos · saldo ${(saldo / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`);
   console.log(`  ${PROPOSTAS.length} propostas retidas · ${(retido / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`);
-  console.log(`  ${EVENTO.nome} · /f/${EVENTO.slug} · ${LOTES.length} lotes · ${INGRESSOS_VENDIDOS} ingressos`);
+  console.log(`  ${EVENTO.nome} · /festa/${EVENTO.slug} · ${LOTES.length} lotes · ${INGRESSOS_VENDIDOS} ingressos`);
   console.log('');
   console.log('Entre com um destes e-mails, que o link por e-mail casa com a diretoria:');
   for (const m of DIRETORIA) console.log(`  ${m.email.padEnd(34)} ${m.nome}`);

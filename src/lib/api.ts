@@ -129,7 +129,15 @@ export const criarEntidade = (dados: {
   tipo: TipoEntidade;
   universidade: string;
   email: string;
+  /** O endereço escolhido. Sem ele, o servidor tira do nome. */
+  slug?: string;
 }) => chamar<{ criada: true; slug: string; nome: string }>('/api/entidade', dados);
+
+/** Este endereço (`/atletica-engenharia`) está livre e é válido? */
+export const verificarEndereco = (slug: string) =>
+  chamar<{ slug: string; disponivel: boolean; motivo: string | null }>(
+    `/api/entidade/disponivel?slug=${encodeURIComponent(slug)}`,
+  );
 
 /**
  * Casa a sessão com a linha da diretoria, pelo e-mail.

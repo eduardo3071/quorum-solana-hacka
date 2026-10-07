@@ -449,8 +449,8 @@ function Moldura({
             este produto não pode contar.
           */}
           Livro-caixa da entidade aberto em{' '}
-          <a href={`/e/${entidadeSlug}/livro`} className="num text-blue">
-            /e/{entidadeSlug}/livro
+          <a href={`/${entidadeSlug}/livro-caixa`} className="num text-blue">
+            /{entidadeSlug}/livro-caixa
           </a>
         </p>
       </div>

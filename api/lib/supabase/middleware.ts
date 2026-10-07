@@ -32,10 +32,10 @@ const ROTAS_PUBLICAS = [
 
 function ehPublica(pathname: string): boolean {
   if (ROTAS_PUBLICAS.includes(pathname)) return true;
-  // /e/[slug]/livro — livro-caixa público. As demais rotas de /e/ são privadas.
-  if (/^\/e\/[^/]+\/livro\/?$/.test(pathname)) return true;
-  // /f/[slug] — página da festa.
-  if (/^\/f\/[^/]+\/?$/.test(pathname)) return true;
+  // /[slug]/livro-caixa — livro-caixa público. As demais rotas de uma entidade são privadas.
+  if (/^\/[^/]+\/livro-caixa\/?$/.test(pathname)) return true;
+  // /festa/[slug] — página da festa.
+  if (/^\/festa\/[^/]+\/?$/.test(pathname)) return true;
   return false;
 }
 

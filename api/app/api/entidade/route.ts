@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { nomeDoEmail } from '@/lib/nomes';
+import { paraSlug, problemaDoSlug, SLUGS_RESERVADOS } from '@/lib/slug';
 import { criarClienteServiceRole } from '@/lib/supabase/server';
 
 import { erro } from '../_resposta';
@@ -44,6 +45,8 @@ export async function POST(request: Request) {
   const universidade = texto(corpo.universidade);
   const email = texto(corpo.email).toLowerCase();
   const tipo = texto(corpo.tipo) as Tipo;
+  // Opcional: sem ele, o endereço sai do nome. Com ele, é a escolha de quem cria.
+  const slugEscolhido = texto(corpo.slug) ? paraSlug(texto(corpo.slug)) : null;
 
   if (nome.length < 2 || nome.length > 80) {
     return erro('O nome da entidade precisa ter entre 2 e 80 caracteres.', null, 400);
@@ -56,6 +59,10 @@ export async function POST(request: Request) {
   }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return erro('Confira o e-mail — parece incompleto.', null, 400);
+  }
+  if (slugEscolhido) {
+    const problema = problemaDoSlug(slugEscolhido);
+    if (problema) return erro(`Endereço inválido. ${problema}`, null, 400);
   }
 
   try {
@@ -95,7 +102,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const slug = await slugLivre(supabase, nome);
+    let slug: string;
+    if (slugEscolhido) {
+      // Escolhido por quem cria: se está ocupado, a pessoa precisa saber, em
+      // vez de receber um endereço diferente do que digitou.
+      const { data: ocupado } = await supabase
+        .from('entidades')
+        .select('id')
+        .eq('slug', slugEscolhido)
+        .maybeSingle();
+      if (ocupado) return erro('Este endereço já está em uso. Escolha outro.', null, 409);
+      slug = slugEscolhido;
+    } else {
+      slug = await slugLivre(supabase, nome);
+    }
 
     const { data: entidade, error: erroEntidade } = await supabase
       .from('entidades')
@@ -139,25 +159,6 @@ function texto(v: unknown): string {
 }
 
 /**
- * "A.A.A. Engenharia" → "aaa-engenharia".
- *
- * Tira acento pela decomposição Unicode: `normalize('NFD')` separa a letra do
- * sinal, e o intervalo `̀-ͯ` são exatamente os sinais. Sem isso
- * "Atlética" viraria "atltica".
- */
-function paraSlug(nome: string): string {
-  return (
-    nome
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 40) || 'entidade'
-  );
-}
-
-/**
  * O slug é único no banco. Em vez de deixar o insert estourar com erro de
  * constraint — que viraria "não conseguimos criar" sem motivo aparente —,
  * procura o primeiro livre.
@@ -166,7 +167,9 @@ async function slugLivre(
   supabase: ReturnType<typeof criarClienteServiceRole>,
   nome: string,
 ): Promise<string> {
-  const base = paraSlug(nome);
+  const bruto = paraSlug(nome) || 'entidade';
+  // O slug agora é o primeiro segmento da URL: não pode colidir com uma tela.
+  const base = SLUGS_RESERVADOS.has(bruto) ? `${bruto}-entidade` : bruto;
 
   for (let n = 0; n < 50; n++) {
     const tentativa = n === 0 ? base : `${base}-${n + 1}`;

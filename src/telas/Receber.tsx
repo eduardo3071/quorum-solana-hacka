@@ -61,7 +61,7 @@ export function Receber() {
       <Moldura slug={slug}>
         <Vazio
           titulo="O cofre ainda não existe"
-          acao={{ texto: 'Criar o cofre', href: `/e/${slug}/aprovacoes?estado=vivo` }}
+          acao={{ texto: 'Criar o cofre', href: `/${slug}/aprovacoes?estado=vivo` }}
         >
           A chave para receber é o caixa do cofre. Assim que o cofre existir, ela
           aparece aqui e a entidade já pode receber.

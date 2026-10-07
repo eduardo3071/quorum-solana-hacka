@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   criarEntidade,
   ErroDaApi,
+  verificarEndereco,
   vincularSessao,
   type TipoEntidade,
 } from '@/lib/api';
+import { paraSlug } from '@/lib/slug';
 import { useSessao } from '@/lib/sessao';
 
 
@@ -39,6 +41,49 @@ export function FormularioCriarEntidade() {
   const [tipo, setTipo] = useState<TipoEntidade>('atletica');
   const [universidade, setUniversidade] = useState('');
 
+  /*
+   * O endereço nasce do nome e acompanha o que se digita, até a pessoa mexer
+   * nele — a partir daí é dela, e mudar o nome não o sobrescreve.
+   */
+  const [endereco, setEndereco] = useState('');
+  const [enderecoEditado, setEnderecoEditado] = useState(false);
+  const [situacao, setSituacao] = useState<
+    | { estado: 'vazio' }
+    | { estado: 'verificando' }
+    | { estado: 'livre' }
+    | { estado: 'recusado'; motivo: string }
+  >({ estado: 'vazio' });
+
+  useEffect(() => {
+    if (!endereco) {
+      setSituacao({ estado: 'vazio' });
+      return;
+    }
+    setSituacao({ estado: 'verificando' });
+
+    // Espera a pessoa parar de digitar; sem isso cada letra seria uma consulta.
+    let atual = true;
+    const espera = setTimeout(async () => {
+      try {
+        const r = await verificarEndereco(endereco);
+        if (!atual) return;
+        setSituacao(
+          r.disponivel
+            ? { estado: 'livre' }
+            : { estado: 'recusado', motivo: r.motivo ?? 'Este endereço não está disponível.' },
+        );
+      } catch {
+        // Sem resposta, não bloqueia: o servidor confere de novo ao criar.
+        if (atual) setSituacao({ estado: 'vazio' });
+      }
+    }, 400);
+
+    return () => {
+      atual = false;
+      clearTimeout(espera);
+    };
+  }, [endereco]);
+
   const [erro, setErro] = useState<string | null>(null);
   const [pendente, setPendente] = useState(false);
 
@@ -54,11 +99,17 @@ export function FormularioCriarEntidade() {
       return;
     }
 
+    if (situacao.estado === 'recusado') {
+      setErro(situacao.motivo);
+      return;
+    }
+
     setPendente(true);
     setErro(null);
 
     try {
       const criada = await criarEntidade({
+        slug: endereco || undefined,
         nome: nome.trim(),
         tipo,
         universidade: universidade.trim(),
@@ -82,7 +133,7 @@ export function FormularioCriarEntidade() {
       } catch (falha) {
         console.error('[entidade] criada, vínculo adiado', falha);
       }
-      window.location.assign(`/e/${criada.slug}`);
+      window.location.assign(`/${criada.slug}`);
     } catch (e) {
       console.error('[entidade] falha ao criar', e);
       setErro(
@@ -103,11 +154,68 @@ export function FormularioCriarEntidade() {
           required
           maxLength={80}
           value={nome}
-          onChange={(e) => setNome(e.target.value)}
+          onChange={(e) => {
+            setNome(e.target.value);
+            if (!enderecoEditado) setEndereco(paraSlug(e.target.value));
+          }}
           placeholder="A.A.A. Engenharia"
           className={ESTILO_CAMPO}
         />
       </Campo>
+
+      <div className="min-w-0">
+        <label htmlFor="endereco" className="t-item-sm mb-2 block text-ink">
+          Endereço da entidade
+        </label>
+        <div className="flex min-h-[52px] items-center gap-1 rounded-[14px] border border-white/12 bg-[#0A1526] px-3.5 focus-within:border-blue">
+          <span aria-hidden className="num text-[13.5px] text-ink-3">
+            /
+          </span>
+          <input
+            id="endereco"
+            name="endereco"
+            maxLength={40}
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+            value={endereco}
+            onChange={(e) => {
+              setEnderecoEditado(true);
+              setEndereco(paraSlug(e.target.value));
+            }}
+            placeholder="atletica-engenharia"
+            aria-describedby="endereco-ajuda"
+            className="num min-h-[50px] min-w-0 flex-1 bg-transparent py-3 text-[13.5px] font-medium text-ink placeholder:text-ink-3 focus:outline-none"
+          />
+        </div>
+        <p
+          id="endereco-ajuda"
+          aria-live="polite"
+          className={`t-meta mt-2 text-pretty ${
+            situacao.estado === 'recusado'
+              ? 'text-red'
+              : situacao.estado === 'livre'
+                ? 'text-green'
+                : 'text-ink-3'
+          }`}
+        >
+          {situacao.estado === 'recusado'
+            ? situacao.motivo
+            : situacao.estado === 'livre'
+              ? 'Endereço disponível.'
+              : situacao.estado === 'verificando'
+                ? 'Conferindo o endereço…'
+                : 'É o endereço do seu livro-caixa público.'}
+        </p>
+        {endereco && (
+          <p className="t-meta mt-1 text-pretty break-words text-ink-3">
+            Seu livro-caixa:{' '}
+            <span className="num whitespace-nowrap">
+              /{endereco}/livro-caixa
+            </span>
+          </p>
+        )}
+      </div>
 
       {/*
         `radiogroup` e não quatro botões soltos: para quem usa leitor de tela é

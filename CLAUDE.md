@@ -85,10 +85,10 @@ No máximo duas cores semânticas visíveis por tela.
 
 | Rota | Prancha | Acesso |
 | --- | --- | --- |
-| `/e/[slug]` | 5a-cofre | privada, com abas |
-| `/e/[slug]/aprovacoes` | 5b-aprovacoes | privada, com abas |
-| `/e/[slug]/livro` | 5c-livro-caixa | **pública, sem login, sem abas** |
-| `/f/[slug]` | 5d-pagina-da-festa | pública, sem abas |
+| `/[slug]` | 5a-cofre | privada, com abas |
+| `/[slug]/aprovacoes` | 5b-aprovacoes | privada, com abas |
+| `/[slug]/livro-caixa` | 5c-livro-caixa | **pública, sem login, sem abas** |
+| `/festa/[slug]` | 5d-pagina-da-festa | pública, sem abas |
 | `/perfil` | 5e-perfil-carteirinha | privada, com abas |
 
 6a–6f são estados dessas telas, não rotas de navegação.

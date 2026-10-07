@@ -45,7 +45,7 @@ export function Capa() {
   }
 
   if (sessao.user && sessao.entidadeSlug) {
-    return <Navigate to={`/e/${sessao.entidadeSlug}`} replace />;
+    return <Navigate to={`/${sessao.entidadeSlug}`} replace />;
   }
 
   if (sessao.user) return <SemEntidade email={sessao.user.email ?? ''} />;
@@ -129,7 +129,7 @@ function Visitante() {
         */}
         {dados?.entidade && (
           <a
-            href={`/e/${dados.entidade.slug}/livro`}
+            href={`/${dados.entidade.slug}/livro-caixa`}
             className="flex min-h-[46px] items-center justify-center text-center text-[14px] font-bold text-blue"
           >
             Ver um livro-caixa aberto
@@ -235,7 +235,7 @@ function SemEntidade({ email }: { email: string }) {
           </section>
 
           <a
-            href={`/e/${espera.slug}/livro`}
+            href={`/${espera.slug}/livro-caixa`}
             className="flex min-h-[68px] items-center gap-[13px] rounded-card border border-line bg-surface px-3.5 py-3"
           >
             <TileIcone icone={BookOpen} acento="blue" tamanho="lg" />

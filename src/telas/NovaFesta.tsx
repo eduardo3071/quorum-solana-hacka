@@ -50,7 +50,7 @@ export function NovaFesta() {
       >
         <Vazio
           titulo="Só a diretoria cria festa"
-          acao={{ texto: 'Ver as festas', href: `/e/${slug}/festas` }}
+          acao={{ texto: 'Ver as festas', href: `/${slug}/festas` }}
         >
           Criar evento é da presidência, da tesouraria e do conselho fiscal. Os
           cartazes continuam abertos a você, como a qualquer associado.
@@ -109,7 +109,7 @@ function Formulario({ slug }: { slug: string }) {
         precoCentavos: centavos,
         total,
       });
-      navegar(`/f/${criada.slug}`);
+      navegar(`/festa/${criada.slug}`);
     } catch (falha) {
       setErro(
         falha instanceof Error

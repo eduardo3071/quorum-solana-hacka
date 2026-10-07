@@ -248,7 +248,7 @@ export function Livro() {
           filtrando ? (
             <Vazio
               titulo="Nenhum lançamento com esse filtro"
-              acao={{ texto: 'Limpar filtro', href: `/e/${slug}/livro` }}
+              acao={{ texto: 'Limpar filtro', href: `/${slug}/livro-caixa` }}
             >
               O livro-caixa tem lançamentos — nenhum deles casa com o que você
               procurou.
