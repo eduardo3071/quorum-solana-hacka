@@ -263,6 +263,7 @@ export const FRASES: Record<string, string> = {
   'Para quem': 'To whom',
   'Destinatário': 'Recipient',
   'Chave do destinatário': 'Recipient key',
+'Valor': 'Amount',
   'Valor da saída': 'Payout amount',
   'Rubrica': 'Category',
   'Diga para quem é a saída.': 'Say who the payout is for.',
