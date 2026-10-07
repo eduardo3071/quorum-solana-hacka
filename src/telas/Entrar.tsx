@@ -3,10 +3,23 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom';
 
 import entrarRodape from '@/assets/entrar-rodape.webp';
 import entrarTopo from '@/assets/entrar-topo.webp';
+import entrarRodapeEn from '@/assets/entrar-rodape-en.webp';
+import entrarTopoEn from '@/assets/entrar-topo-en.webp';
 import { BotaoGoogle } from '@/componentes/BotaoGoogle';
+import { useIdioma } from '@/lib/idioma';
 import { useSessao } from '@/lib/sessao';
 
 import { FormularioEntrada } from './FormularioEntrada';
+
+/**
+ * Cada idioma tem a sua prancha: em inglês, o topo diz "Student Treasury" e
+ * a promessa traduzida. Os recortes seguem a mesma costura da arte em
+ * português — topo até o início do cartão, pé depois do texto dos termos.
+ */
+const ARTE = {
+  pt: { topo: entrarTopo, alturaTopo: 642, rodape: entrarRodape, alturaRodape: 130 },
+  en: { topo: entrarTopoEn, alturaTopo: 683, rodape: entrarRodapeEn, alturaRodape: 94 },
+} as const;
 
 const AVISOS: Record<string, string> = {
   expirado: 'Sua sessão venceu. Entre de novo com e-mail e senha.',
@@ -50,6 +63,8 @@ const LATERAL = 'px-[25px]';
 export function Entrar() {
   const [busca] = useSearchParams();
   const sessao = useSessao();
+  const idioma = useIdioma();
+  const arte = ARTE[idioma];
 
   const erro = busca.get('erro') ?? undefined;
   const proxima = busca.get('proxima') ?? undefined;
@@ -68,10 +83,10 @@ export function Entrar() {
         não existiriam para quem usa.
       */}
       <img
-        src={entrarTopo}
+        src={arte.topo}
         alt=""
         width={780}
-        height={642}
+        height={arte.alturaTopo}
         className="block w-full select-none"
         draggable={false}
       />
@@ -129,10 +144,10 @@ export function Entrar() {
       </div>
 
       <img
-        src={entrarRodape}
+        src={arte.rodape}
         alt=""
         width={780}
-        height={130}
+        height={arte.alturaRodape}
         className="block w-full select-none"
         draggable={false}
       />
