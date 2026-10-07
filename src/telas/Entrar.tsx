@@ -18,7 +18,7 @@ import { FormularioEntrada } from './FormularioEntrada';
  */
 const ARTE = {
   pt: { topo: entrarTopo, alturaTopo: 642, rodape: entrarRodape, alturaRodape: 130 },
-  en: { topo: entrarTopoEn, alturaTopo: 683, rodape: entrarRodapeEn, alturaRodape: 99 },
+  en: { topo: entrarTopoEn, alturaTopo: 683, rodape: entrarRodapeEn, alturaRodape: 94 },
 } as const;
 
 const AVISOS: Record<string, string> = {
