@@ -3,10 +3,28 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom';
 
 import entrarRodape from '@/assets/entrar-rodape.webp';
 import entrarTopo from '@/assets/entrar-topo.webp';
+import entrarRodapeEn from '@/assets/entrar-rodape-en.png.asset.json';
+import entrarTopoEn from '@/assets/entrar-topo-en.png.asset.json';
 import { BotaoGoogle } from '@/componentes/BotaoGoogle';
+import { useIdioma } from '@/lib/idioma';
 import { useSessao } from '@/lib/sessao';
 
 import { FormularioEntrada } from './FormularioEntrada';
+
+/**
+ * Cada idioma tem a sua prancha: em inglês, o topo diz "Student Treasury" e
+ * a promessa traduzida. Os recortes seguem a mesma costura da arte em
+ * português — topo até o início do cartão, pé depois do texto dos termos.
+ */
+const ARTE = {
+  pt: { topo: entrarTopo, alturaTopo: 642, rodape: entrarRodape, alturaRodape: 130 },
+  en: {
+    topo: entrarTopoEn.url,
+    alturaTopo: Math.round((730 / 834) * 780),
+    rodape: entrarRodapeEn.url,
+    alturaRodape: Math.round((106 / 834) * 780),
+  },
+} as const;
 
 const AVISOS: Record<string, string> = {
   expirado: 'Sua sessão venceu. Entre de novo com e-mail e senha.',
