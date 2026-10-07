@@ -383,7 +383,6 @@ export const FRASES: Record<string, string> = {
     'As soon as the payment arrives, the ticket is issued and the income shows up by itself in the',
   '· o valor caiu no cofre da entidade e já está no livro-caixa.':
     "· the money landed in the organization's vault and is already in the ledger.",
-  'apresenta': 'presents',
   'A diretoria da': 'The board of',
 
   // ── Receber
