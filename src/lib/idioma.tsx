@@ -121,7 +121,7 @@ export function useIdioma() {
   return i;
 }
 
-/** Alternador PT/EN, fixo no canto da tela, em todas as páginas. */
+/** Alternador PT/EN, dentro da coluna do app (canto direito), em todas as páginas. */
 export function AlternadorIdioma() {
   const idioma = useIdioma();
   useEffect(() => {
@@ -134,21 +134,25 @@ export function AlternadorIdioma() {
       data-sem-traducao
       role="group"
       aria-label="Idioma / Language"
-      className="fixed top-3 right-3 z-50 flex overflow-hidden rounded-chip border border-line bg-surface-2 shadow-lg"
+      className="pointer-events-none fixed inset-x-0 top-3 z-50 flex justify-center"
     >
-      {(['pt', 'en'] as const).map((op) => (
-        <button
-          key={op}
-          type="button"
-          onClick={() => mudarIdioma(op)}
-          aria-pressed={idioma === op}
-          className={`t-chip px-2.5 py-1.5 ${
-            idioma === op ? 'bg-blue text-ground' : 'text-ink-2'
-          }`}
-        >
-          {op.toUpperCase()}
-        </button>
-      ))}
+      <div className="pointer-events-auto flex w-full max-w-[390px] justify-end pr-3">
+        <div className="flex overflow-hidden rounded-chip border border-line bg-surface-2 shadow-lg">
+          {(['pt', 'en'] as const).map((op) => (
+            <button
+              key={op}
+              type="button"
+              onClick={() => mudarIdioma(op)}
+              aria-pressed={idioma === op}
+              className={`t-chip px-2.5 py-1.5 ${
+                idioma === op ? 'bg-blue text-ground' : 'text-ink-2'
+              }`}
+            >
+              {op.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
