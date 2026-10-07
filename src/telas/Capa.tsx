@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import capa from '@/assets/capa.webp';
+import capaEn from '@/assets/capa-en.webp';
 import { BookOpen, Clock, Plus, Search, Users } from 'lucide-react';
 
 import { Botao } from '@/componentes/Botao';
@@ -17,6 +18,7 @@ import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
 import { vitrinePublica } from '@/lib/dados';
+import { useIdioma } from '@/lib/idioma';
 import { sair, useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
 
@@ -79,6 +81,8 @@ const COSTURA =
 
 function Visitante() {
   const { dados } = useConsulta(() => vitrinePublica(), []);
+  const idioma = useIdioma();
+  const arte = idioma === 'en' ? capaEn : capa;
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[390px] flex-col bg-ground">
@@ -90,10 +94,10 @@ function Visitante() {
         título, hierarquia e ordem de leitura.
       */}
       <img
-        src={capa}
+        src={arte}
         alt=""
-        width={780}
-        height={1232}
+        width={idioma === 'en' ? 834 : 780}
+        height={idioma === 'en' ? 1345 : 1232}
         className="block w-full select-none"
         draggable={false}
       />

@@ -9,7 +9,8 @@ export const FRASES: Record<string, string> = {
   // ── Geral / navegação
   'Quórum': 'Quórum',
   'Tesouraria estudantil': 'Student treasury',
-  'Quórum — tesouraria estudantil': 'Quórum — student treasury',
+'Quórum — tesouraria estudantil': 'Quórum — student treasury',
+  'Hackathon Universitário · Superteam Brasil': 'University Hackathon · Superteam Brazil',
   'Navegação principal': 'Main navigation',
   'Voltar': 'Back',
   'Voltar ao início': 'Back to start',
