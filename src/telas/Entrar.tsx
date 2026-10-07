@@ -88,10 +88,10 @@ export function Entrar() {
         não existiriam para quem usa.
       */}
       <img
-        src={entrarTopo}
+        src={arte.topo}
         alt=""
         width={780}
-        height={642}
+        height={arte.alturaTopo}
         className="block w-full select-none"
         draggable={false}
       />
@@ -149,10 +149,10 @@ export function Entrar() {
       </div>
 
       <img
-        src={entrarRodape}
+        src={arte.rodape}
         alt=""
         width={780}
-        height={130}
+        height={arte.alturaRodape}
         className="block w-full select-none"
         draggable={false}
       />
