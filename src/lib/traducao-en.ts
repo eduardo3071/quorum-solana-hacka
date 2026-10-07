@@ -357,7 +357,12 @@ export const FRASES: Record<string, string> = {
     "The page didn't load. Try again in a moment — the link still works.",
   'Ingressos à venda': 'Tickets on sale',
   'Ingressos esgotados': 'Sold out',
+  'esgotado': 'sold out',
+  'esgotados': 'sold out',
+  'Quando': 'When',
+  'Onde': 'Where',
   'Lotes': 'Batches',
+  'apresenta': 'presents',
   'Acompanhe a entidade para saber do próximo lote.': 'Follow the organization to hear about the next batch.',
   'O dinheiro dos ingressos cai direto no cofre da entidade, e cada compra vira uma entrada no livro-caixa sem ninguém digitar nada.':
     "Ticket money goes straight into the organization's vault, and each purchase becomes ledger income with nobody typing anything.",
@@ -378,7 +383,6 @@ export const FRASES: Record<string, string> = {
     'As soon as the payment arrives, the ticket is issued and the income shows up by itself in the',
   '· o valor caiu no cofre da entidade e já está no livro-caixa.':
     "· the money landed in the organization's vault and is already in the ledger.",
-  'apresenta': 'presents',
   'A diretoria da': 'The board of',
 
   // ── Receber
@@ -457,6 +461,12 @@ export const PADROES: [RegExp, (...m: string[]) => string][] = [
   [/^Enviamos um e-mail para (.+)\. Toque no link para confirmar e depois entre com sua senha\.$/, (_, e) => `We sent an email to ${e}. Tap the link to confirm, then sign in with your password.`],
   [/^Se existe conta com (.+), o e-mail com o link para escolher uma nova senha já saiu\.$/, (_, e) => `If an account exists for ${e}, the email with the link to choose a new password is on its way.`],
   [/^Atlética · (.*)$/, (_, u) => `Athletics club · ${u}`],
+  [/^(Dom|Seg|Ter|Qua|Qui|Sex|Sáb), (\d{1,2}) (jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez) · (\d{1,2})h(\d{2})?$/i, (_, w, d, m, h, mi) => `${SEMANA[w.toLowerCase()]}, ${MESES[m.toLowerCase()]} ${d} · ${fmtHora(+h, mi)}`],
+  [/^(\d+)º lote · (.+)$/, (_, n, t) => `${ordinal(+n)} batch · ${t.replace(/^não sócios?$/i, 'non-member').replace(/^sócios?$/i, 'member').replace(/^geral$/i, 'general').replace(/^estudante$/i, 'student')}`],
+  [/^(\d+)º lote$/, (_, n) => `${ordinal(+n)} batch`],
+  [/^Entrada recebida na chave da entidade$/, () => 'Payment received on the organization key'],
+  [/^Entrada recebida de (.+)$/, (_, n) => `Payment received from ${n}`],
+  [/^Lote (.+)$/, (_, n) => `Batch ${n}`],
   [/^(\d{1,2}) (jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\.?$/i, (_, d, m) => `${MESES[m.toLowerCase()]} ${d}`],
 ];
 
@@ -464,3 +474,16 @@ const MESES: Record<string, string> = {
   jan: 'Jan', fev: 'Feb', mar: 'Mar', abr: 'Apr', mai: 'May', jun: 'Jun',
   jul: 'Jul', ago: 'Aug', set: 'Sep', out: 'Oct', nov: 'Nov', dez: 'Dec',
 };
+
+const SEMANA: Record<string, string> = {
+  dom: 'Sun', seg: 'Mon', ter: 'Tue', qua: 'Wed', qui: 'Thu', sex: 'Fri', 'sáb': 'Sat',
+};
+function fmtHora(h: number, mi?: string) {
+  const s = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}${mi ? ':' + mi : ''} ${s}`;
+}
+function ordinal(n: number) {
+  const r = n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th';
+  return `${n}${r}`;
+}
