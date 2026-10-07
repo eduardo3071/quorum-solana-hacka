@@ -466,6 +466,12 @@ export const PADROES: [RegExp, (...m: string[]) => string][] = [
   [/^(\d+)º lote$/, (_, n) => `${ordinal(+n)} batch`],
   [/^Entrada recebida na chave da entidade$/, () => 'Payment received on the organization key'],
   [/^Entrada recebida de (.+)$/, (_, n) => `Payment received from ${n}`],
+  [/^Baild?e de (?:Aniversário )?(\d+) anos$/i, (_, n) => `${n}${ordinal(+n).slice(String(n).length)} Anniversary Ball`],
+  [/^Festa de (?:Aniversário )?(\d+) anos$/i, (_, n) => `${ordinal(+n)} Anniversary Party`],
+  [/^Baile de (.+)$/, (_, n) => `${n} Ball`],
+  [/^Festa de aniversário$/i, () => "Anniversary Party"],
+  [/^Festa (?:de |da |do )?(.+)$/, (_, n) => `${n} Party`],
+  [/^Calourada (.*)$/, (_, n) => `Freshers' Party ${n}`.trim()],
   [/^Lote (.+)$/, (_, n) => `Batch ${n}`],
   [/^(\d{1,2}) (jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)\.?$/i, (_, d, m) => `${MESES[m.toLowerCase()]} ${d}`],
 ];
