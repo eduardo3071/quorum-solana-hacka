@@ -3,8 +3,8 @@ import { Link, Navigate, useSearchParams } from 'react-router-dom';
 
 import entrarRodape from '@/assets/entrar-rodape.webp';
 import entrarTopo from '@/assets/entrar-topo.webp';
-import entrarRodapeEn from '@/assets/entrar-rodape-en.png.asset.json';
-import entrarTopoEn from '@/assets/entrar-topo-en.png.asset.json';
+import entrarRodapeEn from '@/assets/entrar-rodape-en.webp';
+import entrarTopoEn from '@/assets/entrar-topo-en.webp';
 import { BotaoGoogle } from '@/componentes/BotaoGoogle';
 import { useIdioma } from '@/lib/idioma';
 import { useSessao } from '@/lib/sessao';
