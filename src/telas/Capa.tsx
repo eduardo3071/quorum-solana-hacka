@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import capa from '@/assets/capa.webp';
+import capaEn from '@/assets/capa-en.webp';
 import { BookOpen, Clock, Plus, Search, Users } from 'lucide-react';
 
 import { Botao } from '@/componentes/Botao';
@@ -17,6 +18,7 @@ import { Hero } from '@/componentes/Hero';
 import { CorpoTela, Tela } from '@/componentes/Tela';
 import { TileIcone } from '@/componentes/TileIcone';
 import { vitrinePublica } from '@/lib/dados';
+import { useIdioma } from '@/lib/idioma';
 import { sair, useSessao } from '@/lib/sessao';
 import { useConsulta } from '@/lib/useConsulta';
 
